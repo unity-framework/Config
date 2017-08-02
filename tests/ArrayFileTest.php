@@ -5,32 +5,48 @@ use Unity\Component\Configuration\Drivers\ArrayFile;
 
 class ArrayFileTest extends TestCase
 {
-    function testGet()
+    function testGetSimpleArray()
     {
         $driver = $this->getArrayDriverForTest();
 
-        $config = $driver->get('database.user', __DIR__ . '/configs');
+        $source = $this->getSourceForTest();
+
+        $config = $driver->get('database.user', $source);
         $this->assertEquals('root', $config);
 
-        $config = $driver->get('database.psw', __DIR__ . '/configs');
+        $config = $driver->get('database.psw', $source);
         $this->assertEquals('1234', $config);
 
-        $config = $driver->get('database.db', __DIR__ . '/configs');
+        $config = $driver->get('database.db', $source);
         $this->assertEquals('example', $config);
 
-        $config = $driver->get('database.host', __DIR__ . '/configs');
+        $config = $driver->get('database.host', $source);
         $this->assertEquals('127.0.0.1', $config);
 
-        $config = $driver->get('database.cache_queries', __DIR__ . '/configs');
+        $config = $driver->get('database.cache_queries', $source);
         $this->assertEquals(true, $config);
 
-        $config = $driver->get('database.timeout', __DIR__ . '/configs');
+        $config = $driver->get('database.timeout', $source);
         $this->assertEquals(1000, $config);
 
+    }
+
+    function testGetArrayWithInnerArray()
+    {
+        $driver = $this->getArrayDriverForTest();
+        $source = $this->getSourceForTest();
+
+        $config = $driver->get('internationalization.languages.pt', $source);
+        $this->assertEquals(true, $config);
     }
 
     function getArrayDriverForTest()
     {
         return new ArrayFile;
+    }
+
+    function getSourceForTest()
+    {
+        return __DIR__ . '/configs';
     }
 }

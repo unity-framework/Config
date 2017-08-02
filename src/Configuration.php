@@ -1,10 +1,10 @@
 <?php
 
-namespace Unity\Component\Configurable;
+namespace Unity\Component\Configuration;
 
-use Unity\Component\Configurable\Drivers\DriverInterface;
+use Unity\Component\Configuration\Drivers\DriverInterface;
 
-class Configurable implements ConfigurableInterface
+class Configuration implements ConfigurationInterface
 {
     protected $driver;
     protected $source;

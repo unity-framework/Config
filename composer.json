@@ -1,5 +1,5 @@
 {
-  "name": "unity-framework/configurable",
+  "name": "unity-framework/configuration",
   "description": "A configuration manager for PHP projects",
   "type": "library",
   "license": "MIT",
@@ -13,7 +13,7 @@
   "require": {},
   "autoload": {
     "psr-4": {
-      "Unity\\Component\\Configurable": "src/"
+      "Unity\\Component\\Configuration\\": "src/"
     }
   },
   "require-dev": {

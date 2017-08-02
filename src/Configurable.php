@@ -2,21 +2,21 @@
 
 namespace Unity\Component\Configurable;
 
-use Unity\Component\Configurable\Drivers\DriveInterface;
+use Unity\Component\Configurable\Drivers\DriverInterface;
 
 class Configurable implements ConfigurableInterface
 {
-    protected $drive;
+    protected $driver;
     protected $source;
 
-    function __construct(DriveInterface $drive, $source)
+    function __construct(DriverInterface $driver, $source)
     {
-        $this->drive = $drive;
+        $this->driver = $driver;
         $this->source = $source;
     }
 
     function get($config)
     {
-        return $this->drive->get($config, $this->source);
+        return $this->driver->get($config, $this->source);
     }
 }

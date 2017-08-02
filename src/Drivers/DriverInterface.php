@@ -2,7 +2,7 @@
 
 namespace Unity\Component\Configurable\Drivers;
 
-interface DriveInterface
+interface DriverInterface
 {
     function get($config, $source);
 }

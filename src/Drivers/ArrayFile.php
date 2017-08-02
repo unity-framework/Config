@@ -2,7 +2,7 @@
 
 namespace Unity\Component\Configurable\Drivers;
 
-class ArrayFile implements DriveInterface
+class ArrayFile implements DriverInterface
 {
     function get($config, $source)
     {

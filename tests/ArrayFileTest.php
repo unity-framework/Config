@@ -38,6 +38,15 @@ class ArrayFileTest extends TestCase
 
         $config = $driver->get('internationalization.languages.pt', $source);
         $this->assertEquals(true, $config);
+
+        $config = $driver->get('internationalization.languages.en', $source);
+        $this->assertEquals(false, $config);
+
+        $config = $driver->get('internationalization.languages.fr', $source);
+        $this->assertEquals(false, $config);
+
+        $config = $driver->get('internationalization.languages.es', $source);
+        $this->assertEquals(false, $config);
     }
 
     function getArrayDriverForTest()

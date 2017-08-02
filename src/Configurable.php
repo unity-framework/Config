@@ -15,8 +15,8 @@ class Configurable implements ConfigurableInterface
         $this->source = $source;
     }
 
-    function get($configuration)
+    function get($config)
     {
-        return $this->drive->get($configuration, $this->source);
+        return $this->drive->get($config, $this->source);
     }
 }

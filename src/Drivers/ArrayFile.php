@@ -11,15 +11,15 @@ class ArrayFile implements DriverInterface
 
     function resolve($config, $source)
     {
-        $params = $this->splitParams($config);
-        $filename = $this->getFilename($params);
+        $values = $this->splitValues($config);
+        $filename = $this->getFilename($values);
         $configFile = $this->getFullPath($filename, $source);
         $configArray = $this->getConfigArray($configFile);
 
-        return $this->getTheConfig($configArray, $params);
+        return $this->getTheConfig($configArray, $values);
     }
 
-    function splitParams($config)
+    function splitValues($config)
     {
         $exp = explode('.', $config);
 
@@ -33,9 +33,9 @@ class ArrayFile implements DriverInterface
         return $elements;
     }
 
-    function getFilename($params)
+    function getFilename($values)
     {
-        return $params['filename'];
+        return $values['filename'];
     }
 
     function getFullPath($filename, $source)
@@ -49,16 +49,16 @@ class ArrayFile implements DriverInterface
             return require $configFile;
     }
 
-    function getTheConfig($configArray, $params)
+    function getTheConfig($configArray, $values)
     {
         $config = null;
 
-        for($i = 0; $i < count($params) - 1; $i++)
+        for($i = 0; $i < count($values) - 1; $i++)
         {
             if($i == 0)
-                $config = $configArray[$params[$i]];
+                $config = $configArray[$values[$i]];
             else
-                $config = $config[$params[$i]];
+                $config = $config[$values[$i]];
         }
 
         return $config;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Unity\Component\Configuration\Drivers;
+namespace Unity\Component\Config\Drivers;
 
 interface DriverInterface
 {

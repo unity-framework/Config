@@ -1,10 +1,10 @@
 <?php
 
-namespace Unity\Component\Configuration\Drivers\ArrayFile;
+namespace Unity\Component\Config\Drivers\ArrayFile;
 
-use Unity\Component\Configuration\Drivers\ArrayFile\Exceptions\BadConfigStringException;
-use Unity\Component\Configuration\Drivers\ArrayFile\Exceptions\ConfigFileNotFoundException;
-use Unity\Component\Configuration\Drivers\DriverInterface;
+use Unity\Component\Config\Drivers\ArrayFile\Exceptions\BadConfigStringException;
+use Unity\Component\Config\Drivers\ArrayFile\Exceptions\ConfigFileNotFoundException;
+use Unity\Component\Config\Drivers\DriverInterface;
 
 class ArrayFile implements DriverInterface
 {

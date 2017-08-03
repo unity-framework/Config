@@ -1,10 +1,10 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Unity\Component\Configuration\Configuration;
-use Unity\Component\Configuration\Drivers\DriverInterface;
+use Unity\Component\Config\Config;
+use Unity\Component\Config\Drivers\DriverInterface;
 
-class ConfigurationTest extends TestCase
+class ConfigTest extends TestCase
 {
     function testGet()
     {
@@ -23,6 +23,6 @@ class ConfigurationTest extends TestCase
             ->method('get')
             ->willReturn('This is the configuration value');
 
-        return new Configuration($driver, '');
+        return new Config($driver, '');
     }
 }

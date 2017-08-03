@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Unity\Component\Configuration\Drivers\ArrayFile\ArrayFile;
+use Unity\Component\Config\Drivers\ArrayFile\ArrayFile;
 
 class ArrayFileTest extends TestCase
 {

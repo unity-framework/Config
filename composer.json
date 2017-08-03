@@ -1,8 +1,8 @@
 {
-  "name": "unity-framework/configuration",
+  "name": "unity/config",
   "description": "Extensible configuration manager for PHP projects that uses dot notation and supports json, ini, array based and many more common formats",
   "type": "library",
-  "keywords": ["config", "configuration", "unity-framework", "php", "extensible"],
+  "keywords": ["config", "configuration", "unity-framework", "unity", "php", "extensible"],
   "homepage": "https://github.com/unity-framework/Configuration",
   "license": "MIT",
   "authors": [
@@ -17,7 +17,7 @@
   "require": {},
   "autoload": {
     "psr-4": {
-      "Unity\\Component\\Configuration\\": "src/"
+      "Unity\\Component\\Config\\": "src/"
     }
   },
   "require-dev": {

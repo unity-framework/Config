@@ -72,6 +72,7 @@ class ArrayFile implements DriverInterface
 
     /**
      * Gets the configuration file name
+     * from the given array
      *
      * @param $values
      * @return mixed
@@ -81,6 +82,11 @@ class ArrayFile implements DriverInterface
         return $values['configFileName'];
     }
 
+    /**
+     * Removes the root value from the given array
+     *
+     * @param $values
+     */
     function unsetConfigFileName(&$values)
     {
         unset($values['configFileName']);

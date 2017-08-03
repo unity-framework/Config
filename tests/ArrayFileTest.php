@@ -78,7 +78,7 @@ class ArrayFileTest extends TestCase
 
         $this->assertEmpty($values);
     }
-    
+
     /**
      * Tests `getFullPath`
      *
@@ -97,6 +97,21 @@ class ArrayFileTest extends TestCase
         $expected = $source . '/' . $config . '.php';
 
         $this->assertEquals($expected, $fullPath);
+    }
+
+    /**
+     * Tests `getConfigArray`
+     *
+     * `getConfigArray` should return an array
+     * with the configurations
+     */
+    function testGetConfigArray()
+    {
+        $driver = $this->getArrayFileDriverForTest();
+
+        $source = $this->getSourceForTest();
+
+        $driver->getConfigArray($source . '/' . 'test.php');
     }
 
     function testGetSimpleArray()

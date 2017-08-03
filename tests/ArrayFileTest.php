@@ -80,9 +80,9 @@ class ArrayFileTest extends TestCase
     }
 
     /**
-     * Tests `getFullPath`
+     * Tests `getFullPath()`
      *
-     * `getFullPath` should return the fullPath
+     * `getFullPath()` should return the fullPath
      * constructed with the given parameters
      */
     function testGetFullPath()
@@ -100,9 +100,9 @@ class ArrayFileTest extends TestCase
     }
 
     /**
-     * Tests `getConfigArray`
+     * Tests `getConfigArray()`
      *
-     * `getConfigArray` should return an array
+     * `getConfigArray()` should return an array
      * with the configurations
      */
     function testGetConfigArray()
@@ -115,6 +115,20 @@ class ArrayFileTest extends TestCase
 
         $this->assertInternalType('array', $configArray);
         $this->assertArrayHasKey('test_key', $configArray);
+    }
+
+    /**
+     * Tests `getTheConfig()`
+     *
+     * `getConfigArray()` should return the configuration value
+     */
+    function testGetTheConfig()
+    {
+        $driver = $this->getArrayFileDriverForTest();
+
+        $value = $driver->getTheConfig(['test_key' => 'value'], ['test_key']);
+
+        $this->assertEquals('value', $value);
     }
 
     function testGetSimpleArray()

@@ -132,6 +132,10 @@ class ArrayFile implements DriverInterface
     {
         $config = null;
 
+        /**
+         * We walk through the $values checking
+         * for the each
+         */
         for($i = 0; $i < count($values); $i++)
         {
             if($i == 0)

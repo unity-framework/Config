@@ -1,6 +1,6 @@
 {
   "name": "unity-framework/configuration",
-  "description": "A configuration manager for PHP projects",
+  "description": "A configuration manager for PHP projects that supports json, ini and array based configuration",
   "type": "library",
   "keywords": ["config", "configuration", "unity-framework", "php"],
   "homepage": "https://github.com/unity-framework/Configuration",

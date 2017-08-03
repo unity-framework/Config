@@ -2,6 +2,8 @@
   "name": "unity-framework/configuration",
   "description": "A configuration manager for PHP projects",
   "type": "library",
+  "keywords": ["config", "configuration", "unity-framework", "php"],
+  "homepage": "https://github.com/unity-framework/Configuration",
   "license": "MIT",
   "authors": [
     {

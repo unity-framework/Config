@@ -8,11 +8,25 @@ use Unity\Component\Configuration\Drivers\DriverInterface;
 
 class ArrayFile implements DriverInterface
 {
+    /**
+     * Gets the configuration
+     *
+     * @param mixed $config The required configuration
+     * @param mixed $source The configuration source
+     * @return mixed
+     */
     function get($config, $source)
     {
         return $this->resolve($config, $source);
     }
 
+    /**
+     * Process the requested configuration
+     *
+     * @param $config
+     * @param $source
+     * @return mixed
+     */
     function resolve($config, $source)
     {
         $values = $this->splitValues($config);

@@ -111,7 +111,10 @@ class ArrayFileTest extends TestCase
 
         $source = $this->getSourceForTest();
 
-        $driver->getConfigArray($source . '/' . 'test.php');
+        $configArray = $driver->getConfigArray($source . '/' . 'test.php');
+
+        $this->assertInternalType('array', $configArray);
+        $this->assertArrayHasKey('test_key', $configArray);
     }
 
     function testGetSimpleArray()

@@ -5,7 +5,14 @@ use Unity\Component\Configuration\Drivers\ArrayFile\ArrayFile;
 
 class ArrayFileTest extends TestCase
 {
-    function testSplitParamsTwoSegments()
+    /**
+     * Test `splitValues()` with 2 segments
+     *
+     * `splitValues()` should return an array containing
+     * the root "database" value and the array access key
+     * "user"
+     */
+    function testSplitValuesTwoSegments()
     {
         $driver = $this->getArrayFileDriverForTest();
 
@@ -16,7 +23,14 @@ class ArrayFileTest extends TestCase
         $this->assertEquals('user', $params[0]);
     }
 
-    function testSplitParamsThreeSegments()
+    /**
+     * Test `splitValues()` with 3 segments
+     *
+     * `splitValues()` should return an array containing
+     * the root "internationalization" value and the array
+     * access keys "languages" and "pt"
+     */
+    function testSplitValuesThreeSegments()
     {
         $driver = $this->getArrayFileDriverForTest();
 

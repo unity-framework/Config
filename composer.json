@@ -1,8 +1,8 @@
 {
   "name": "unity-framework/configuration",
-  "description": "A configuration manager for PHP projects that uses dot notation and supports json, ini and array based and many more configuration sources",
+  "description": "Extensible configuration manager for PHP projects that uses dot notation and supports json, ini, array based and many more common formats",
   "type": "library",
-  "keywords": ["config", "configuration", "unity-framework", "php"],
+  "keywords": ["config", "configuration", "unity-framework", "php", "extensible"],
   "homepage": "https://github.com/unity-framework/Configuration",
   "license": "MIT",
   "authors": [

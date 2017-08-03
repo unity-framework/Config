@@ -78,6 +78,26 @@ class ArrayFileTest extends TestCase
 
         $this->assertEmpty($values);
     }
+    
+    /**
+     * Tests `getFullPath`
+     *
+     * `getFullPath` should return the fullPath
+     * constructed with the given parameters
+     */
+    function testGetFullPath()
+    {
+        $driver = $this->getArrayFileDriverForTest();
+
+        $config = 'database';
+        $source = $this->getSourceForTest();
+
+        $fullPath = $driver->getFullPath($config, $source);
+
+        $expected = $source . '/' . $config . '.php';
+
+        $this->assertEquals($expected, $fullPath);
+    }
 
     function testGetSimpleArray()
     {

@@ -6,7 +6,7 @@ use Unity\Component\Configuration\Drivers\ArrayFile\ArrayFile;
 class ArrayFileTest extends TestCase
 {
     /**
-     * Test `splitValues()` with 2 segments
+     * Tests `splitValues()` with 2 segments
      *
      * `splitValues()` should return an array containing
      * the root "database" value and the array access key
@@ -24,7 +24,7 @@ class ArrayFileTest extends TestCase
     }
 
     /**
-     * Test `splitValues()` with 3 segments
+     * Tests `splitValues()` with 3 segments
      *
      * `splitValues()` should return an array containing
      * the root "internationalization" value and the array
@@ -43,7 +43,7 @@ class ArrayFileTest extends TestCase
     }
 
     /**
-     * Test `testConfigFileName()` with 3 segments
+     * Tests `testConfigFileName()` with 3 segments
      *
      * `testConfigFileName()` should return the root value
      * from the given array
@@ -59,6 +59,24 @@ class ArrayFileTest extends TestCase
         $configFileName = $driver->getConfigFileName($values);
 
         $this->assertEquals('database', $configFileName);
+    }
+
+    /**
+     * Tests `unsetConfigFileName()`
+     *
+     * `unsetConfigFileName()` should unset the
+     * "configFileName" key and value from the
+     * given array
+     */
+    function testUnsetConfigFileName()
+    {
+        $driver = $this->getArrayFileDriverForTest();
+
+        $values = ['configFileName' => 'database'];
+
+        $driver->unsetConfigFileName($values);
+
+        $this->assertEmpty($values);
     }
 
     function testGetSimpleArray()

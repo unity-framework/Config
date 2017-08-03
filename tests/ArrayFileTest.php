@@ -42,6 +42,25 @@ class ArrayFileTest extends TestCase
         $this->assertEquals('pt', $params[1]);
     }
 
+    /**
+     * Test `testConfigFileName()` with 3 segments
+     *
+     * `testConfigFileName()` should return the root value
+     * from the given array
+     */
+    function testConfigFileName()
+    {
+        $driver = $this->getArrayFileDriverForTest();
+
+        $values = [
+            'configFileName' => 'database'
+        ];
+
+        $configFileName = $driver->getConfigFileName($values);
+
+        $this->assertEquals('database', $configFileName);
+    }
+
     function testGetSimpleArray()
     {
         $driver = $this->getArrayFileDriverForTest();

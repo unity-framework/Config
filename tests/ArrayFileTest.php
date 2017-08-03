@@ -1,13 +1,36 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Unity\Component\Configuration\Drivers\ArrayFile;
+use Unity\Component\Configuration\Drivers\ArrayFile\ArrayFile;
 
 class ArrayFileTest extends TestCase
 {
+    function testSplitParamsTwoSegments()
+    {
+        $driver = $this->getArrayFileDriverForTest();
+
+        $params = $driver->splitValues('database.user');
+
+        $this->assertInternalType('array', $params);
+        $this->assertEquals('database', $params['configFileName']);
+        $this->assertEquals('user', $params[0]);
+    }
+
+    function testSplitParamsThreeSegments()
+    {
+        $driver = $this->getArrayFileDriverForTest();
+
+        $params = $driver->splitValues('internationalization.languages.pt');
+
+        $this->assertInternalType('array', $params);
+        $this->assertEquals('internationalization', $params['configFileName']);
+        $this->assertEquals('languages', $params[0]);
+        $this->assertEquals('pt', $params[1]);
+    }
+
     function testGetSimpleArray()
     {
-        $driver = $this->getArrayDriverForTest();
+        $driver = $this->getArrayFileDriverForTest();
 
         $source = $this->getSourceForTest();
 
@@ -33,7 +56,7 @@ class ArrayFileTest extends TestCase
 
     function testGetArrayWithInnerArray()
     {
-        $driver = $this->getArrayDriverForTest();
+        $driver = $this->getArrayFileDriverForTest();
         $source = $this->getSourceForTest();
 
         $config = $driver->get('internationalization.languages.pt', $source);
@@ -49,7 +72,7 @@ class ArrayFileTest extends TestCase
         $this->assertEquals(false, $config);
     }
 
-    function getArrayDriverForTest()
+    function getArrayFileDriverForTest()
     {
         return new ArrayFile;
     }

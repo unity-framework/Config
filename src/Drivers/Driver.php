@@ -28,4 +28,18 @@ abstract class Driver implements DriverInterface
         foreach ($exp as $param)
             $keys[] = $param;
     }
+
+    function getConfig($configArray, $arrayKeys)
+    {
+        $config = null;
+
+        for($i = 0; $i < count($arrayKeys); $i++)
+        {
+            if($i == 0)
+                $config = $configArray[$arrayKeys[$i]];
+            else
+                $config = $config[$arrayKeys[$i]];
+        }
+        return $config;
+    }
 }

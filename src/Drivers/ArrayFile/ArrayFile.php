@@ -2,12 +2,13 @@
 
 namespace Unity\Component\Config\Drivers\ArrayFile;
 
-use Unity\Component\Config\Drivers\ArrayFile\Exceptions\BadConfigStringException;
+use Unity\Component\Config\Drivers\Driver;
 use Unity\Component\Config\Drivers\ArrayFile\Exceptions\ConfigFileNotFoundException;
-use Unity\Component\Config\Drivers\DriverInterface;
 
-class ArrayFile implements DriverInterface
+class ArrayFile extends Driver
 {
+    protected $ext = 'php';
+
     /**
      * Gets the configuration
      *
@@ -26,138 +27,101 @@ class ArrayFile implements DriverInterface
      * @param $config
      * @param $sources
      * @return mixed
-     * @internal param $source
      */
     function resolve($config, $sources)
     {
-        $values = $this->splitValues($config);
-        $filename = $this->getConfigFileName($values);
-        $this->unsetConfigFileName($values);
-        $configArray = $this->getConfigArray($filename, $sources);
+        $arrayFileName = '';
+        $arrayKeys = [];
 
-        return $this->getTheConfig($configArray, $values);
+        $this->denote($config, $arrayFileName, $arrayKeys);
+
+        $configArray = $this->getConfigArray($arrayFileName, $sources);
+        return $this->getConfig($configArray, $arrayKeys);
     }
 
     /**
-     * Splits each value from the `$config` string
+     * Sets the extension of config files
      *
-     * These values are separated by a dot "."
+     * @param $ext
+     */
+    function setExt($ext)
+    {
+        $this->ext = $ext;
+    }
+
+    /**
+     * Gets the extension of config files
      *
-     * The first "root" value represents the configuration file
-     * name, and the rest represents the array access key(s)
-     * to the configuration value
+     * @return string
+     */
+    function getExt()
+    {
+        return $this->ext;
+    }
+
+    /**
+     * Returns the full path to access the
+     * configuration file based in the $source
      *
-     * The root and the access key(s) should be provided
-     *
-     * @param $config
      * @param $filename
-     * @param $keys
-     * @return array
-     * @throws BadConfigStringException
-     */
-    function splitValues($config, &$filename, &$keys)
-    {
-        $exp = explode('.', $config);
-
-        if(count($exp) < 1)
-            throw new BadConfigStringException;
-
-        $filename = $exp[0];
-
-        foreach ($exp as $param)
-            $keys[] = $param;
-    }
-
-    /**
-     * Gets the configuration file name
-     * from the given array
-     *
-     * @param $values
-     * @return mixed
-     */
-    function getConfigFileName($values)
-    {
-        return $values['configFileName'];
-    }
-
-    /**
-     * Removes the root value from the given array
-     *
-     * @param $values
-     */
-    function unsetConfigFileName(&$values)
-    {
-        unset($values['configFileName']);
-    }
-
-    /**
-     * Gets the full path of the configuration
-     * file name
-     *
-     * @param $configFileName
      * @param $source
      * @return string
      */
-    function getFullPath($configFileName, $source)
+    function fullPath($filename, $source)
     {
-        return $source . '/' . $configFileName . '.php';
+        return $source . '/' . $filename . $this->getExt();
     }
 
     /**
-     * Requires the configuration file containing
-     * the array with the configurations
+     * Gets the configuration array inside the array file
      *
-     * @param $filename
+     * @param $arrayFile
      * @param $sources
      * @return mixed
      * @throws ConfigFileNotFoundException
      */
-    function getConfigArray($filename, $sources)
+    function getConfigArray($arrayFile, $sources)
     {
         if(is_array($sources))
             foreach ($sources as $source) {
-                $configFile = $this->getFullPath($filename, $source);
+                $configArray = $this->requireArrayFile($arrayFile, $source);
 
-                if($this->configFileExists($configFile))
-                    return require $configFile;
+                if($configArray)
+                    return $configArray;
             }
 
-        $configFile = $this->getFullPath($filename, $sources);
+        $configArray = $this->requireArrayFile($arrayFile, $sources);
 
-        if($this->configFileExists($configFile))
-            return require $configFile;
+        if($configArray)
+            return $configArray;
 
-        throw new ConfigFileNotFoundException("Cannot find configuration file \"${$configFile}\"");
-    }
-
-    function configFileExists($configFile)
-    {
-        return file_exists($configFile);
+        throw new ConfigFileNotFoundException("Cannot find configuration file \"${$arrayFile}\"");
     }
 
     /**
-     * Gets the configuration value
+     * Requires the array containing in the array file
      *
-     * @param $configArray
-     * @param $values
+     * @param $arrayFile
+     * @param $source
      * @return mixed
+     * @throws ConfigFileNotFoundException
      */
-    function getTheConfig($configArray, $values)
+    function requireArrayFile($arrayFile, $source)
     {
-        $config = null;
+        $configFileName = $this->fullPath($arrayFile, $source);
 
-        /**
-         * We walk through the $values checking
-         * for the each
-         */
-        for($i = 0; $i < count($values); $i++)
-        {
-            if($i == 0)
-                $config = $configArray[$values[$i]];
-            else
-                $config = $config[$values[$i]];
-        }
+        if($this->fileExists($configFileName))
+            return require $configFileName;
+    }
 
-        return $config;
+    /**
+     * Check if $filename file exists
+     *
+     * @param $filename
+     * @return bool
+     */
+    function fileExists($filename)
+    {
+        return file_exists($filename);
     }
 }

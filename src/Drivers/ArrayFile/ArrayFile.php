@@ -24,16 +24,16 @@ class ArrayFile implements DriverInterface
      * Process the requested configuration
      *
      * @param $config
-     * @param $source
+     * @param $sources
      * @return mixed
+     * @internal param $source
      */
-    function resolve($config, $source)
+    function resolve($config, $sources)
     {
         $values = $this->splitValues($config);
         $filename = $this->getConfigFileName($values);
         $this->unsetConfigFileName($values);
-        $configFile = $this->getFullPath($filename, $source);
-        $configArray = $this->getConfigArray($configFile);
+        $configArray = $this->getConfigArray($filename, $sources);
 
         return $this->getTheConfig($configArray, $values);
     }
@@ -50,24 +50,22 @@ class ArrayFile implements DriverInterface
      * The root and the access key(s) should be provided
      *
      * @param $config
+     * @param $filename
+     * @param $keys
      * @return array
      * @throws BadConfigStringException
      */
-    function splitValues($config)
+    function splitValues($config, &$filename, &$keys)
     {
         $exp = explode('.', $config);
 
         if(count($exp) < 1)
             throw new BadConfigStringException;
 
-        $params['configFileName'] = $exp[0];
-
-        unset($exp[0]);
+        $filename = $exp[0];
 
         foreach ($exp as $param)
-            $params[] = $param;
-
-        return $params;
+            $keys[] = $param;
     }
 
     /**
@@ -109,16 +107,32 @@ class ArrayFile implements DriverInterface
      * Requires the configuration file containing
      * the array with the configurations
      *
-     * @param $configFile
+     * @param $filename
+     * @param $sources
      * @return mixed
      * @throws ConfigFileNotFoundException
      */
-    function getConfigArray($configFile)
+    function getConfigArray($filename, $sources)
     {
-        if(file_exists($configFile))
+        if(is_array($sources))
+            foreach ($sources as $source) {
+                $configFile = $this->getFullPath($filename, $source);
+
+                if($this->configFileExists($configFile))
+                    return require $configFile;
+            }
+
+        $configFile = $this->getFullPath($filename, $sources);
+
+        if($this->configFileExists($configFile))
             return require $configFile;
 
         throw new ConfigFileNotFoundException("Cannot find configuration file \"${$configFile}\"");
+    }
+
+    function configFileExists($configFile)
+    {
+        return file_exists($configFile);
     }
 
     /**

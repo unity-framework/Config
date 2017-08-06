@@ -3,6 +3,8 @@
 namespace Unity\Component\Config\Drivers\File;
 
 use Unity\Component\Config\Drivers\Driver;
+use Unity\Component\Config\Drivers\File\Exceptions\ConfigFileNotFoundException;
+use Unity\Component\Config\Drivers\File\Exceptions\UndefinedExtensionException;
 
 abstract class FileDriver extends Driver
 {
@@ -23,10 +25,24 @@ abstract class FileDriver extends Driver
      * Gets the extension of config files
      *
      * @return string
+     * @throws UndefinedExtensionException
      */
     function getExt()
     {
+        if(!$this->hasExt())
+            throw new UndefinedExtensionException("Trying to get an undefined extension. Set an extension before gets one.");
+
         return $this->ext;
+    }
+
+    /**
+     * Checks if FileDriver::$ext is defined
+     *
+     * @return bool
+     */
+    function hasExt()
+    {
+        return !empty($this->ext);
     }
 
     /**

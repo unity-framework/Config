@@ -2,12 +2,14 @@
 
 namespace Unity\Component\Config\Drivers\File;
 
-use Unity\Component\Config\Drivers\Driver;
 use Unity\Component\Config\Drivers\File\Exceptions\ConfigFileNotFoundException;
 
-class ArrayFile extends Driver
+class ArrayFile extends FileDriver
 {
-    protected $ext = 'php';
+    function __construct()
+    {
+        $this->setExt('php');
+    }
 
     /**
      * Gets the configuration
@@ -26,27 +28,8 @@ class ArrayFile extends Driver
     }
 
     /**
-     * Sets the extension of config files
-     *
-     * @param $ext
-     */
-    function setExt($ext)
-    {
-        $this->ext = $ext;
-    }
-
-    /**
-     * Gets the extension of config files
-     *
-     * @return string
-     */
-    function getExt()
-    {
-        return $this->ext;
-    }
-
-    /**
-     * Gets the configuration array inside the array file
+     * Gets the configuration array containing
+     * in the array file
      *
      * @param $arrayFile
      * @param $sources
@@ -72,30 +55,6 @@ class ArrayFile extends Driver
     }
 
     /**
-     * Gets the filename with extension
-     *
-     * @param $filename
-     * @return string
-     */
-    function getFileNameWithExt($filename)
-    {
-        return $filename . '.' . $this->getExt();
-    }
-
-    /**
-     * Returns the full path to access the
-     * configuration file based in the $source
-     *
-     * @param $filename
-     * @param $source
-     * @return string
-     */
-    function getFullPath($filename, $source)
-    {
-        return $source . $this->getFileNameWithExt($filename);
-    }
-
-    /**
      * Requires the array containing in the array file
      *
      * @param $arrayFile
@@ -109,16 +68,5 @@ class ArrayFile extends Driver
 
         if($this->fileExists($configFile))
             return require $configFile;
-    }
-
-    /**
-     * Checks if $filename file exists
-     *
-     * @param $configFile
-     * @return bool
-     */
-    function fileExists($configFile)
-    {
-        return file_exists($configFile);
     }
 }

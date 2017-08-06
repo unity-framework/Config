@@ -27,17 +27,17 @@ class ArrayFileTest extends TestCase
     }
 
     /**
-     * @covers ArrayFile::getFileNameWithExt()
+     * @covers ArrayFile::getFilenameWithExt()
      *
      * Should return $filename concatenation
      * with the extension
      */
-    function testGetFileNameWithExtension()
+    function testGetFilenameWithExtension()
     {
         $driver = $this->getArrayFileDriverForTest();
 
         /** Should return the filename with the default extension */
-        $filename = $driver->getFileNameWithExt('config');
+        $filename = $driver->getFilenameWithExt('config');
         $this->assertEquals('config.php', $filename);
     }
 

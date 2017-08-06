@@ -8,7 +8,7 @@ class ArrayDriver extends FileDriver
 {
     function __construct()
     {
-        $this->setExt('php');
+        parent::__construct('php');
     }
 
     /**

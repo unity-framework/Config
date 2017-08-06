@@ -13,22 +13,10 @@ class ArrayFile extends Driver
      * Gets the configuration
      *
      * @param mixed $config The required configuration
-     * @param mixed $source The configuration source
-     * @return mixed
-     */
-    function get($config, $source)
-    {
-        return $this->resolve($config, $source);
-    }
-
-    /**
-     * Process the requested configuration
-     *
-     * @param $config
      * @param $sources
      * @return mixed
      */
-    function resolve($config, $sources)
+    function get($config, $sources)
     {
         $this->denote($config, $arrayFile, $arrayKeys);
 

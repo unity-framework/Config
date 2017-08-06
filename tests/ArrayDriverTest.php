@@ -110,18 +110,18 @@ class ArrayDriverTest extends TestCase
      */
     private function getSourceForTest()
     {
-        return __DIR__ . '/configs/';
+        return __DIR__ . '/arrays/';
     }
 
     /**
      * Sources must end with a slash "/"
      *
-     * @return string
+     * @return array
      */
     private function getSourcesForTest()
     {
         return [
-            __DIR__ . '/configs/',
+            __DIR__ . '/arrays/',
             __DIR__ . '/files/',
             __DIR__ . '/archives/'
         ];

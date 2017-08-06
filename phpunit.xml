@@ -8,8 +8,6 @@
     <testsuites>
         <testsuite name="Test Suite">
             <directory>./tests</directory>
-            <exclude>./tests/ArrayDriverTest.php</exclude>
-            <exclude>./tests/DriverTest.php</exclude>
         </testsuite>
     </testsuites>
 </phpunit>

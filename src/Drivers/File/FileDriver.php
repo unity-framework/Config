@@ -12,6 +12,16 @@ abstract class FileDriver extends Driver
     protected $ext = '';
 
     /**
+     * FileDriver constructor.
+     *
+     * @param $ext
+     */
+    function __construct($ext)
+    {
+        $this->setExt($ext);
+    }
+
+    /**
      * Sets the extension of config files
      *
      * @param $ext

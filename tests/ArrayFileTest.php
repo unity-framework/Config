@@ -150,19 +150,6 @@ class ArrayFileTest extends TestCase
     }
 
     /**
-    * @covers ArrayFile::resolve()
-    *
-    * Should return the value of database.user = 'root'
-    */
-    function testResolve()
-    {
-        $drive = $this->getArrayFileDriverForTest();
-        $source = $this->getSourceForTest();
-
-        $this->assertEquals('root', $drive->resolve('database.user', $source));
-    }
-
-    /**
      * @covers ArrayFile::get()
      *
      * Should return the value of database.user = 'root'

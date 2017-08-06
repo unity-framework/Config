@@ -21,11 +21,14 @@ class FileDriverTest extends TestCase
          */
         $driver = new FileDriverImplementation;
 
+        /** Should return the parent::__constructor() extension */
+        $this->assertEquals('inc', $driver->getExt());
+
         /**
          * Should return `false` since we don't provided
          * any ext yet
          */
-        $this->assertFalse($driver->hasExt());
+        $this->assertTrue($driver->hasExt());
 
         /** Change extension to "json" */
         $driver->setExt('json');
@@ -122,7 +125,7 @@ class FileDriverTest extends TestCase
      */
     private function getSourceForTest()
     {
-        return __DIR__ . '/configs/';
+        return __DIR__ . '/arrays/';
     }
 
     private function getFileDriverImplementationForTest()
@@ -142,6 +145,11 @@ class FileDriverTest extends TestCase
 
 class FileDriverImplementation extends FileDriver
 {
+    function __construct()
+    {
+        parent::__construct('inc');
+    }
+
     function get($config, $source)
     {
 

@@ -30,12 +30,10 @@ class ArrayFile extends Driver
      */
     function resolve($config, $sources)
     {
-        $arrayFileName = '';
-        $arrayKeys = [];
+        $this->denote($config, $arrayFile, $arrayKeys);
 
-        $this->denote($config, $arrayFileName, $arrayKeys);
+        $configArray = $this->getConfigArray($arrayFile, $sources);
 
-        $configArray = $this->getConfigArray($arrayFileName, $sources);
         return $this->getConfig($configArray, $arrayKeys);
     }
 
@@ -57,19 +55,6 @@ class ArrayFile extends Driver
     function getExt()
     {
         return $this->ext;
-    }
-
-    /**
-     * Returns the full path to access the
-     * configuration file based in the $source
-     *
-     * @param $filename
-     * @param $source
-     * @return string
-     */
-    function fullPath($filename, $source)
-    {
-        return $source . '/' . $filename . $this->getExt();
     }
 
     /**
@@ -95,7 +80,31 @@ class ArrayFile extends Driver
         if($configArray)
             return $configArray;
 
-        throw new ConfigFileNotFoundException("Cannot find configuration file \"${$arrayFile}\"");
+        throw new ConfigFileNotFoundException("Cannot find configuration file \"{$this->getFileNameWithExt($arrayFile)}\" in any specified sources");
+    }
+
+    /**
+     * Gets the filename with extension
+     *
+     * @param $filename
+     * @return string
+     */
+    function getFileNameWithExt($filename)
+    {
+        return $filename . '.' . $this->getExt();
+    }
+
+    /**
+     * Returns the full path to access the
+     * configuration file based in the $source
+     *
+     * @param $filename
+     * @param $source
+     * @return string
+     */
+    function getFullPath($filename, $source)
+    {
+        return $source . $this->getFileNameWithExt($filename);
     }
 
     /**
@@ -108,20 +117,20 @@ class ArrayFile extends Driver
      */
     function requireArrayFile($arrayFile, $source)
     {
-        $configFileName = $this->fullPath($arrayFile, $source);
+        $configFile = $this->getFullPath($arrayFile, $source);
 
-        if($this->fileExists($configFileName))
-            return require $configFileName;
+        if($this->fileExists($configFile))
+            return require $configFile;
     }
 
     /**
-     * Check if $filename file exists
+     * Checks if $filename file exists
      *
-     * @param $filename
+     * @param $configFile
      * @return bool
      */
-    function fileExists($filename)
+    function fileExists($configFile)
     {
-        return file_exists($filename);
+        return file_exists($configFile);
     }
 }

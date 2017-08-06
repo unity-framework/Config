@@ -5,7 +5,7 @@ namespace Unity\Component\Config\Drivers\ArrayFile\Exceptions;
 use Exception;
 use Throwable;
 
-class BadConfigStringException extends Exception
+class InvalidConfigStringException extends Exception
 {
     public function __construct($message = "", $code = 0, Throwable $previous = null)
     {

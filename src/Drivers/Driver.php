@@ -2,26 +2,25 @@
 
 namespace Unity\Component\Config\Drivers;
 
-use Unity\Component\Config\Drivers\ArrayFile\Exceptions\BadConfigStringException;
+use Unity\Component\Config\Drivers\ArrayFile\Exceptions\InvalidConfigStringException;
 
 abstract class Driver implements DriverInterface
 {
     /**
-     * Denotes the config string notation
+     * Denotes the config string dot notation
      *
      * @param $config
-     * @param $filename
+     * @param $root
      * @param $keys
-     * @throws BadConfigStringException
+     * @throws InvalidConfigStringException
      */
-    function denote($config, &$filename, &$keys)
+    function denote($config, &$root, &$keys)
     {
+        $this->validate($config);
+
         $exp = explode('.', $config);
 
-        if(count($exp) < 1)
-            throw new BadConfigStringException;
-
-        $filename = $exp[0];
+        $root = $exp[0];
 
         unset($exp[0]);
 
@@ -29,16 +28,37 @@ abstract class Driver implements DriverInterface
             $keys[] = $param;
     }
 
-    function getConfig($configArray, $arrayKeys)
+    /**
+     * Validates the given notation
+     *
+     * A valid notation must have a root entry
+     * followed by at least one key.
+     *
+     * Example: database.user
+     *
+     * @param $notation
+     * @throws InvalidConfigStringException
+     */
+    function validate($notation)
+    {
+       if(!preg_match('/\w{1,}\.(\w{1,}){1,}/', $notation))
+            throw new InvalidConfigStringException(
+                "The config string must have a root entry with at least one key.
+                \nExample: database.user.
+                \nWhere \"database\" is the root entry and \"user\" is the key."
+            );
+    }
+
+    function getConfig($configArray, $searchKeys)
     {
         $config = null;
 
-        for($i = 0; $i < count($arrayKeys); $i++)
+        for($i = 0; $i < count($searchKeys); $i++)
         {
             if($i == 0)
-                $config = $configArray[$arrayKeys[$i]];
+                $config = $configArray[$searchKeys[$i]];
             else
-                $config = $config[$arrayKeys[$i]];
+                $config = $config[$searchKeys[$i]];
         }
         return $config;
     }

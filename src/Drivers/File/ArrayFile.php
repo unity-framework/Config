@@ -2,10 +2,10 @@
 
 namespace Unity\Component\Config\Drivers\File;
 
-use Unity\Component\Config\Drivers\AbstractDriver;
+use Unity\Component\Config\Drivers\Driver;
 use Unity\Component\Config\Drivers\File\Exceptions\ConfigFileNotFoundException;
 
-class ArrayFile extends AbstractDriver
+class ArrayFile extends Driver
 {
     protected $ext = 'php';
 

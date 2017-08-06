@@ -1,13 +1,13 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Unity\Component\Config\Drivers\AbstractDriver;
+use Unity\Component\Config\Drivers\Driver;
 use Unity\Component\Config\Drivers\File\Exceptions\InvalidConfigStringException;
 
 class DriverTest extends TestCase
 {
     /**
-     * @covers AbstractDriver::validate()
+     * @covers Driver::validate()
      *
      * Tests if validate throws InvalidConfigStringException
      * with an empty notation
@@ -21,13 +21,13 @@ class DriverTest extends TestCase
                 \nWhere \"database\" is the root entry and \"user\" is the key."
         );
 
-        $driver = new AbstractDriverImplementation;
+        $driver = new DriverImplementation;
 
         $driver->validate('');
     }
 
     /**
-     * @covers AbstractDriver::validate()
+     * @covers Driver::validate()
      *
      * Tests if validate throws InvalidConfigStringException
      * with only the root in the notation
@@ -41,13 +41,13 @@ class DriverTest extends TestCase
                 \nWhere \"database\" is the root entry and \"user\" is the key."
         );
 
-        $driver = new AbstractDriverImplementation;
+        $driver = new DriverImplementation;
 
         $driver->validate('database');
     }
 
     /**
-     * @covers AbstractDriver::validate()
+     * @covers Driver::validate()
      *
      * Tests if validate does nothing with valid notations
      *
@@ -56,20 +56,20 @@ class DriverTest extends TestCase
      */
     function testValidateWithValidNotation()
     {
-        $driver = new AbstractDriverImplementation;
+        $driver = new DriverImplementation;
 
         $this->assertNull($driver->validate('database.user'));
     }
 
     /**
-     * @covers AbstractDriver::denote()
+     * @covers Driver::denote()
      *
      * Tests if denote returns the $filename
      * and the $keys[0] with a root.key notation
      */
     function testDenoteWithOneKey()
     {
-        $driver = new AbstractDriverImplementation;
+        $driver = new DriverImplementation;
 
         $driver->denote('root.toor', $filename, $keys);
 
@@ -79,14 +79,14 @@ class DriverTest extends TestCase
     }
 
     /**
-     * @covers AbstractDriver::denote()
+     * @covers Driver::denote()
      *
      * Tests if denote returns the $filename
      * and the $keys with a root.key1.key2... notation
      */
     function testDenoteWithMoreThenOneKey()
     {
-        $driver = new AbstractDriverImplementation;
+        $driver = new DriverImplementation;
 
         $driver->denote('root.toor.troo', $filename, $keys);
 
@@ -97,7 +97,7 @@ class DriverTest extends TestCase
     }
 
     /**
-     * @covers AbstractDriver::getConfig()
+     * @covers Driver::getConfig()
      *
      * Tests if getConfig() returns the
      * config value that references the
@@ -128,7 +128,7 @@ class DriverTest extends TestCase
             'user'
         ];
 
-        $driver = new AbstractDriverImplementation;
+        $driver = new DriverImplementation;
 
         $this->assertEquals(
             'root',
@@ -137,7 +137,7 @@ class DriverTest extends TestCase
     }
 
     /**
-     * @covers AbstractDriver::getConfig()
+     * @covers Driver::getConfig()
      *
      * Tests if getConfig() returns the
      * config value that references the
@@ -171,7 +171,7 @@ class DriverTest extends TestCase
             'e200'
         ];
 
-        $driver = new AbstractDriverImplementation;
+        $driver = new DriverImplementation;
 
         $this->assertEquals(
             'Eleandro Duzentos',
@@ -180,7 +180,7 @@ class DriverTest extends TestCase
     }
 }
 
-class AbstractDriverImplementation extends AbstractDriver
+class DriverImplementation extends Driver
 {
     /**
      * Gets the configuration

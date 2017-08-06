@@ -4,7 +4,7 @@ namespace Unity\Component\Config\Drivers;
 
 use Unity\Component\Config\Drivers\File\Exceptions\InvalidConfigStringException;
 
-abstract class AbstractDriver implements DriverInterface
+abstract class Driver implements DriverInterface
 {
     /**
      * Denotes the config string dot notation

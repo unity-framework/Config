@@ -2,7 +2,7 @@
 
 namespace Unity\Component\Config\Drivers;
 
-use Unity\Component\Config\Drivers\ArrayFile\Exceptions\InvalidConfigStringException;
+use Unity\Component\Config\Drivers\File\Exceptions\InvalidConfigStringException;
 
 abstract class Driver implements DriverInterface
 {

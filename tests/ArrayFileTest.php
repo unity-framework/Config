@@ -1,8 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Unity\Component\Config\Drivers\ArrayFile\ArrayFile;
-use Unity\Component\Config\Drivers\ArrayFile\Exceptions\ConfigFileNotFoundException;
+use Unity\Component\Config\Drivers\File\ArrayFile;
+use Unity\Component\Config\Drivers\File\Exceptions\ConfigFileNotFoundException;
 
 class ArrayFileTest extends TestCase
 {

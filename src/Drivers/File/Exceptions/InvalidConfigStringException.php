@@ -1,6 +1,6 @@
 <?php
 
-namespace Unity\Component\Config\Drivers\ArrayFile\Exceptions;
+namespace Unity\Component\Config\Drivers\File\Exceptions;
 
 use Exception;
 use Throwable;

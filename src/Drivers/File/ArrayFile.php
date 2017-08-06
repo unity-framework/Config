@@ -1,9 +1,9 @@
 <?php
 
-namespace Unity\Component\Config\Drivers\ArrayFile;
+namespace Unity\Component\Config\Drivers\File;
 
 use Unity\Component\Config\Drivers\Driver;
-use Unity\Component\Config\Drivers\ArrayFile\Exceptions\ConfigFileNotFoundException;
+use Unity\Component\Config\Drivers\File\Exceptions\ConfigFileNotFoundException;
 
 class ArrayFile extends Driver
 {

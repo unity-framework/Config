@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Drivers\Driver;
-use Unity\Component\Config\Drivers\ArrayFile\Exceptions\InvalidConfigStringException;
+use Unity\Component\Config\Drivers\File\Exceptions\InvalidConfigStringException;
 
 class DriverTest extends TestCase
 {

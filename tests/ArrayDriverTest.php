@@ -43,7 +43,7 @@ class ArrayDriverTest extends TestCase
      */
     private function getSourceForTest()
     {
-        return __DIR__ . '/arrays/';
+        return __DIR__ . '/array/';
     }
 
     /**

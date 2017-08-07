@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Drivers\File\ArrayDriver;
-use Unity\Component\Config\Drivers\File\Exceptions\ConfigFileNotFoundException;
+use Unity\Component\Config\Drivers\File\Exceptions\ConfigNotFoundException;
 
 class ArrayDriverTest extends TestCase
 {
@@ -21,73 +21,6 @@ class ArrayDriverTest extends TestCase
 
         /** php is the default extension */
         $this->assertEquals('php', $driver->getExt());
-    }
-
-    /**
-     * @covers ArrayDriver::requireArrayFile()
-     *
-     * Should require and return the array
-     * with configuration values
-     */
-    function testRequireArrayFile()
-    {
-        $driver = $this->getArrayFileDriverForTest();
-        $source = $this->getSourceForTest();
-
-        $configArray = $driver->requireArrayFile('database', $source);
-
-        $this->assertInternalType('array', $configArray);
-        $this->assertCount(6, $configArray);
-    }
-
-    /**
-     * @covers ArrayDriver::getConfigArray()
-     *
-     * Should return the configuration array
-     */
-    function testGetConfigArray()
-    {
-        $driver = $this->getArrayFileDriverForTest();
-        $source = $this->getSourceForTest();
-
-        $configArray = $driver->getConfigArray('database', $source);
-
-        $this->assertInternalType('array', $configArray);
-        $this->assertCount(6, $configArray);
-    }
-
-    /**
-     * @covers ArrayDriver::getConfigArray()
-     *
-     * Should return the configuration array
-     */
-    function testGetConfigArrayWithSourcesArray()
-    {
-        $driver = $this->getArrayFileDriverForTest();
-        $sources = $this->getSourcesForTest();
-
-        $configArray = $driver->getConfigArray('database', $sources);
-
-        $this->assertInternalType('array', $configArray);
-        $this->assertCount(6, $configArray);
-    }
-
-    /**
-     * @covers ArrayDriver::get()
-     *
-     * Tests if get() throws ConfigFileNotFoundException
-     * with non existing configurations
-     *
-     * In this case get() is searching for
-     * NotExistingPath/foo.php
-     */
-    function testGetNonExistingConfig()
-    {
-        $this->expectException(ConfigFileNotFoundException::class);
-
-        $driver = $this->getArrayFileDriverForTest();
-
-        $driver->get('foo.bar', 'NotExistingPath/');
     }
 
     /**
@@ -111,20 +44,6 @@ class ArrayDriverTest extends TestCase
     private function getSourceForTest()
     {
         return __DIR__ . '/arrays/';
-    }
-
-    /**
-     * Sources must end with a slash "/"
-     *
-     * @return array
-     */
-    private function getSourcesForTest()
-    {
-        return [
-            __DIR__ . '/arrays/',
-            __DIR__ . '/files/',
-            __DIR__ . '/archives/'
-        ];
     }
 
     /**

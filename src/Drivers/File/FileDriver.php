@@ -9,17 +9,7 @@ use Unity\Component\Config\Drivers\File\Exceptions\UndefinedExtensionException;
 abstract class FileDriver extends Driver
 {
     /** @var string */
-    protected $ext = '';
-
-    /**
-     * FileDriver constructor.
-     *
-     * @param $ext
-     */
-    function __construct($ext)
-    {
-        $this->setExt($ext);
-    }
+    protected $ext;
 
     /**
      * Sets the extension of config files
@@ -39,9 +29,6 @@ abstract class FileDriver extends Driver
      */
     function getExt()
     {
-        if(!$this->hasExt())
-            throw new UndefinedExtensionException("Trying to get an undefined extension. Set an extension before gets one.");
-
         return $this->ext;
     }
 

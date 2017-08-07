@@ -45,7 +45,7 @@ class JsonDriver extends FileDriver
         if($configArray)
             return $configArray;
 
-        throw new ConfigFileNotFoundException("Cannot find configuration file \"{$this->getFileNameWithExt($arrayFile)}\" in any specified sources");
+        throw new ConfigFileNotFoundException("Cannot find configuration file \"{$this->getFileNameWithExt($jsonFile)}\" in any specified sources");
     }
 
     function getJsonAsArray($jsonFile, $source)

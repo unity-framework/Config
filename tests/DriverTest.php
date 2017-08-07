@@ -21,7 +21,7 @@ class DriverTest extends TestCase
                 \nWhere \"database\" is the root entry and \"user\" is the key."
         );
 
-        $driver = new DriverImplementation;
+        $driver = new DriverImplementor;
 
         $driver->validate('');
     }
@@ -41,7 +41,7 @@ class DriverTest extends TestCase
                 \nWhere \"database\" is the root entry and \"user\" is the key."
         );
 
-        $driver = new DriverImplementation;
+        $driver = new DriverImplementor;
 
         $driver->validate('database');
     }
@@ -56,7 +56,7 @@ class DriverTest extends TestCase
      */
     function testValidateWithValidNotation()
     {
-        $driver = new DriverImplementation;
+        $driver = new DriverImplementor;
 
         $this->assertNull($driver->validate('database.user'));
     }
@@ -69,7 +69,7 @@ class DriverTest extends TestCase
      */
     function testDenoteWithOneKey()
     {
-        $driver = new DriverImplementation;
+        $driver = new DriverImplementor;
 
         $driver->denote('root.toor', $filename, $keys);
 
@@ -86,7 +86,7 @@ class DriverTest extends TestCase
      */
     function testDenoteWithMoreThenOneKey()
     {
-        $driver = new DriverImplementation;
+        $driver = new DriverImplementor;
 
         $driver->denote('root.toor.troo', $filename, $keys);
 
@@ -97,7 +97,24 @@ class DriverTest extends TestCase
     }
 
     /**
-     * @covers Driver::getConfig()
+     * @covers Driver::search()
+     *
+     * First assertion should return 'root'
+     * Second assertion should return `null`
+     */
+    function testSearch()
+    {
+        $driver = new DriverImplementor;
+
+        $config = $driver->search('user', ['user' => 'root']);
+        $this->assertEquals('root', $config);
+
+        $config = $driver->search(null, null);
+        $this->assertNull($config);
+    }
+
+    /**
+     * @covers Driver::getConfigValue()
      *
      * Tests if getConfig() returns the
      * config value that references the
@@ -128,16 +145,16 @@ class DriverTest extends TestCase
             'user'
         ];
 
-        $driver = new DriverImplementation;
+        $driver = new DriverImplementor;
 
         $this->assertEquals(
             'root',
-            $driver->getConfig($configArray, $searchKeys)
+            $driver->getConfigValue($configArray, $searchKeys)
         );
     }
 
     /**
-     * @covers Driver::getConfig()
+     * @covers Driver::getConfigValue()
      *
      * Tests if getConfig() returns the
      * config value that references the
@@ -171,16 +188,16 @@ class DriverTest extends TestCase
             'e200'
         ];
 
-        $driver = new DriverImplementation;
+        $driver = new DriverImplementor;
 
         $this->assertEquals(
             'Eleandro Duzentos',
-            $driver->getConfig($configArray, $searchKeys)
+            $driver->getConfigValue($configArray, $searchKeys)
         );
     }
 }
 
-class DriverImplementation extends Driver
+class DriverImplementor extends Driver
 {
     /**
      * Gets the configuration

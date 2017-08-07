@@ -3,13 +3,15 @@
 namespace Unity\Component\Config\Drivers\File;
 
 use Unity\Component\Config\Drivers\Driver;
-use Unity\Component\Config\Drivers\File\Exceptions\ConfigFileNotFoundException;
-use Unity\Component\Config\Drivers\File\Exceptions\UndefinedExtensionException;
+use Unity\Component\Config\Drivers\File\Exceptions\ConfigNotFoundException;
 
-abstract class FileDriver extends Driver
+abstract class FileDriver extends Driver implements FileDriverInterface
 {
     /** @var string */
     protected $ext;
+
+    /** @var string  */
+    private $resolverMethod = 'resolve';
 
     /**
      * Sets the extension of config files
@@ -25,7 +27,6 @@ abstract class FileDriver extends Driver
      * Gets the extension of config files
      *
      * @return string
-     * @throws UndefinedExtensionException
      */
     function getExt()
     {
@@ -40,6 +41,120 @@ abstract class FileDriver extends Driver
     function hasExt()
     {
         return !empty($this->ext);
+    }
+
+    /**
+     * Gets the configuration
+     *
+     * @param string $config The required configuration
+     * @param $source
+     * @return mixed
+     * @throws ConfigNotFoundException
+     */
+    function get($config, $source)
+    {
+        /**
+         * Gets the `$filename` and the `$searchKeys`
+         * from the `$config` notation
+         */
+        $this->denote($config, $filename, $searchKeys);
+
+        /**
+         * Gets the configuration array calling
+         * the `Implementor::resolve()` method
+         */
+        $configArray = $this->getConfigArray($filename, $source);
+
+        /**
+         * Returns the configuration value that
+         * matches the `$config` notation
+         */
+        $config = $this->getConfigValue($configArray, $searchKeys);
+
+        /**
+         * If $config is empty, that means no
+         * configuration was found
+         */
+        if(empty($config))
+            throw new ConfigNotFoundException("Cannot find configuration \"$config\"");
+
+        return $config;
+    }
+
+    /**
+     * Gets the configuration array containing
+     * in the file
+     *
+     * @param $filename
+     * @param $source
+     * @return mixed
+     * @throws ConfigNotFoundException
+     */
+    function getConfigArray($filename, $source)
+    {
+        $configArray = null;
+
+        /**
+         * If `$source is an array, search
+         * the `$filename` in each `$source`
+         */
+        if(is_array($source))
+            foreach ($source as $src) {
+                $configArray = $this->callResolver($filename, $src);
+
+                /** If was found a configuration, stop searching */
+                if($configArray)
+                    break;
+            }
+        else
+            $configArray = $this->callResolver($filename, $source);
+
+        /** If was found a configuration, return it */
+        if($configArray)
+            return $configArray;
+    }
+
+    /**
+     * Calls the `Implementor::resolve()` method
+     *
+     * @param $filename
+     * @param $src
+     * @return mixed
+     */
+    function callResolver($filename, $src)
+    {
+        $file = $this->getFile($filename, $src);
+
+        return call_user_func_array(
+            [
+                $this,
+                $this->getResolverMethod()
+            ],
+            [$file]
+        );
+    }
+
+    /**
+     * Returns the `Implementor` resolver method name
+     *
+     * @return string
+     */
+    function getResolverMethod()
+    {
+        return $this->resolverMethod;
+    }
+
+    /**
+     * Returns the full path to access the
+     * configuration file based in a `$source`
+     *
+     * @param $filename
+     * @param $source
+     * @return string
+     */
+    function getFile($filename, $source)
+    {
+        return $source . $this->getFilenameWithExt($filename);
     }
 
     /**
@@ -62,18 +177,5 @@ abstract class FileDriver extends Driver
     function getFilenameWithExt($filename)
     {
         return $filename . '.' . $this->getExt();
-    }
-
-    /**
-     * Returns the full path to access the
-     * configuration file based in the $source
-     *
-     * @param $filename
-     * @param $source
-     * @return string
-     */
-    function getFullPath($filename, $source)
-    {
-        return $source . $this->getFilenameWithExt($filename);
     }
 }

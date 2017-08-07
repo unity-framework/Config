@@ -68,7 +68,7 @@ abstract class Driver implements DriverInterface
      *
      * @return null|mixed
      */
-    function getConfig($configArray, $searchKeys)
+    function getConfigValue($configArray, $searchKeys)
     {
         $config = null;
 
@@ -87,11 +87,24 @@ abstract class Driver implements DriverInterface
         for($i = 0; $i < count($searchKeys); $i++)
         {
             if($i == 0)
-                $config = $configArray[$searchKeys[$i]];
+                $config = $this->search($searchKeys[$i], $configArray);
             else
-                $config = $config[$searchKeys[$i]];
+                $config = $this->search($searchKeys[$i], $config);
         }
 
         return $config;
+    }
+
+    /**
+     * Search for a key on the `$configArray`
+     *
+     * @param $searchKey
+     * @param $configArray
+     * @return mixed
+     */
+    function search($searchKey, $configArray)
+    {
+        if(isset($configArray[$searchKey]))
+            return $configArray[$searchKey];
     }
 }

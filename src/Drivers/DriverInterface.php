@@ -8,8 +8,8 @@ interface DriverInterface
      * Gets the configuration
      *
      * @param mixed $config The required configuration
-     * @param $sources
+     * @param $source
      * @return mixed
      */
-    function get($config, $sources);
+    function get($config, $source);
 }

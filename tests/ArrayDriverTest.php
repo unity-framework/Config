@@ -7,15 +7,15 @@ use Unity\Component\Config\Drivers\File\Exceptions\ConfigNotFoundException;
 class ArrayDriverTest extends TestCase
 {
     /**
-     * @covers ArrayDriver::setExt()
      * @covers ArrayDriver::getExt()
      * @covers ArrayDriver::hasExt()
      *
-     * Should set and get the config file extension
+     * `hasExt()`should return true
+     * `getExt()` should return the default extension: `php`
      */
     function testPhpIsDefaultExt()
     {
-        $driver = $this->getArrayFileDriverForTest();
+        $driver = new ArrayDriver;
 
         $this->assertTrue($driver->hasExt());
 
@@ -30,7 +30,7 @@ class ArrayDriverTest extends TestCase
      */
     function testGet()
     {
-        $drive = $this->getArrayFileDriverForTest();
+        $drive = new ArrayDriver;
         $source = $this->getSourceForTest();
 
         $this->assertEquals('root', $drive->get('database.user', $source));
@@ -44,14 +44,5 @@ class ArrayDriverTest extends TestCase
     private function getSourceForTest()
     {
         return __DIR__ . '/array/';
-    }
-
-    /**
-     * Returns a new instance of ArrayDriver
-     * @return ArrayDriver
-     */
-    private function getArrayFileDriverForTest()
-    {
-        return new ArrayDriver;
     }
 }

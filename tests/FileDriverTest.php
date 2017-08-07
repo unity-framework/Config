@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use Unity\Component\Config\Drivers\File\Exceptions\ConfigNotFoundException;
 use Unity\Component\Config\Drivers\File\FileDriver;
 
 class FileDriverTest extends TestCase
@@ -19,7 +20,7 @@ class FileDriverTest extends TestCase
          * set, so we can test if FileDriver::has()
          * is working
          */
-        $driver = new FileDriverImplementation;
+        $driver = new Implementor;
 
         /** Should return the parent::__constructor() extension */
         $this->assertEquals('inc', $driver->getExt());
@@ -55,7 +56,7 @@ class FileDriverTest extends TestCase
      */
     function testSetExtWithDot()
     {
-        $driver = $this->getFileDriverImplementationForTest();
+        $driver = $this->getImplementorForTest();
 
         $driver->setExt('.php');
 
@@ -65,57 +66,134 @@ class FileDriverTest extends TestCase
     /**
      * @covers FileDriver::getFilenameWithExt()
      *
-     * Should return $filename concatenation
-     * with the extension
+     * `getFilenameWithExt()` should return $filename
+     * concatenation with the extension
      */
     function testGetFilenameWithExtension()
     {
-        $driver = $this->getFileDriverImplementationForTest();
+        $driver = $this->getImplementorForTest();
 
-        /** Should return the filename with extension */
         $filename = $driver->getFilenameWithExt('config');
         $this->assertEquals('config.php', $filename);
     }
 
     /**
-     * @covers FileDriver::getFullPath()
+     * @covers FileDriver::getFile()
      *
-     * Should return the $filename concatenation
-     * with $source
+     * `getFile()` should return the `$filename` concatenation
+     * with `$source`
      */
-    function testGetFullPath()
+    function testGetFile()
     {
-        $driver = $this->getFileDriverImplementationForTest();
+        $driver = $this->getImplementorForTest();
 
-        /**
-         * Should return the $source concatenated
-         * with $filename and the default extension
-         */
-        $fullPath = $driver->getFullPath('config', '/');
-        $this->assertEquals('/' . 'config.php', $fullPath);
+        $file = $driver->getFile('config', '/');
+        $this->assertEquals('/' . 'config.php', $file);
     }
 
     /**
      * @covers FileDriver::fileExists()
      *
-     * Should return if a file exists
+     * `fileExists()` should return true if a file exists
      */
     function testFileExists()
     {
-        $driver = $this->getFileDriverImplementationForTest();
+        $driver = $this->getImplementorForTest();
         $source = $this->getSourceForTest();
 
         /**
-         * Should return false for non existent files
+         * Should return false 'cause file `null`
+         * does'nt exists
          */
-        $exists = $driver->fileExists('');
+        $exists = $driver->fileExists(null);
         $this->assertEquals(false, $exists);
 
         /**
-         * Should return true for existent files
+         * Should return true 'cause `database` file exists
          */
         $exists = $driver->fileExists($source . '/' . 'database.php');
         $this->assertEquals(true, $exists);
+    }
+
+    /**
+     * @covers FileDriver::callResolver()
+     *
+     * `callResolver()` should return the
+     * `Implementor::resolve() return value
+     */
+    function testCallResolver()
+    {
+        $driver = $this->getImplementorForTest();
+        $source = $this->getSourceForTest();
+
+        /**
+         * Note: We don't provide a `$filename`,
+         * since our resolver don't use the `$filename`
+         * to returns the configuration array
+         */
+        $configArray = $driver->callResolver(null, $source);
+
+        $this->assertInternalType('array', $configArray);
+        $this->assertCount(6, $configArray);
+    }
+
+    /**
+     * @covers FileDriver::getResolverMethod()
+     *
+     * `getResolverMethod()` should return the
+     * resolver method name implemented by the
+     * `Implementor`
+     */
+    function testGetResolverMethod()
+    {
+        $driver = $this->getImplementorForTest();
+
+        $this->assertEquals('resolve', $driver->getResolverMethod());
+    }
+
+    /**
+     * @covers FileDriver::getConfigArray()
+     *
+     * Should return the configuration array
+     */
+    function testGetConfigArray()
+    {
+        $driver = $this->getImplementorForTest();
+        $source = $this->getSourceForTest();
+
+        $configArray = $driver->getConfigArray('database', $source);
+
+        $this->assertInternalType('array', $configArray);
+        $this->assertCount(6, $configArray);
+    }
+
+    /**
+     * @covers FileDriver::get()
+     *
+     * `get()` should return 'root'
+     */
+    function testGet()
+    {
+        $driver = $this->getImplementorForTest();
+        $source = $this->getSourceForTest();
+
+        $config = $driver->get('database.user', $source);
+        $this->assertEquals('root', $config);
+    }
+
+    /**
+     * @covers FileDriver::get()
+     *
+     * Tests if get() throws ConfigFileNotFoundException
+     * with non existing configurations
+     */
+    function testGetNonExistingConfig()
+    {
+        $this->expectException(ConfigNotFoundException::class);
+
+        $driver = $this->getImplementorForTest();
+
+        $driver->get('foo.bar', null);
     }
 
     /**
@@ -128,13 +206,16 @@ class FileDriverTest extends TestCase
         return __DIR__ . '/arrays/';
     }
 
-    private function getFileDriverImplementationForTest()
+    /**
+     * @return Implementor
+     */
+    private function getImplementorForTest()
     {
         static $driver;
 
         if(is_null($driver))
         {
-            $driver = new FileDriverImplementation;
+            $driver = new Implementor;
 
             $driver->setExt('php');
         }
@@ -143,15 +224,28 @@ class FileDriverTest extends TestCase
     }
 }
 
-class FileDriverImplementation extends FileDriver
+class Implementor extends FileDriver
 {
     function __construct()
     {
-        parent::__construct('inc');
+        $this->setExt('inc');
     }
 
-    function get($config, $source)
+    function resolve($file)
     {
+        /**
+         * We must return an array containing data
+         * or `Implementor::getConfigArray()` will
+         * throw a ConfigFileNotFoundException
+         */
+        return [
+            'user' => 'root',
+            'psw' => '1234',
+            'db' => 'example',
+            'host' => '127.0.0.1',
 
+            'cache_queries' => true,
+            'timeout' => 1000
+        ];
     }
 }

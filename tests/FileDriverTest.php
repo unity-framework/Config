@@ -168,42 +168,13 @@ class FileDriverTest extends TestCase
     }
 
     /**
-     * @covers FileDriver::get()
-     *
-     * `get()` should return 'root'
-     */
-    function testGet()
-    {
-        $driver = $this->getImplementorForTest();
-        $source = $this->getSourceForTest();
-
-        $config = $driver->get('database.user', $source);
-        $this->assertEquals('root', $config);
-    }
-
-    /**
-     * @covers FileDriver::get()
-     *
-     * Tests if get() throws ConfigFileNotFoundException
-     * with non existing configurations
-     */
-    function testGetNonExistingConfig()
-    {
-        $this->expectException(ConfigNotFoundException::class);
-
-        $driver = $this->getImplementorForTest();
-
-        $driver->get('foo.bar', null);
-    }
-
-    /**
      * Sources must end with a slash "/"
      *
      * @return string
      */
     private function getSourceForTest()
     {
-        return __DIR__ . '/arrays/';
+        return __DIR__ . '/array/';
     }
 
     /**

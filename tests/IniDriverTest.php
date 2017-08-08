@@ -1,36 +1,35 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Unity\Component\Config\Drivers\File\ArrayDriver;
-use Unity\Component\Config\Drivers\File\Exceptions\ConfigNotFoundException;
+use Unity\Component\Config\Drivers\File\IniDriver;
 
-class ArrayDriverTest extends TestCase
+class IniDriverTest extends TestCase
 {
     /**
-     * @covers ArrayDriver::getExt()
-     * @covers ArrayDriver::hasExt()
+     * @covers IniDriver::getExt()
+     * @covers IniDriver::hasExt()
      *
      * `hasExt()`should return true
-     * `getExt()` should return the default extension: `php`
+     * `getExt()` should return the default extension: `ini`
      */
     function testPhpIsDefaultExt()
     {
-        $driver = new ArrayDriver;
+        $driver = new IniDriver;
 
         $this->assertTrue($driver->hasExt());
 
-        /** php is the default extension */
-        $this->assertEquals('php', $driver->getExt());
+        /** ini is the default extension */
+        $this->assertEquals('ini', $driver->getExt());
     }
 
     /**
-     * @covers ArrayDriver::get()
+     * @covers IniDriver::get()
      *
      * Should return the value of database.user = 'root'
      */
     function testGet()
     {
-        $drive = new ArrayDriver;
+        $drive = new IniDriver;
         $source = $this->getSourceForTest();
 
         $this->assertEquals('root', $drive->get('database.user', $source));
@@ -43,6 +42,6 @@ class ArrayDriverTest extends TestCase
      */
     private function getSourceForTest()
     {
-        return __DIR__ . '/array/';
+        return __DIR__ . '/ini/';
     }
 }

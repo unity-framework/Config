@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Drivers\Driver;
+use Unity\Component\Config\Drivers\File\Exceptions\ConfigNotFoundException;
 use Unity\Component\Config\Drivers\File\Exceptions\InvalidConfigStringException;
 
 class DriverTest extends TestCase
@@ -195,19 +196,62 @@ class DriverTest extends TestCase
             $driver->getConfigValue($configArray, $searchKeys)
         );
     }
+
+    /**
+     * @covers Driver::get()
+     *
+     * `get()` should return 'root'
+     */
+    function testGet()
+    {
+        $driver = new DriverImplementor;
+        $source = $this->getSourceForTest();
+
+        $config = $driver->get('database.user', $source);
+        $this->assertEquals('root', $config);
+    }
+
+    /**
+     * @covers Driver::get()
+     *
+     * Tests if get() throws ConfigFileNotFoundException
+     * with non existing configurations
+     */
+    function testGetNonExistingConfig()
+    {
+        $this->expectException(ConfigNotFoundException::class);
+
+        $driver =  new DriverImplementor;
+
+        $driver->get('foo.bar', null);
+    }
+
+    /**
+     * Sources must end with a slash "/"
+     *
+     * @return string
+     */
+    private function getSourceForTest()
+    {
+        return __DIR__ . '/array/';
+    }
 }
 
 class DriverImplementor extends Driver
 {
     /**
-     * Gets the configuration
-     *
-     * @param mixed $config The required configuration
-     * @param $sources
-     * @return mixed
+     * Returns the configuration array for test purposes
      */
-    function get($config, $sources)
+    function getConfigArray($root, $source)
     {
-        // TODO: Implement get() method.
+        return [
+            'user' => 'root',
+            'psw' => '1234',
+            'db' => 'example',
+            'host' => '127.0.0.1',
+
+            'cache_queries' => true,
+            'timeout' => 1000
+        ];
     }
 }

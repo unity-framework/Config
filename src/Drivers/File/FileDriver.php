@@ -3,7 +3,6 @@
 namespace Unity\Component\Config\Drivers\File;
 
 use Unity\Component\Config\Drivers\Driver;
-use Unity\Component\Config\Drivers\File\Exceptions\ConfigNotFoundException;
 
 abstract class FileDriver extends Driver implements FileDriverInterface
 {
@@ -41,44 +40,6 @@ abstract class FileDriver extends Driver implements FileDriverInterface
     function hasExt()
     {
         return !empty($this->ext);
-    }
-
-    /**
-     * Gets the configuration
-     *
-     * @param string $config The required configuration
-     * @param $source
-     * @return mixed
-     * @throws ConfigNotFoundException
-     */
-    function get($config, $source)
-    {
-        /**
-         * Gets the `$filename` and the `$searchKeys`
-         * from the `$config` notation
-         */
-        $this->denote($config, $filename, $searchKeys);
-
-        /**
-         * Gets the configuration array calling
-         * the `Implementor::resolve()` method
-         */
-        $configArray = $this->getConfigArray($filename, $source);
-
-        /**
-         * Returns the configuration value that
-         * matches the `$config` notation
-         */
-        $config = $this->getConfigValue($configArray, $searchKeys);
-
-        /**
-         * If $config is empty, that means no
-         * configuration was found
-         */
-        if(empty($config))
-            throw new ConfigNotFoundException("Cannot find configuration \"$config\"");
-
-        return $config;
     }
 
     /**

@@ -2,10 +2,49 @@
 
 namespace Unity\Component\Config\Drivers;
 
+use Unity\Component\Config\Drivers\File\Exceptions\ConfigNotFoundException;
 use Unity\Component\Config\Drivers\File\Exceptions\InvalidConfigStringException;
 
 abstract class Driver implements DriverInterface
 {
+    /**
+     * Gets the configuration
+     *
+     * @param string $config The required configuration
+     * @param $source
+     * @return mixed
+     * @throws ConfigNotFoundException
+     */
+    function get($config, $source)
+    {
+        /**
+         * Gets the `$root` and the `$searchKeys`
+         * from the `$config` notation
+         */
+        $this->denote($config, $root, $searchKeys);
+
+        /**
+         * Gets the configuration array calling
+         * the `Implementor::resolve()` method
+         */
+        $configArray = $this->getConfigArray($root, $source);
+
+        /**
+         * Returns the configuration value that
+         * matches the `$config` notation
+         */
+        $config = $this->getConfigValue($configArray, $searchKeys);
+
+        /**
+         * If $config is empty, that means no
+         * configuration was found
+         */
+        if(empty($config))
+            throw new ConfigNotFoundException("Cannot find configuration \"$config\"");
+
+        return $config;
+    }
+
     /**
      * Denotes the config string using dot notation
      *

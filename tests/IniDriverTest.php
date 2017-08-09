@@ -12,7 +12,7 @@ class IniDriverTest extends TestCase
      * `hasExt()`should return true
      * `getExt()` should return the default extension: `ini`
      */
-    function testPhpIsDefaultExt()
+    function testIniIsDefaultExt()
     {
         $driver = new IniDriver;
 

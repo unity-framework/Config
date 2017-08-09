@@ -33,16 +33,16 @@ abstract class Driver implements DriverInterface
          * Returns the configuration value that
          * matches the `$config` notation
          */
-        $config = $this->getConfigValue($configArray, $searchKeys);
+        $configValue = $this->getConfigValue($configArray, $searchKeys);
 
         /**
          * If $config is empty, that means no
          * configuration was found
          */
-        if(empty($config))
+        if(empty($configValue))
             throw new ConfigNotFoundException("Cannot find configuration \"$config\"");
 
-        return $config;
+        return $configValue;
     }
 
     /**

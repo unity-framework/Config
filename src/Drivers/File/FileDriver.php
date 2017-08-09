@@ -3,6 +3,7 @@
 namespace Unity\Component\Config\Drivers\File;
 
 use Unity\Component\Config\Drivers\Driver;
+use Unity\Component\Config\Drivers\File\Exceptions\ConfigNotFoundException;
 
 abstract class FileDriver extends Driver implements FileDriverInterface
 {

@@ -22,30 +22,30 @@ return [
     host => 'localhost'
 ];
 ```
-and you want to access these configurations. First you must require the composer's **vendor/autoload.php** file, then setup the configuration source (in this case is **configurations** folder) and get an instance of the **Config** class trought the **ConfigFactory**:
+and you want to access these configurations. First you must require the composer's **vendor/autoload.php** file, then <a href="#">setup the configuration source</a> (in our case is the **configurations** folder) and get an instance of the **Config** class thought the **<a href="https://github.com/unity-framework/Config/docs/ConfigBuilder/index.md">ConfigBuilder</a>**:
 
 ```php
 <?php
 
-require "vendor/autoload.php"
+require "vendor/autoload.php";
 
-ConfigFactory::setSource('configurations/');
-
-$config = ConfigFactory::make();
+$config = (new ConfigBuilder)
+            ->setSource('configurations/')
+            ->make();
 ```
 Now, to access a configurations just:
 
 ```php
 $config->get('database.user');
 ```
-Outputs: `root`
+Outputs: `'root'`
 
 Easy?
 
 ## How it works
 This library provides a way to access your configurations using **dot notation**.
 
-**Dot notation** is a way of representing properties splited by a dot, for example: `database.user`, where the first property represents the **root** property that will be used to access the configuration source and the remaining properties are the keys that give us the way to access a configuration value.
+**Dot notation** is a way of representing properties splited by a dot, for example: `database.user`, where the first property represents the **root** property that will be used to access the configuration source and the remaining properties are the **keys** that give us the way to access a configuration value.
 
 When you say:
 
@@ -55,4 +55,4 @@ $config->get('database.user');
 
 you're really saying:
 
-> Config, get the user value contaning in the database.php file for me.
+> Config, get the **user** value containing in the **database.php** file for me.

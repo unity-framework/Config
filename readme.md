@@ -16,10 +16,10 @@ Suppose you have a **configurations/database.php** file in your project folder c
 <?php
 
 return [
-    user => 'root',
-    psw => '****',
-    db => 'test',
-    host => 'localhost'
+    'user' => 'root',
+    'psw' => '****',
+    'db' => 'test',
+    'host' => 'localhost'
 ];
 ```
 and you want to access these configurations. First you must require the composer's **vendor/autoload.php** file, then <a href="#">setup the configuration source</a> (in our case is the **configurations** folder) and get an instance of the **Config** class thought the **<a href="https://github.com/unity-framework/Config/docs/ConfigBuilder/index.md">ConfigBuilder</a>**:

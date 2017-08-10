@@ -2,8 +2,8 @@
 
 namespace Unity\Component\Config\Drivers;
 
-use Unity\Component\Config\Drivers\File\Exceptions\ConfigNotFoundException;
-use Unity\Component\Config\Drivers\File\Exceptions\InvalidConfigStringException;
+use Unity\Component\Config\Exceptions\ConfigNotFoundException;
+use Unity\Component\Config\Exceptions\InvalidConfigStringException;
 
 abstract class Driver implements DriverInterface
 {

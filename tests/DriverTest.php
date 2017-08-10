@@ -2,8 +2,8 @@
 
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Drivers\Driver;
-use Unity\Component\Config\Drivers\File\Exceptions\ConfigNotFoundException;
-use Unity\Component\Config\Drivers\File\Exceptions\InvalidConfigStringException;
+use Unity\Component\Config\Exceptions\ConfigNotFoundException;
+use Unity\Component\Config\Exceptions\InvalidConfigStringException;
 
 class DriverTest extends TestCase
 {
@@ -227,13 +227,11 @@ class DriverTest extends TestCase
     }
 
     /**
-     * Sources must end with a slash "/"
-     *
      * @return string
      */
     private function getSourceForTest()
     {
-        return __DIR__ . '/array/';
+        return __DIR__ . '/array';
     }
 }
 

@@ -168,13 +168,11 @@ class FileDriverTest extends TestCase
     }
 
     /**
-     * Sources must end with a slash "/"
-     *
      * @return string
      */
     private function getSourceForTest()
     {
-        return __DIR__ . '/array/';
+        return __DIR__ . '/array';
     }
 
     /**

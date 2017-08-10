@@ -35,12 +35,10 @@ class JsonDriverTest extends TestCase
     }
 
     /**
-     * Sources must end with a slash "/"
-     *
      * @return string
      */
     private function getSourceForTest()
     {
-        return __DIR__ . '/json/';
+        return __DIR__ . '/json';
     }
 }

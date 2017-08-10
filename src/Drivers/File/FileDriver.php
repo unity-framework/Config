@@ -116,7 +116,9 @@ abstract class FileDriver extends Driver implements FileDriverInterface
      */
     function getFile($filename, $source)
     {
-        return $source . $this->getFilenameWithExt($filename);
+        $source = rtrim($source, '/');
+
+        return $source . '/' . $this->getFilenameWithExt($filename);
     }
 
     /**

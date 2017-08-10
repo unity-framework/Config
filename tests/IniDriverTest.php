@@ -36,12 +36,10 @@ class IniDriverTest extends TestCase
     }
 
     /**
-     * Sources must end with a slash "/"
-     *
      * @return string
      */
     private function getSourceForTest()
     {
-        return __DIR__ . '/ini/';
+        return __DIR__ . '/ini';
     }
 }

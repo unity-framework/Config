@@ -1,13 +1,5 @@
 # Unity/Config
 
-[![Latest version][ico-version]][link-packagist]
-[![Software License][ico-license]][link-license]
-[![Build Status][ico-travis]][link-travis]
-[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
-[![Quality Score][ico-code-quality]][link-code-quality]
-[![Total Downloads][ico-downloads]][link-downloads]
-[![Gitter][ico-gitter]][link-gitter]
-
 An extensible configuration library for your PHP projects that uses dot notation and supports json, yml, ini, php (array file) and many more formats.
 
 ## Table of contents

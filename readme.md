@@ -5,8 +5,8 @@ An extensible configuration library for your PHP projects that uses dot notation
 ## Table of contents
 
  - [Installation](#installation)
- - [Usage](#Usage)
- - [Contribute](#Contribute)
+ - [Usage](#usage)
+ - [Contribute](#contribute)
 
 ## Installation
 To install you must have <a href="https://getcomposer.org/">composer</a> installed, then, just run:

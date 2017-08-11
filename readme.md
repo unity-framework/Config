@@ -9,7 +9,7 @@ An extensible configuration library for your PHP projects that uses dot notation
  - [Contribute](#contribute)
 
 ## Installation
-To install you must have <a href="https://getcomposer.org/">composer</a> installed, then, just run:
+To install you must have [composer](https://getcomposer.org/) installed, then, run:
     
     composer require unity/config
 
@@ -17,7 +17,7 @@ using a **terminal/prompt** in your project folder.
 
 ## Usage
 
-Suppose you have a **configurations/database.php** file in your project folder containing the follow configurations:
+Suppose you have a **configurations/database.php** file in your project folder containing the following configurations:
 
 ```php
 <?php
@@ -41,10 +41,6 @@ $config = (new ConfigBuilder)
             ->build();
 ```
 
-1. Require the composer's **vendor/autoload.php** file.
-2. [Setup the configurations source]().
-3. Get an instance of the **Config** class thought the [ConfigBuilder::build()](https://unity-framework.github.com/Config/docs/ConfigBuilder/index.md) method.
-
 Now, to access a configuration just:
 
 ```php
@@ -52,21 +48,10 @@ $config->get('database.user');
 ```
 This will return: `'root'`. Easy!?
 
-## How it works
-This library provides a way to access your configurations using **dot notation**.
+## Contributing
 
-**Dot notation** is a way of representing properties splited by a dot, for example: `database.user`, where the first property represents the **root** property that will be used to access the configuration source and the remaining properties are the **keys** that give us the way to access a configuration value.
+To contribute, please, read the [contributing](https://github.com/unity-framework/Config/blob/master/contributing.md) file.
 
-When you say:
+## Credits
 
-```php
-$config->get('database.user');
-```
-
-you're really saying:
-
-> Config, get the **user** value containing in the **database.php** file for me.
-
-## How to contribute
-
-To contribute, please, read the [Contributing](https://github.com/unity-framework/Config/blob/master/contributing.md).
+ - [Eleandro Duzentos](https://e200.github.com/) and contributors.

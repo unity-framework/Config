@@ -33,9 +33,9 @@ $config = (new ConfigBuilder)
             ->build();
 ```
 
-1. Require the composer's **vendor/autoload.php** file
-2. <a href="#">Setup the configurations source</a>
-3. Get an instance of the **Config** class thought the <a href="https://unity-framework.github.com/Config/docs/ConfigBuilder/index.md">ConfigBuilder::build() method</a>:
+1. Require the composer's **vendor/autoload.php** file.
+2. [Setup the configurations source]().
+3. Get an instance of the **Config** class thought the [ConfigBuilder::build()](https://unity-framework.github.com/Config/docs/ConfigBuilder/index.md) method.
 
 Now, to access a configuration just:
 
@@ -61,4 +61,4 @@ you're really saying:
 
 ## How to contribute
 
-To contribute, please, read the [Contributing]()
+To contribute, please, read the [Contributing](https://github.com/unity-framework/Config/blob/master/contributing.md).

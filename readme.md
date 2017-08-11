@@ -31,7 +31,7 @@ return [
     'host' => 'localhost'
 ];
 ```
-and you want to access these configurations. Since the **Config** class uses the [ArrayDriver](https://unity-framework.github.com/Config/Drivers/ArrayDriver) by default, this is all you need to do:
+and you want to access these configurations. this is all you need to do:
 
 ```php
 <?php
@@ -48,7 +48,9 @@ Now, to access a configuration just:
 ```php
 $config->get('database.user');
 ```
-This will return: `'root'`. Easy!?
+This will return: `'root'`. See how easy it is!?
+
+For more information about the how to use this library, see the [Documentation]().
 
 ## Contributing
 

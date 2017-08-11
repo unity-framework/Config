@@ -8,7 +8,7 @@ An extensible configuration library for your PHP projects that uses dot notation
  - [Usage](#Usage)
  - [Contribute](#Contribute)
 
-## How to install
+## Installation
 To install you must have <a href="https://getcomposer.org/">composer</a> installed, then, just run:
     
     composer require unity/config

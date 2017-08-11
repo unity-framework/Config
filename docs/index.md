@@ -21,7 +21,7 @@ return [
     'host' => 'localhost'
 ];
 ```
-and you want to access these configurations. First you must require the composer's **vendor/autoload.php** file, then <a href="#">setup the configuration source</a> (in our case is the **configurations** folder) and get an instance of the **Config** class thought the **<a href="https://github.com/unity-framework/Config/docs/ConfigBuilder/index.md">ConfigBuilder</a>**:
+and you want to access these configurations. First you must require the composer's **vendor/autoload.php** file, then <a href="#">setup the configuration source</a> (in our case is the **configurations** folder) and get an instance of the **Config** class thought the **<a href="https://unity-framework.github.com/Config/docs/ConfigBuilder/index.md">ConfigBuilder</a>**:
 
 ```php
 <?php

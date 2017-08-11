@@ -7,7 +7,7 @@ To install you must have <a href="https://getcomposer.org/">composer</a> install
 
 using a **terminal/prompt** in your project folder.
 
-## How to use
+## Usage
 
 Suppose you have a **configurations/database.php** file in your project folder containing the follow configurations:
 

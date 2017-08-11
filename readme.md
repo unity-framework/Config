@@ -1,5 +1,12 @@
 # Unity/Config
+
 An extensible configuration library for your PHP projects that uses dot notation and supports json, yml, ini, php (array file) and many more formats.
+
+## Table of contents
+
+ - Installation
+ - Usage
+ - Contribute
 
 ## How to install
 To install you must have <a href="https://getcomposer.org/">composer</a> installed, then, just run:
@@ -8,7 +15,7 @@ To install you must have <a href="https://getcomposer.org/">composer</a> install
 
 using a **terminal/prompt** in your project folder.
 
-## How to use
+## Usage
 
 Suppose you have a **configurations/database.php** file in your project folder containing the follow configurations:
 
@@ -22,7 +29,7 @@ return [
     'host' => 'localhost'
 ];
 ```
-and you want to access these configurations. First you must require the composer's **vendor/autoload.php** file, then <a href="#">setup the configuration source</a> (in our case is the **configurations** folder) and get an instance of the **Config** class thought the **<a href="https://github.com/unity-framework/Config/docs/ConfigBuilder/index.md">ConfigBuilder</a>**:
+and you want to access these configurations. Since the **Config** class uses the [ArrayDriver](https://unity-framework.github.com/Config/Drivers/ArrayDriver) by default, this is all you need to do:
 
 ```php
 <?php
@@ -31,16 +38,19 @@ require "vendor/autoload.php";
 
 $config = (new ConfigBuilder)
             ->setSource('configurations/')
-            ->make();
+            ->build();
 ```
-Now, to access a configurations just:
+
+1. Require the composer's **vendor/autoload.php** file.
+2. [Setup the configurations source]().
+3. Get an instance of the **Config** class thought the [ConfigBuilder::build()](https://unity-framework.github.com/Config/docs/ConfigBuilder/index.md) method.
+
+Now, to access a configuration just:
 
 ```php
 $config->get('database.user');
 ```
-Outputs: `'root'`
-
-Easy?
+This will return: `'root'`. Easy!?
 
 ## How it works
 This library provides a way to access your configurations using **dot notation**.
@@ -56,3 +66,7 @@ $config->get('database.user');
 you're really saying:
 
 > Config, get the **user** value containing in the **database.php** file for me.
+
+## How to contribute
+
+To contribute, please, read the [Contributing](https://github.com/unity-framework/Config/blob/master/contributing.md).

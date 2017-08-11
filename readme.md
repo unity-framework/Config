@@ -55,3 +55,7 @@ To contribute, please, read the [contributing](https://github.com/unity-framewor
 ## Credits
 
  - [Eleandro Duzentos](https://e200.github.com/) and contributors.
+ 
+## License
+ 
+The Unity Framework is licensed under the MIT license. See [License File](https://github.com/unity-framework/Config/blob/master/license.md) for more information.

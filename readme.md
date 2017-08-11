@@ -31,7 +31,7 @@ return [
     'host' => 'localhost'
 ];
 ```
-and you want to access these configurations. this is all you need to do:
+and you want to access these configurations. This is all you need to do:
 
 ```php
 <?php

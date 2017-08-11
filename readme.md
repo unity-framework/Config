@@ -60,4 +60,4 @@ To contribute, please, read the [contributing](https://github.com/unity-framewor
  
 ## License
  
-The Unity Framework is licensed under the MIT license. See [License File](https://github.com/unity-framework/Config/blob/master/license.md) for more information.
+The Unity Framework is licensed under the MIT license. See [License](https://github.com/unity-framework/Config/blob/master/license.md) file for more information.

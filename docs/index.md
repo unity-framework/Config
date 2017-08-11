@@ -1,4 +1,3 @@
-# Unity/Config
 An extensible configuration library for your PHP projects that uses dot notation and supports json, yml, ini, php (array file) and many more formats.
 
 ## How to install

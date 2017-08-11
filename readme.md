@@ -1,7 +1,5 @@
 # Unity/Config
 
-![packagist](https://img.shields.io/packagist/vpre/unity/config.svg)
-
 An extensible configuration library for your PHP projects that uses dot notation and supports json, yml, ini, php (array file) and many more formats.
 
 ## Table of contents

@@ -21,7 +21,7 @@ return [
     'host' => 'localhost'
 ];
 ```
-and you want to access these configurations. First you must require the composer's **vendor/autoload.php** file, then <a href="#">setup the configuration source</a> (in our case is the **configurations** folder) and get an instance of the **Config** class thought the **<a href="https://unity-framework.github.com/Config/docs/ConfigBuilder/index.md">ConfigBuilder</a>**:
+and you want to access these configurations. Since a **Config** instance uses the [ArrayDriver](https://unity-framework.github.com/Config/Drivers/ArrayDriver) by default, this is you need to do:
 
 ```php
 <?php
@@ -32,14 +32,17 @@ $config = (new ConfigBuilder)
             ->setSource('configurations/')
             ->make();
 ```
+
+1. Require the composer's **vendor/autoload.php** file
+2. <a href="#">setup the configuration source</a>
+3. Get an instance of the **Config** class thought the <a href="https://unity-framework.github.com/Config/docs/ConfigBuilder/index.md">ConfigBuilder::build() method</a>:
+
 Now, to access a configurations just:
 
 ```php
 $config->get('database.user');
 ```
-Outputs: `'root'`
-
-Easy?
+This will return: `'root'`. Easy!?
 
 ## How it works
 This library provides a way to access your configurations using **dot notation**.
@@ -55,3 +58,4 @@ $config->get('database.user');
 you're really saying:
 
 > Config, get the **user** value containing in the **database.php** file for me.
+

@@ -2,13 +2,13 @@
 
 namespace Unity\Component\Config\Notation;
 
-class DotNotation
+class DotNotation implements INotation
 {
     /**
-     * Denotes a string
+     * Denotes a string using dot (.) as separator
      *
      * @param $notation
-     * @return mixed
+     * @return INotationBag
      */
     static function denote($notation)
     {

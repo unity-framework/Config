@@ -2,102 +2,53 @@
 
 namespace Unity\Component\Config\Drivers;
 
-use Unity\Component\Config\Exceptions\ConfigNotFoundException;
-use Unity\Component\Config\Exceptions\InvalidConfigStringException;
+use  Unity\Component\Config\Contracts\IDriver;
 
-abstract class Driver implements DriverInterface
+abstract class Driver implements IDriver
 {
-    /**
-     * Gets the configuration
-     *
-     * @param string $config The required configuration
-     * @param $source
-     * @return mixed
-     * @throws ConfigNotFoundException
-     */
-    function get($config, $source)
-    {
-        /**
-         * Gets the `$root` and the `$searchKeys`
-         * from the `$config` notation
-         */
-        $this->denote($config, $root, $searchKeys);
-
-        /**
-         * Gets the configuration array calling
-         * the `Implementor::resolve()` method
-         */
-        $configArray = $this->getConfigArray($root, $source);
-
-        /**
-         * Returns the configuration value that
-         * matches the `$config` notation
-         */
-        $configValue = $this->getConfigValue($configArray, $searchKeys);
-
-        /**
-         * If $config is empty, that means no
-         * configuration was found
-         */
-        if(empty($configValue))
-            throw new ConfigNotFoundException("Cannot find configuration \"$config\"");
-
-        return $configValue;
-    }
+    protected $src;
 
     /**
-     * Denotes the config string using dot notation
+     * Returns the configuration value
      *
-     * @param $config
-     * @param $root
      * @param $keys
-     * @throws InvalidConfigStringException
+     *
+     * @return mixed
      */
-    function denote($config, &$root, &$keys)
+    function get($keys)
     {
-        $this->validate($config);
+        $source = $this->getSource();
 
-        $exp = explode('.', $config);
+        $configArray = $this->parse($source);
 
-        $root = $exp[0];
-
-        /**
-         * Unsetting the first element,
-         * we keep only the keys
-         */
-        unset($exp[0]);
-
-        foreach ($exp as $param)
-            $keys[] = $param;
+        return $this->getConfigValue(
+            $configArray,
+            $keys
+        );
     }
 
     /**
-     * Validates the given notation
+     * Checks if a configuration exists
      *
-     * A valid notation must have a root entry
-     * followed by at least one key.
+     * @param $keys
      *
-     * Example: database.user
-     *
-     * Where `database` is the root entry
-     * and `user` is the key
-     *
-     * @param $notation
-     * @throws InvalidConfigStringException
+     * @return bool
      */
-    function validate($notation)
+    function has($keys)
     {
-       if(!preg_match('/\w{1,}\.(\w{1,}){1,}/', $notation))
-            throw new InvalidConfigStringException(
-                "The config string must have a root entry with at least one key.
-                \nExample: database.user.
-                \nWhere \"database\" is the root entry and \"user\" is the key."
-            );
+        $configArray = $this->parse(
+            $this->getSource()
+        );
+
+        return $this->hasConfigValue(
+            $configArray,
+            $keys
+        );
     }
 
     /**
-     * Do the job of get the configuration
-     * value based on `$searchKeys`
+     * Gets the configuration value associated
+     * with `$searchKeys`
      *
      * @param $configArray array Array containing
      * the configuration value
@@ -108,6 +59,48 @@ abstract class Driver implements DriverInterface
      * @return null|mixed
      */
     function getConfigValue($configArray, $searchKeys)
+    {
+        $config = null;
+
+        /**
+         * If `$searchKeys` contains only one key,
+         * we just return the `$configArray` value
+         * associated to that key.
+         *
+         * If `$searchKeys` contains more then
+         * one key, we access and stores the first
+         * `$configArray` value (it must be an array)
+         * to the `$config`, and we do the same with
+         * the remaining of keys until they finish, the
+         * last `$searchKeys` contains the value
+         */
+        for($i = 0; $i < $count = count($searchKeys); $i++)
+        {
+            $key = $searchKeys[$i];
+
+            if ($i == 0)
+                $config = $this->getValue($key, $configArray);
+            else
+                $config = $this->getValue($key, $config);
+        }
+
+        return $config;
+    }
+
+    /**
+     * Checks if there's a configuration for
+     * the `$searchKeys` in the configuration
+     * array
+     *
+     * @param $configArray array Array containing
+     * the configuration value
+     *
+     * @param $keys array Array containing the
+     * keys to access the configuration value
+     *
+     * @return bool|mixed
+     */
+    function hasConfigValue($configArray, $keys)
     {
         $config = null;
 
@@ -123,27 +116,60 @@ abstract class Driver implements DriverInterface
          * with the rest of keys until they finish,
          * the last `$searchKey` contains our value
          */
-        for($i = 0; $i < count($searchKeys); $i++)
-        {
-            if($i == 0)
-                $config = $this->search($searchKeys[$i], $configArray);
-            else
-                $config = $this->search($searchKeys[$i], $config);
-        }
 
-        return $config;
+        $numKeys = count($keys);
+
+        for($i = 0; $i < $numKeys; $i++) {
+            $key = $keys[$i];
+
+            if (($i + 1) == $numKeys)
+                return $this->hasKey($key, $configArray);
+            elseif ($i == 0)
+                $config = $this->getValue($key, $configArray);
+            else
+                $config = $this->getValue($key, $config);
+        }
+    }
+
+    /**
+     * Checks if a key exists in the configuration
+     * array
+     *
+     * @param $key
+     * @param $configArray
+     * @return mixed
+     */
+    function hasKey($key, $configArray)
+    {
+        return isset($configArray[$key]);
     }
 
     /**
      * Search for a key on the `$configArray`
      *
-     * @param $searchKey
+     * @param $key
      * @param $configArray
      * @return mixed
      */
-    function search($searchKey, $configArray)
+    function getValue($key, $configArray)
     {
-        if(isset($configArray[$searchKey]))
-            return $configArray[$searchKey];
+        if($this->hasKey($key, $configArray))
+            return $configArray[$key];
+    }
+
+    /**
+     * @return mixed
+     */
+    function getSource()
+    {
+        return $this->src;
+    }
+
+    /**
+     * @param mixed $src
+     */
+    function setSource($src)
+    {
+        $this->src = $src;
     }
 }

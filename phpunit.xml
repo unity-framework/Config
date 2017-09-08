@@ -4,10 +4,22 @@
         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/5.1/phpunit.xsd"
         colors="true"
         bootstrap="vendor/autoload.php"
+        stopOnFailure="true"
 >
     <testsuites>
         <testsuite name="Test Suite">
-            <directory>./tests</directory>
+            <file>./tests/Notation/NotationBagTest.php</file>
+            <file>./tests/Notation/DotNotationTest.php</file>
+
+            <file>./tests/Resolvers/FileSourceResolverTest.php</file>
+            <file>./tests/Resolvers/SourceResolverTest.php</file>
+
+            <file>./tests/Drivers/FileDriverFactoryTest.php</file>
+            <file>./tests/Drivers/DriverFactoryTest.php</file>
+
+            <file>./tests/ConfigTest.php</file>
+            <!--<file>./tests/PhpDriverTest.php</file>-->
+            <file>./tests/DriversRegistryTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

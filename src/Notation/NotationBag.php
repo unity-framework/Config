@@ -2,7 +2,7 @@
 
 namespace Unity\Component\Config\Notation;
 
-class NotationBag implements INotationBag
+class NotationBag
 {
     /** @var $root string */
     protected $root;

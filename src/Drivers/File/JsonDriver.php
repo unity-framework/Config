@@ -2,32 +2,23 @@
 
 namespace Unity\Component\Config\Drivers\File;
 
+use Unity\Component\Config\Drivers\FileDriver;
+
 class JsonDriver extends FileDriver
 {
     /**
-     * JsonDriver constructor.
-     */
-    function __construct()
-    {
-        $this->setExt('json');
-    }
-
-    /**
-     * Resolves and returns the array
-     * containing jSON configurations
+     * Returns the configuration as an array
      *
-     * @param $jsonFile string File
-     * containing jSON configurations
+     * @param $jsonfile
      *
-     * @return array Array with configurations
+     * @return array
      */
-    function resolve($jsonFile)
+    function parse($jsonfile)
     {
-        if($this->fileExists($jsonFile))
-        {
-            $fileContent = file_get_contents($jsonFile);
+        if(file_exists($jsonfile)) {
+            $file_content = file_get_contents($jsonfile);
 
-            return (array)json_decode($fileContent);
+            return (array)json_decode($file_content);
         }
     }
 }

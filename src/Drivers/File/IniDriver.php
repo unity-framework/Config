@@ -2,30 +2,20 @@
 
 namespace Unity\Component\Config\Drivers\File;
 
+use Unity\Component\Config\Drivers\FileDriver;
+
 class IniDriver extends FileDriver
 {
     /**
-     * IniDriver constructor.
-     */
-    function __construct()
-    {
-        $this->setExt('ini');
-    }
-
-    /**
-     * Resolves and returns the array
-     * containing ini configurations
+     * Returns the configuration as an array
      *
-     * @param $iniFile string File
-     * containing ini configurations
+     * @param $inifile
      *
-     * @return array Array with configurations
+     * @return array
      */
-    function resolve($iniFile)
+    function parse($inifile)
     {
-        if($this->fileExists($iniFile))
-        {
-            return parse_ini_file($iniFile);
-        }
+        if(file_exists($inifile))
+            return parse_ini_file($inifile);
     }
 }

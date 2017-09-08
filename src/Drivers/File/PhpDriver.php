@@ -4,18 +4,18 @@ namespace Unity\Component\Config\Drivers\File;
 
 use Unity\Component\Config\Drivers\FileDriver;
 
-class YamlDriver extends FileDriver
+class PhpDriver extends FileDriver
 {
     /**
      * Returns the configuration as an array
      *
-     * @param $ymlfile
+     * @param $phpfile
      *
      * @return array
      */
-    function parse($ymlfile)
+    function parse($phpfile)
     {
-        if(file_exists($ymlfile))
-            return yaml_parse_file($ymlfile);
+        if(file_exists($phpfile))
+            return require $phpfile;
     }
 }

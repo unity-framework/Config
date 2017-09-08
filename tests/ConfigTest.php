@@ -1,28 +1,97 @@
 <?php
 
+use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
-use Unity\Component\Config\Config;
-use Unity\Component\Config\Drivers\DriverInterface;
+use Unity\Component\Config\ConfigBuilder;
 
 class ConfigTest extends TestCase
 {
-    function testGet()
-    {
-        $config = $this->getConfigurableForTest();
+    protected $virtualFolder;
+    protected $folder;
+    protected $database;
+    protected $arrayFiles;
+    protected $arrayFolders;
 
-        $this->assertEquals('This is the configuration value', $config->get('config'));
-        $this->assertTrue(true);
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $dir = [
+            'settings.exe' => '',
+            'database.php' => "<?php return ['user' => 'root'];"
+        ];
+
+        $this->virtualFolder = vfsStream::setup(
+            'configs',
+            444,
+            $dir
+        );
+
+        $this->folder = $this->virtualFolder->url() . DIRECTORY_SEPARATOR;
+        $this->database = $this->folder . 'database.php';
+        $this->arrayFiles = [
+            $this->folder . 'settings.dll',
+            $this->database
+        ];
     }
 
-    function getConfigurableForTest()
+    function testGetWithFile()
     {
-        $driver = $this->createMock(DriverInterface::class);
+        $config = (new ConfigBuilder)
+            ->setSource($this->database)
+            ->build();
 
-        $driver
-            ->expects($this->once())
-            ->method('get')
-            ->willReturn('This is the configuration value');
+        $this->assertEquals('root', $config->get("database.user"));
+    }
 
-        return new Config($driver, '');
+    function testGetWithFolder()
+    {
+        $config = (new ConfigBuilder)
+            ->setSource($this->folder)
+            ->build();
+
+        $this->assertEquals('root', $config->get("database.user"));
+    }
+
+    /**
+     * @covers Config::get()
+     */
+    function testGetWithArrayFiles()
+    {
+        $config = (new ConfigBuilder)
+                        ->setSource($this->arrayFiles)
+                        ->build();
+
+        $this->assertEquals('root', $config->get("database.user"));
+    }
+
+    /**
+     * @covers Config::get()
+     */
+    function testGetWithArrayFolders()
+    {
+        $folders = [
+            'configs' => [
+                'database.dll' => ''
+            ],
+            'settings' => [
+                'database.json' => '{"user": "root"}'
+            ]
+        ];
+
+        $virtualFolder = vfsStream::setup(
+            'folder',
+            444,
+            $folders
+        );
+
+        $config = (new ConfigBuilder)
+            ->setSource([
+                $virtualFolder->url() . DIRECTORY_SEPARATOR . 'configs',
+                $virtualFolder->url() . DIRECTORY_SEPARATOR . 'settings'
+            ])
+            ->build();
+
+        $this->assertEquals('root', $config->get("database.user"));
     }
 }

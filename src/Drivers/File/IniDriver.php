@@ -2,6 +2,7 @@
 
 namespace Unity\Component\Config\Drivers\File;
 
+use Unity\Support\File;
 use Unity\Component\Config\Drivers\FileDriver;
 
 class IniDriver extends FileDriver
@@ -15,7 +16,7 @@ class IniDriver extends FileDriver
      */
     function parse($inifile)
     {
-        if(file_exists($inifile))
+        if(File::exists($inifile))
             return parse_ini_file($inifile);
     }
 }

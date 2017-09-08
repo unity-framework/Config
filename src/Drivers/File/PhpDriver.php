@@ -2,6 +2,7 @@
 
 namespace Unity\Component\Config\Drivers\File;
 
+use Unity\Support\File;
 use Unity\Component\Config\Drivers\FileDriver;
 
 class PhpDriver extends FileDriver
@@ -15,7 +16,7 @@ class PhpDriver extends FileDriver
      */
     function parse($phpfile)
     {
-        if(file_exists($phpfile))
+        if(File::exists($phpfile))
             return require $phpfile;
     }
 }

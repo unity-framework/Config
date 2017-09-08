@@ -2,6 +2,7 @@
 
 namespace Unity\Component\Config\Drivers\File;
 
+use Unity\Support\File;
 use Unity\Component\Config\Drivers\FileDriver;
 
 class YamlDriver extends FileDriver
@@ -15,7 +16,7 @@ class YamlDriver extends FileDriver
      */
     function parse($ymlfile)
     {
-        if(file_exists($ymlfile))
+        if(File::exists($ymlfile))
             return yaml_parse_file($ymlfile);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Unity\Component\Config\Drivers\File;
 
+use Unity\Support\File;
 use Unity\Component\Config\Drivers\FileDriver;
 
 class JsonDriver extends FileDriver
@@ -15,7 +16,7 @@ class JsonDriver extends FileDriver
      */
     function parse($jsonfile)
     {
-        if(file_exists($jsonfile)) {
+        if(File::exists($jsonfile)) {
             $file_content = file_get_contents($jsonfile);
 
             return (array)json_decode($file_content);

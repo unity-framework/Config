@@ -61,6 +61,7 @@ abstract class Driver implements IDriver
     function getConfigValue($configArray, $searchKeys)
     {
         $config = null;
+        $count = count($searchKeys);
 
         /**
          * If `$searchKeys` contains only one key,
@@ -74,8 +75,7 @@ abstract class Driver implements IDriver
          * the remaining of keys until they finish, the
          * last `$searchKeys` contains the value
          */
-        for($i = 0; $i < $count = count($searchKeys); $i++)
-        {
+        for ($i = 0; $i < $count; $i++) {
             $key = $searchKeys[$i];
 
             if ($i == 0)
@@ -103,6 +103,7 @@ abstract class Driver implements IDriver
     function hasConfigValue($configArray, $keys)
     {
         $config = null;
+        $numKeys = count($keys);
 
         /**
          * If `$searchKeys` contains only
@@ -117,9 +118,7 @@ abstract class Driver implements IDriver
          * the last `$searchKey` contains our value
          */
 
-        $numKeys = count($keys);
-
-        for($i = 0; $i < $numKeys; $i++) {
+        for ($i = 0; $i < $numKeys; $i++) {
             $key = $keys[$i];
 
             if (($i + 1) == $numKeys)

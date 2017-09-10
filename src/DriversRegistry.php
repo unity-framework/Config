@@ -7,9 +7,9 @@ use Unity\Component\Config\Contracts\IFileDriver;
 class DriversRegistry
 {
     /**
-     * Drivers aliases
+     * Drivers ALIASES
      */
-    const aliases = [
+    const ALIASES = [
         'php' =>  Drivers\File\PhpDriver::class,
         'ini' =>  Drivers\File\IniDriver::class,
         'json' => Drivers\File\JsonDriver::class,
@@ -17,7 +17,7 @@ class DriversRegistry
     ];
 
     /** Drivers supported extension */
-    const supportedExts = [
+    const SUPPORTEDEXTS = [
         'php' => ['php', 'inc'],
         'ini' => ['ini'],
         'json' =>['json'],
@@ -31,7 +31,7 @@ class DriversRegistry
      */
     function getDrivers()
     {
-        return self::aliases;
+        return self::ALIASES;
     }
 
     /**
@@ -41,7 +41,7 @@ class DriversRegistry
      */
     function getDriversExts()
     {
-        return self::supportedExts;
+        return self::SUPPORTEDEXTS;
     }
 
     /**
@@ -52,19 +52,19 @@ class DriversRegistry
      */
     function hasAlias($alias)
     {
-        return isset(self::aliases[$alias]);
+        return isset(self::ALIASES[$alias]);
     }
 
     /**
      * Gets the driver instance associated to the given alias
      *
      * @param $alias
-     * @return bool
+     * @return string
      */
     function getFromAlias($alias)
     {
         if($this->hasAlias($alias))
-            return self::aliases[$alias];
+            return self::ALIASES[$alias];
     }
 
     /**
@@ -91,9 +91,9 @@ class DriversRegistry
      * @param $alias string Driver alias
      * @return array
      */
-    function getDriverSupportedExts($alias)
+    function getDriverSUPPORTEDEXTS($alias)
     {
-        return self::supportedExts[$alias];
+        return self::SUPPORTEDEXTS[$alias];
     }
 
     /**
@@ -107,9 +107,9 @@ class DriversRegistry
      */
     function driverHasExt($driverAlias, $ext)
     {
-        $driverSupportedExts = $this->getDriverSupportedExts($driverAlias);
+        $driverSUPPORTEDEXTS = $this->getDriverSUPPORTEDEXTS($driverAlias);
 
-        foreach ($driverSupportedExts as $driverSupportedExt)
+        foreach ($driverSUPPORTEDEXTS as $driverSupportedExt)
             if($ext == $driverSupportedExt)
                 return true;
 

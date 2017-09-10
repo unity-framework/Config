@@ -44,7 +44,7 @@ class Config
      *
      * @param $config
      */
-    function has($config)
+    function has(/*$config*/)
     {
 
     }

@@ -14,9 +14,8 @@ class PhpDriver extends FileDriver
      *
      * @return array
      */
-    function parse($phpfile)
+    function parse($phpfile) : array
     {
-        if(File::exists($phpfile))
-            return require $phpfile;
+        return require $phpfile;
     }
 }

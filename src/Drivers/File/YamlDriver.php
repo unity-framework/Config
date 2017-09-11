@@ -14,9 +14,8 @@ class YamlDriver extends FileDriver
      *
      * @return array
      */
-    function parse($ymlfile)
+    function parse($ymlfile) : array
     {
-        if(File::exists($ymlfile))
-            return yaml_parse_file($ymlfile);
+        return yaml_parse_file($ymlfile);
     }
 }

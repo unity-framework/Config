@@ -14,12 +14,10 @@ class JsonDriver extends FileDriver
      *
      * @return array
      */
-    function parse($jsonfile)
+    function parse($jsonfile) : array
     {
-        if(File::exists($jsonfile)) {
-            $file_content = file_get_contents($jsonfile);
+        $file_content = file_get_contents($jsonfile);
 
-            return (array)json_decode($file_content);
-        }
+        return (array)json_decode($file_content);
     }
 }

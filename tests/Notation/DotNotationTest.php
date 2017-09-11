@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * @author Eleandro Duzentos <eleandro@inbox.ru>
+ */
+
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Notation\DotNotation;
 use Unity\Component\Config\Notation\NotationBag;
@@ -9,7 +13,7 @@ class DotNotationTest extends TestCase
     /**
      * @covers DotNotation::denote()
      */
-    function testDenote()
+    public function testDenote()
     {
         $notation = 'database.user';
 

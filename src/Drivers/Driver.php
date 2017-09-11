@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * @author Eleandro Duzentos <eleandro@inbox.ru>
+ */
+
 namespace Unity\Component\Config\Drivers;
 
 use  Unity\Component\Config\Contracts\IDriver;
@@ -9,13 +13,13 @@ abstract class Driver implements IDriver
     protected $src;
 
     /**
-     * Returns the configuration value
+     * Returns the configuration value.
      *
      * @param $keys
      *
      * @return mixed
      */
-    function get($keys)
+    public function get($keys)
     {
         $source = $this->getSource();
 
@@ -28,13 +32,13 @@ abstract class Driver implements IDriver
     }
 
     /**
-     * Checks if a configuration exists
+     * Checks if a configuration exists.
      *
      * @param $keys
      *
      * @return bool
      */
-    function has($keys)
+    public function has($keys)
     {
         $configArray = $this->parse(
             $this->getSource()
@@ -48,22 +52,21 @@ abstract class Driver implements IDriver
 
     /**
      * Gets the configuration value associated
-     * with `$searchKeys`
+     * with `$searchKeys`.
      *
      * @param $configArray array Array containing
      * the configuration value
-     *
      * @param $searchKeys array Array containing the
      * keys to access the configuration value
      *
      * @return null|mixed
      */
-    function getConfigValue($configArray, $searchKeys)
+    public function getConfigValue($configArray, $searchKeys)
     {
         $config = null;
         $count = count($searchKeys);
 
-        /**
+        /*
          * If `$searchKeys` contains only one key,
          * we just return the `$configArray` value
          * associated to that key.
@@ -78,10 +81,11 @@ abstract class Driver implements IDriver
         for ($i = 0; $i < $count; $i++) {
             $key = $searchKeys[$i];
 
-            if ($i == 0)
+            if ($i == 0) {
                 $config = $this->getValue($key, $configArray);
-            else
+            } else {
                 $config = $this->getValue($key, $config);
+            }
         }
 
         return $config;
@@ -90,22 +94,21 @@ abstract class Driver implements IDriver
     /**
      * Checks if there's a configuration for
      * the `$searchKeys` in the configuration
-     * array
+     * array.
      *
      * @param $configArray array Array containing
      * the configuration value
-     *
      * @param $keys array Array containing the
      * keys to access the configuration value
      *
      * @return bool|mixed
      */
-    function hasConfigValue($configArray, $keys)
+    public function hasConfigValue($configArray, $keys)
     {
         $config = null;
         $numKeys = count($keys);
 
-        /**
+        /*
          * If `$searchKeys` contains only
          * one key, we just return the
          * `$configArray` value associated to that key
@@ -121,45 +124,49 @@ abstract class Driver implements IDriver
         for ($i = 0; $i < $numKeys; $i++) {
             $key = $keys[$i];
 
-            if (($i + 1) == $numKeys)
+            if (($i + 1) == $numKeys) {
                 return $this->hasKey($key, $configArray);
-            elseif ($i == 0)
+            } elseif ($i == 0) {
                 $config = $this->getValue($key, $configArray);
-            else
+            } else {
                 $config = $this->getValue($key, $config);
+            }
         }
     }
 
     /**
      * Checks if a key exists in the configuration
-     * array
+     * array.
      *
      * @param $key
      * @param $configArray
+     *
      * @return mixed
      */
-    function hasKey($key, $configArray)
+    public function hasKey($key, $configArray)
     {
         return isset($configArray[$key]);
     }
 
     /**
-     * Search for a key on the `$configArray`
+     * Search for a key on the `$configArray`.
      *
      * @param $key
      * @param $configArray
+     *
      * @return mixed
      */
-    function getValue($key, $configArray)
+    public function getValue($key, $configArray)
     {
-        if($this->hasKey($key, $configArray))
+        if ($this->hasKey($key, $configArray)) {
             return $configArray[$key];
+        }
     }
 
     /**
      * @return mixed
      */
-    function getSource()
+    public function getSource()
     {
         return $this->src;
     }
@@ -167,7 +174,7 @@ abstract class Driver implements IDriver
     /**
      * @param mixed $src
      */
-    function setSource($src)
+    public function setSource($src)
     {
         $this->src = $src;
     }

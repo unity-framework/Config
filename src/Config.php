@@ -2,18 +2,28 @@
 
 namespace Unity\Component\Config;
 
-use Closure;
-use Unity\Component\Config\Contracts\IDriver;
+use Unity\Support\Arr;
+use Unity\Component\Config\Contracts\IConfig;
+use Unity\Component\Config\Contracts\INotation;
 use Unity\Component\Config\Drivers\DriverFactory;
+use Unity\Component\Config\Exceptions\ConfigNotFoundException;
+use Unity\Component\Config\Notation\NotationBag;
 use Unity\Component\Config\Notation\DotNotation;
-use Unity\Component\Config\Resolvers\SourceResolver;
+use Unity\Component\Config\Matcher\SourceMatcher;
+use Unity\Component\Config\DriversRegistry as Drivers;
 
-class Config
+/**
+ * Class Config
+ *
+ * @author Eleandro Duzentos <eleandro@inbox.ru>
+ */
+class Config implements IConfig
 {
     protected $src;
     protected $ext;
     protected $driver;
     protected $sourceResolver;
+    protected $cache = [];
 
     /**
      * Config constructor.
@@ -22,31 +32,11 @@ class Config
      * @param string|null $ext Configuration file extension, for file sources
      * @param string|null $driver The alias to the driver to be used
      */
-    public function __construct($src, $ext = null, $driver = null)
+    function __construct($src, $ext = null, $driver = null)
     {
-        $this->src = $src;
-        $this->ext = $ext;
+        $this->src    = $src;
+        $this->ext    = $ext;
         $this->driver = $driver;
-    }
-
-    /**
-     * Returns a DriversRegistry instance
-     *
-     * @return DriversRegistry
-     */
-    function getDriversRegistry()
-    {
-        return new DriversRegistry;
-    }
-
-    /**
-     * Checks ifs a configuration exists
-     *
-     * @param $config
-     */
-    function has(/*$config*/)
-    {
-
     }
 
     /**
@@ -60,38 +50,113 @@ class Config
     {
         $notation = DotNotation::denote($config);
 
-        $src    = $this->getSource();
+        $root = $notation->getRoot();
+
+        if ($this->isCached($root)) {
+            $data = $this->getCache($root);
+        } else {
+            $data = $this->getData($root);
+
+            $this->setCache($root, $data);
+        }
+
+        if ($notation->hasKeys()) {
+            $keys = $notation->getKeys();
+
+            return Arr::nestedGet($keys, $data);
+        } else {
+            return $data[$root];
+        }
+    }
+
+    /**
+     * Checks ifs a configuration exists
+     *
+     * @param $config
+     *
+     * @return bool
+     */
+    function has($config)
+    {
+        $notation = DotNotation::denote($config);
+
         $root = $notation->getRoot();
         $keys = $notation->getKeys();
-        $ext       = $this->getExt();
+
+        if ($this->isCached($root)) {
+            $data = $this->getCache($root);
+        } else {
+            $data = $this->getData($root);
+
+            $this->setCache($root, $data);
+        }
+
+        return Arr::nestedHas($keys, $data);
+    }
+
+    function isCached($config)
+    {
+        return isset($this->cache[$config]);
+    }
+
+    function setCache($key, $data)
+    {
+        $this->cache[$key] = $data;
+    }
+
+    function getCache($key)
+    {
+        return $this->cache[$key];
+    }
+
+    function getData($root)
+    {
+        $source      = $this->getSource();
+        $ext         = $this->getExt();
         $driverAlias = $this->getDriverAlias();
 
-        $driversRegistry = $this->getDriversRegistry();
+        $drivers = $this->getDrivers();
 
-        $src = (new SourceResolver($driversRegistry))->resolve(
-            $src,
-            $root,
-            $ext,
-            $driverAlias
-        );
+        $src = $this->getSourceMatcher($drivers)->match(
+                $source,
+                $root,
+                $ext,
+                $driverAlias
+            );
 
-        $driverFactory = new DriverFactory($driversRegistry);
+        if($src->isEmpty())
+            throw new ConfigNotFoundException("Cannot find the requested configuration");
 
-        /*
-         * If the ConfigBuilder class don't explicitly the
-         * driver to be used, we must try auto locate a driver
-         * based on the `$src` NOR `$root` arguments
-         */
+        $driverFactory = $this->getDriverFactory($drivers);
+
         if($this->hasDriverAlias())
             $driver = $driverFactory->makeFromAlias($driverAlias);
         elseif($this->hasExt())
             $driver = $driverFactory->makeFromExt($ext);
-        else
-            $driver = $driverFactory->makeFromFile($src);
+        elseif($src->isFile())
+            $driver = $driverFactory->makeFromFile($src->get());
 
-        $driver->setSource($src);
+        return $driver->load($src->get());
+    }
 
-        return $driver->get($keys);
+    /**
+     * Returns a DriversRegistry instance
+     *
+     * @return DriversRegistry
+     */
+    function getDrivers()
+    {
+        return new Drivers;
+    }
+
+    function getSourceMatcher($drivers)
+    {
+        return new SourceMatcher($drivers);
+    }
+
+    function getDriverFactory($drivers)
+    {
+        return new DriverFactory($drivers);
     }
 
     /**
@@ -103,7 +168,7 @@ class Config
     }
 
     /**
-     * @return IDriver|null
+     * @return string|null
      */
     function getDriverAlias()
     {

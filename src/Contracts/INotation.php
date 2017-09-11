@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * @author Eleandro Duzentos <eleandro@inbox.ru>
+ */
+
 namespace Unity\Component\Config\Contracts;
 
 use Unity\Component\Config\Notation\NotationBag;
@@ -7,11 +11,11 @@ use Unity\Component\Config\Notation\NotationBag;
 interface INotation
 {
     /**
-     * Denotes a string
+     * Denotes a string.
      *
      * @param $notation
      *
      * @return NotationBag
      */
-    static function denote($notation);
+    public static function denote($notation);
 }

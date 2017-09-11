@@ -1,8 +1,11 @@
 <?php
 
+/*
+ * @author Eleandro Duzentos <eleandro@inbox.ru>
+ */
+
 namespace Unity\Component\Config;
 
-use Closure;
 use Unity\Component\Config\Contracts\IDriver;
 use Unity\Component\Config\Drivers\DriverFactory;
 use Unity\Component\Config\Notation\DotNotation;
@@ -19,7 +22,7 @@ class Config
      * Config constructor.
      *
      * @param $src mixed Configuration source
-     * @param string|null $ext Configuration file extension, for file sources
+     * @param string|null $ext    Configuration file extension, for file sources
      * @param string|null $driver The alias to the driver to be used
      */
     public function __construct($src, $ext = null, $driver = null)
@@ -30,40 +33,39 @@ class Config
     }
 
     /**
-     * Returns a DriversRegistry instance
+     * Returns a DriversRegistry instance.
      *
      * @return DriversRegistry
      */
-    function getDriversRegistry()
+    public function getDriversRegistry()
     {
-        return new DriversRegistry;
+        return new DriversRegistry();
     }
 
     /**
-     * Checks ifs a configuration exists
+     * Checks ifs a configuration exists.
      *
      * @param $config
      */
-    function has(/*$config*/)
+    public function has(/*$config*/)
     {
-
     }
 
     /**
-     * Gets a configuration value
+     * Gets a configuration value.
      *
      * @param $config
      *
      * @return mixed
      */
-    function get($config)
+    public function get($config)
     {
         $notation = DotNotation::denote($config);
 
-        $src    = $this->getSource();
+        $src = $this->getSource();
         $root = $notation->getRoot();
         $keys = $notation->getKeys();
-        $ext       = $this->getExt();
+        $ext = $this->getExt();
         $driverAlias = $this->getDriverAlias();
 
         $driversRegistry = $this->getDriversRegistry();
@@ -82,12 +84,13 @@ class Config
          * driver to be used, we must try auto locate a driver
          * based on the `$src` NOR `$root` arguments
          */
-        if($this->hasDriverAlias())
+        if ($this->hasDriverAlias()) {
             $driver = $driverFactory->makeFromAlias($driverAlias);
-        elseif($this->hasExt())
+        } elseif ($this->hasExt()) {
             $driver = $driverFactory->makeFromExt($ext);
-        else
+        } else {
             $driver = $driverFactory->makeFromFile($src);
+        }
 
         $driver->setSource($src);
 
@@ -97,7 +100,7 @@ class Config
     /**
      * @return bool
      */
-    function hasDriverAlias()
+    public function hasDriverAlias()
     {
         return !is_null($this->driver);
     }
@@ -105,16 +108,17 @@ class Config
     /**
      * @return IDriver|null
      */
-    function getDriverAlias()
+    public function getDriverAlias()
     {
         return $this->driver;
     }
 
     /**
-     * Checks if there's an extension
+     * Checks if there's an extension.
+     *
      * @return bool
      */
-    function hasExt()
+    public function hasExt()
     {
         return !is_null($this->ext);
     }
@@ -122,7 +126,7 @@ class Config
     /**
      * @return string|null
      */
-    function getExt()
+    public function getExt()
     {
         return $this->ext;
     }
@@ -130,7 +134,7 @@ class Config
     /**
      * @return mixed
      */
-    function getSource()
+    public function getSource()
     {
         return $this->src;
     }

@@ -9,13 +9,13 @@ class ConfigBuilder
     protected $driverAlias;
 
     /**
-     * Sets the source for configurations
+     * Sets the source for configurations.
      *
      * @param $src
      *
      * @return mixed
      */
-    function setSource($src)
+    public function setSource($src)
     {
         $this->src = $src;
 
@@ -23,13 +23,13 @@ class ConfigBuilder
     }
 
     /**
-     * Sets the extension of the configuration files
+     * Sets the extension of the configuration files.
      *
      * @param mixed $ext
      *
      * @return ConfigBuilder
      */
-    function setExt($ext)
+    public function setExt($ext)
     {
         $this->ext = $ext;
 
@@ -37,13 +37,13 @@ class ConfigBuilder
     }
 
     /**
-     * Sets the Driver to be used to get Configuration values
+     * Sets the Driver to be used to get Configuration values.
      *
      * @param string $driver
      *
      * @return ConfigBuilder
      */
-    function setDriver($driver)
+    public function setDriver($driver)
     {
         $this->driverAlias = $driver;
 
@@ -53,17 +53,17 @@ class ConfigBuilder
     /**
      * @return bool
      */
-    function hasDriver()
+    public function hasDriver()
     {
         return !is_null($this->driverAlias);
     }
 
     /**
-     * Builds and returns a new instance of Config class
+     * Builds and returns a new instance of Config class.
      *
      * @return Config
      */
-    function build()
+    public function build()
     {
         return new Config(
             $this->src,

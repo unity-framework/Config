@@ -2,6 +2,7 @@
 
 namespace Unity\Component\Config\Drivers;
 
+use Unity\Component\Config\Contracts\IDriver;
 use Unity\Support\File;
 use Unity\Component\Config\DriversRegistry;
 
@@ -20,7 +21,7 @@ class DriverFactory
      * @param $alias
      * @return mixed
      */
-    function makeFromAlias($alias)
+    function makeFromAlias($alias) : IDriver
     {
         $driver = $this->driversRepository->getFromAlias($alias);
 
@@ -31,16 +32,24 @@ class DriverFactory
      * Makes a new instance of the driver that supports the given extension
      *
      * @param $ext
-     * @return mixed
+     *
+     * @return string
      */
-    function makeFromExt($ext)
+    function makeFromExt($ext) : IDriver
     {
         $driver = $this->driversRepository->getFromExt($ext);
 
         return new $driver;
     }
 
-    function makeFromFile($filename)
+    /**
+     * Makes a new instance of the driver that supports the given file extension
+     *
+     * @param $filename
+     *
+     * @return string
+     */
+    function makeFromFile($filename) : IDriver
     {
         $ext = File::ext($filename);
 

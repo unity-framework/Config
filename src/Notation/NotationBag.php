@@ -16,7 +16,7 @@ class NotationBag
      * @param $root
      * @param array $keys
      */
-    function __construct($root, array $keys)
+    public function __construct($root, array $keys)
     {
         $this->root = $root;
         $this->keys = $keys;

@@ -9,7 +9,7 @@ class DotNotationTest extends TestCase
     /**
      * @covers DotNotation::denote()
      */
-    function testDenote()
+    public function testDenote()
     {
         $notation = 'database.user';
 

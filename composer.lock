@@ -9,19 +9,20 @@
     "packages": [
         {
             "name": "unity/support",
-            "version": "1.1.0",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unity-framework/Support.git",
-                "reference": "8e4c9df655d27c3b725e517385a49ee7df6a870e"
+                "reference": "7ad60b22898bc523616ee5eba19f1cbafb253ae9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unity-framework/Support/zipball/8e4c9df655d27c3b725e517385a49ee7df6a870e",
-                "reference": "8e4c9df655d27c3b725e517385a49ee7df6a870e",
+                "url": "https://api.github.com/repos/unity-framework/Support/zipball/7ad60b22898bc523616ee5eba19f1cbafb253ae9",
+                "reference": "7ad60b22898bc523616ee5eba19f1cbafb253ae9",
                 "shasum": ""
             },
             "require-dev": {
+                "mikey179/vfsstream": "^1.6",
                 "phpunit/phpunit": "^6.2"
             },
             "type": "library",
@@ -41,7 +42,7 @@
                 }
             ],
             "description": "A collection of support classes used in Unity framework",
-            "time": "2017-09-08 21:33:34"
+            "time": "2017-09-11 18:26:01"
         }
     ],
     "packages-dev": [
@@ -291,16 +292,16 @@
         },
         {
             "name": "phpdocumentor/reflection-common",
-            "version": "1.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionCommon.git",
-                "reference": "144c307535e82c8fdcaacbcfc1d6d8eeb896687c"
+                "reference": "21bdeb5f65d7ebf9f43b1b25d404f87deab5bfb6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionCommon/zipball/144c307535e82c8fdcaacbcfc1d6d8eeb896687c",
-                "reference": "144c307535e82c8fdcaacbcfc1d6d8eeb896687c",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionCommon/zipball/21bdeb5f65d7ebf9f43b1b25d404f87deab5bfb6",
+                "reference": "21bdeb5f65d7ebf9f43b1b25d404f87deab5bfb6",
                 "shasum": ""
             },
             "require": {
@@ -341,7 +342,7 @@
                 "reflection",
                 "static analysis"
             ],
-            "time": "2015-12-27 11:43:31"
+            "time": "2017-09-11 18:02:19"
         },
         {
             "name": "phpdocumentor/reflection-docblock",

@@ -3,7 +3,7 @@
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\DriversRegistry;
-use Unity\Component\Config\Resolvers\SourceResolver;
+use Unity\Component\Config\Matcher\SourceMatcher;
 
 class SourceResolverTest extends TestCase
 {
@@ -13,13 +13,13 @@ class SourceResolverTest extends TestCase
 
         $expectedSource = $folder . DIRECTORY_SEPARATOR . 'vars.php';
 
-        $src = $sourceResolver->resolve(
+        $src = $sourceResolver->match(
             $folder,
             'vars',
             null,
             null);
 
-        $this->assertEquals($expectedSource, $src);
+        $this->assertEquals($expectedSource, $src->get());
     }
 
     function testResolveWithSourceArray(){
@@ -28,13 +28,14 @@ class SourceResolverTest extends TestCase
 
         $expectedSource = $folder . DIRECTORY_SEPARATOR . 'vars.php';
 
-        $src = $sourceResolver->resolve(
+        $src = $sourceResolver->match(
             ['?', '??', '???', $folder],
             'vars',
             null,
-            null);
+            null
+        );
 
-        $this->assertEquals($expectedSource, $src);
+        $this->assertEquals($expectedSource, $src->get());
     }
 
     function getFolder(){
@@ -57,6 +58,6 @@ class SourceResolverTest extends TestCase
             ->method('driverSupportsExt')
             ->willReturn(true);
 
-        return new SourceResolver($driversRegistryMock);
+        return new SourceMatcher($driversRegistryMock);
     }
 }

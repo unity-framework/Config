@@ -41,7 +41,7 @@ class ConfigTest extends TestCase
             ->setSource($this->database)
             ->build();
 
-        $this->assertEquals('root', $config->get("database.user"));
+        $this->assertEquals('root', $config->get("user"));
     }
 
     function testGetWithFolder()

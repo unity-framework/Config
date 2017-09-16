@@ -1,7 +1,11 @@
 <?php
 
 namespace Unity\Component\Config;
-use Unity\Component\Config\SourcesMatcher;
+
+use Unity\Component\Config\Drivers\File\IniDriver;
+use Unity\Component\Config\Drivers\File\JsonDriver;
+use Unity\Component\Config\Drivers\File\PhpDriver;
+use Unity\Component\Config\Drivers\File\YamlDriver;
 
 class ConfigBuilder
 {
@@ -62,10 +66,12 @@ class ConfigBuilder
     }
 
     /**
-    * Sets the DI container
-    *
-    * @return ConfigBuilder
-    */
+     * Sets the DI container
+     *
+     * @param ContainerInterface $container
+     *
+     * @return ConfigBuilder
+     */
     function setContainer(ContainerInterface $container)
     {
         $this->container = $container;
@@ -97,6 +103,8 @@ class ConfigBuilder
      * Sets the cache path
      *
      * It's also actives the caching
+     *
+     * @param $path
      *
      * @return ConfigBuilder
      */
@@ -144,7 +152,7 @@ class ConfigBuilder
         $container->register('php',  PhpDriver::class);
         $container->register('ini',  IniDriver::class);
         $container->register('json', JsonDriver::class);
-        $container->register('yml',  YmlDriver::class);
+        $container->register('yml',  YamlDriver::class);
     }
 
     /**

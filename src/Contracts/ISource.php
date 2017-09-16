@@ -3,7 +3,7 @@
 namespace Unity\Component\Config\Contracts;
 
 /**
- * Interface ISourceMatcher
+ * Interface ISourceMatcher.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
  */
@@ -12,25 +12,25 @@ interface ISource
     /**
      * @return array
      */
-    function getData();
+    public function getData();
 
     /**
      * @return string
      */
-    function getKey();
+    public function getKey();
 
     /**
      * @return bool
      */
-    function hasKey();
+    public function hasKey();
 
     /**
      * @return mixed
      */
-    function getSource();
+    public function getSource();
 
     /**
      * @return string
      */
-    function getDriverAlias();
+    public function getDriverAlias();
 }

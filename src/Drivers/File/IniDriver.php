@@ -7,13 +7,13 @@ use Unity\Component\Config\Drivers\FileDriver;
 class IniDriver extends FileDriver
 {
     /**
-     * Returns the configuration as an array
+     * Returns the configuration as an array.
      *
      * @param $inifile
      *
      * @return array
      */
-    function parse($inifile) : array
+    public function parse($inifile) : array
     {
         return parse_ini_file($inifile);
     }

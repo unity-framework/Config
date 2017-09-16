@@ -2,19 +2,18 @@
 
 namespace Unity\Component\Config\Drivers\File;
 
-use Unity\Support\File;
 use Unity\Component\Config\Drivers\FileDriver;
 
 class PhpDriver extends FileDriver
 {
     /**
-     * Returns the configuration as an array
+     * Returns the configuration as an array.
      *
      * @param $phpfile
      *
      * @return array
      */
-    function parse($phpfile) : array
+    public function parse($phpfile) : array
     {
         return require $phpfile;
     }

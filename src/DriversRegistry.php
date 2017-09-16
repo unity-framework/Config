@@ -3,21 +3,19 @@
 namespace Unity\Component\Config;
 
 use Unity\Component\Config\Contracts\IFileDriver;
+use Unity\Support\File;
 
+/**
+ * Class DriversRegistry.
+ *
+ * Contains registry about available drivers.
+ *
+ * @author Eleandro Duzentos <eleandro@inbox.ru|github:e200>
+ */
 class DriversRegistry
 {
-    /**
-     * Drivers ALIASES
-     */
-    const ALIASES = [
-        'php' =>  Drivers\File\PhpDriver::class,
-        'ini' =>  Drivers\File\IniDriver::class,
-        'json' => Drivers\File\JsonDriver::class,
-        'yml' =>  Drivers\File\YamlDriver::class
-    ];
-
-    /** Drivers supported extension */
-    const SUPPORTEDEXTS = [
+    /** Drivers aliases and their supported extensions */
+    const DRIVERSALIASESANDEXT = [
         'php' => ['php', 'inc'],
         'ini' => ['ini'],
         'json' =>['json'],
@@ -25,23 +23,27 @@ class DriversRegistry
     ];
 
     /**
-     * Returns all available drivers
+     * Returns all drivers aliases and their
+     * supported extensions
      *
      * @return array
      */
     function getDrivers()
     {
-        return self::ALIASES;
+        return self::DRIVERSALIASESANDEXT;
     }
 
     /**
-     * Returns all file extensions supported by the driver
+     * Returns all supported extensions associated
+     * with the given $driverAlias
+     *
+     * @param $driverAlias
      *
      * @return array
      */
-    function getDriversExts()
+    function getSupportedExt($driverAlias)
     {
-        return self::SUPPORTEDEXTS;
+        return self::DRIVERSALIASESANDEXT[$driverAlias];
     }
 
     /**
@@ -52,84 +54,84 @@ class DriversRegistry
      */
     function hasAlias($alias)
     {
-        return isset(self::ALIASES[$alias]);
+        return isset(self::DRIVERSALIASESANDEXT[$alias]);
     }
 
     /**
-     * Gets the driver instance associated to the given alias
+     * Returns the driver alias for the driver
+     * that supports the given extension
      *
-     * @param $alias
-     * @return string
+     * @param $ext string
+     *
+     * @return string|false
      */
-    function getFromAlias($alias)
+    function getFromExt($ext)
     {
-        if($this->hasAlias($alias))
-            return self::ALIASES[$alias];
+        $aliases = array_keys($this->getDrivers());
+
+        foreach ($aliases as $alias) {
+            if ($this->driverSupportsExt($alias, $ext)) {
+                return $driver;
+            }
+        }
+
+        return false;
     }
 
     /**
      * Returns an IFileDriver instance that supports
-     * the given extension
+     * the given $file extension
      *
-     * @param $ext string
+     * @param $filename string
      *
-     * @return IFileDriver|null
+     * @return string|false
      */
-    function getFromExt($ext)
+    function getFromFile($filename)
     {
-        $drivers = $this->getDrivers();
+        $ext = File::ext($filename);
 
-        foreach ($drivers as $alias => $driver) {
-            if($this->driverHasExt($alias, $ext))
-                return $driver;
-        }
+        return $this->getFromExt($ext);
     }
 
     /**
-     * Returns all file extensions supported by the $driver
-     *
-     * @param $alias string Driver alias
-     * @return array
-     */
-    function getDriverSUPPORTEDEXTS($alias)
-    {
-        return self::SUPPORTEDEXTS[$alias];
-    }
-
-    /**
-     * Checks if the FileDriver associated with the $driverAlias supports the
-     * given extension
+     * Checks if the FileDriver associated with the
+     * $driverAlias supports the given extension
      *
      * @param $ext string File extension
-     * @param $driverAlias string Driver alias
+     * @param $alias string Driver alias
      *
      * @return bool
      */
-    function driverHasExt($driverAlias, $ext)
+    function driverSupportsExt($alias, $ext)
     {
-        $driverSUPPORTEDEXTS = $this->getDriverSUPPORTEDEXTS($driverAlias);
+        $sExtensions = $this->getSupportedExt($alias);
 
-        foreach ($driverSUPPORTEDEXTS as $driverSupportedExt)
-            if($ext == $driverSupportedExt)
+        foreach ($sExtensions as $sExtension) {
+            if ($ext == $sExtension) {
                 return true;
+            }
+        }
 
         return false;
     }
 
     /**
-     * Checks if a driver supports the given extension
+     * Checks if this class has a driver
+     * that supports the given $ext
      *
-     * @param $ext
+     * @param $ext string File extension
+     *
      * @return bool
      */
-    function driverSupportsExt($ext)
+    function hasDriverSupportForThisExt($ext)
     {
-        $aliases = array_keys($this->getDrivers());
+        $driversAliases = $this->getDrivers();
 
-        foreach ($aliases as $alias)
-            if($this->driverHasExt($alias, $ext))
+        foreach ($driversAliases as $driverAlias)
+        {
+            if ($this->driverSupportsExt($driverAlias, $ext)) {
                 return true;
-
-        return false;
+            }
+        }
     }
 }

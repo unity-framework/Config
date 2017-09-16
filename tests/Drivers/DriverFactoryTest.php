@@ -1,18 +1,17 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-
+use Unity\Component\Config\Drivers\DriverFactory;
 use Unity\Component\Config\Drivers\File\JsonDriver;
 use Unity\Component\Config\Drivers\File\YamlDriver;
-
-use Unity\Component\Config\Drivers\DriverFactory;
 use Unity\Component\Config\DriversRegistry;
 
 class DriverFactoryTest extends TestCase
 {
     protected $factory;
 
-    function testMakeFromAlias(){
+    public function testMakeFromAlias()
+    {
         $driversRepoMock = $this->mockDriversRepository();
 
         $driversRepoMock
@@ -27,7 +26,8 @@ class DriverFactoryTest extends TestCase
         $this->assertInstanceOf(YamlDriver::class, $driver);
     }
 
-    function testGetFromExt(){
+    public function testGetFromExt()
+    {
         $driversRepoMock = $this->mockDriversRepository();
 
         $driversRepoMock
@@ -42,7 +42,7 @@ class DriverFactoryTest extends TestCase
         $this->assertInstanceOf(JsonDriver::class, $driver);
     }
 
-    function mockDriversRepository()
+    public function mockDriversRepository()
     {
         return $this->getMockBuilder(DriversRegistry::class)
         ->getMock();

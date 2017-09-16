@@ -16,13 +16,13 @@ use Unity\Component\Config\Contracts\IFileDriver;
 abstract class FileDriver extends Driver implements IFileDriver
 {
     /**
-     * Returns all configurations data
+     * Returns all configurations data.
      *
      * @param mixed $file string The file containing the configurations
      *
      * @return array
      */
-    function load($file) : array
+    public function load($file) : array
     {
         return $this->parse($file);
     }

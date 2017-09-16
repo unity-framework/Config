@@ -7,34 +7,31 @@ use Unity\Component\Config\Resolvers\FileSourceResolver;
 
 class FileSourceResolverTest extends TestCase
 {
-    public function testGetSearchPattern()
-    {
+    function testGetSearchPattern(){
         $fileResolver = $this->getFileResolver();
 
         $this->assertEquals('database.*', $fileResolver->getSearchPattern('database'));
         $this->assertEquals('database.php', $fileResolver->getSearchPattern('database', 'php'));
     }
 
-    public function testGetSupportedFile()
-    {
-        $folder = $this->getFolder().DIRECTORY_SEPARATOR;
+    function testGetSupportedFile(){
+        $folder = $this->getFolder() . DIRECTORY_SEPARATOR;
         $fileResolver = $this->getFileResolverWithConsecutiveDriversRepositoryMockCalls();
 
-        $expectedFile = $folder.'database.php';
+        $expectedFile = $folder . 'database.php';
 
         $files = [
-            $folder.'database.dll',
-            $folder.'database.exe',
-            $folder.'database.php',
+            $folder . 'database.dll',
+            $folder . 'database.exe',
+            $folder . 'database.php',
         ];
 
         $file = $fileResolver->getSupportedFile($files);
         $this->assertEquals($expectedFile, $file);
     }
 
-    public function testGetSupportedFileWithExplicitDriver()
-    {
-        $folder = $this->getFolder().DIRECTORY_SEPARATOR;
+    function testGetSupportedFileWithExplicitDriver(){
+        $folder = $this->getFolder() . DIRECTORY_SEPARATOR;
         $driverRepositoryMock = $this->getDriversRepositoryMock();
 
         $driverRepositoryMock
@@ -44,12 +41,12 @@ class FileSourceResolverTest extends TestCase
 
         $fileResolver = new FileSourceResolver($driverRepositoryMock);
 
-        $expectedFile = $folder.'database.php';
+        $expectedFile = $folder . 'database.php';
 
         $files = [
-            $folder.'database.dll',
-            $folder.'database.exe',
-            $folder.'database.php',
+            $folder . 'database.dll',
+            $folder . 'database.exe',
+            $folder . 'database.php',
         ];
 
         $driverAlias = 'php';
@@ -61,15 +58,14 @@ class FileSourceResolverTest extends TestCase
     /**
      * @cover FileSourceResolver::glob()
      */
-    public function testMatchFilesInFolder()
-    {
+    function testMatchFilesInFolder(){
         $folder = $this->getFolder();
         $fileResolver = $this->getFileResolver();
 
         $expectedFiles = [
-            $folder.DIRECTORY_SEPARATOR.'database.dll',
-            $folder.DIRECTORY_SEPARATOR.'database.exe',
-            $folder.DIRECTORY_SEPARATOR.'database.php',
+            $folder . DIRECTORY_SEPARATOR . 'database.dll',
+            $folder . DIRECTORY_SEPARATOR . 'database.exe',
+            $folder . DIRECTORY_SEPARATOR . 'database.php'
         ];
 
         $files = $fileResolver->matchFilesInFolder($folder, 'database.*');
@@ -77,12 +73,11 @@ class FileSourceResolverTest extends TestCase
         $this->assertEquals($expectedFiles, $files);
     }
 
-    public function testGetSourceFileFromFolder()
-    {
+    function testGetSourceFileFromFolder(){
         $folder = $this->getFolder();
         $fileResolver = $this->getFileResolverWithConsecutiveDriversRepositoryMockCalls();
 
-        $expectedFile = $folder.DIRECTORY_SEPARATOR.'database.php';
+        $expectedFile = $folder . DIRECTORY_SEPARATOR. 'database.php';
 
         $driver = $fileResolver->getSourceFileFromFolder(
             'database',
@@ -94,12 +89,11 @@ class FileSourceResolverTest extends TestCase
         $this->assertEquals($expectedFile, $driver);
     }
 
-    public function testResolve()
-    {
+    function testResolve(){
         $folder = $this->getFolder();
         $fileResolver = $this->getFileResolverWithConsecutiveDriversRepositoryMockCalls();
 
-        $expectedFile = $folder.DIRECTORY_SEPARATOR.'database.php';
+        $expectedFile = $folder . DIRECTORY_SEPARATOR. 'database.php';
 
         $fileSource = $fileResolver->resolve(
             $folder,
@@ -111,18 +105,17 @@ class FileSourceResolverTest extends TestCase
         $this->assertEquals($expectedFile, $fileSource);
     }
 
-    public function getDriversRepositoryMock()
+    function getDriversRepositoryMock()
     {
         return $this->getMockBuilder(DriversRegistry::class)
             ->getMock();
     }
 
-    public function getFolder()
-    {
+    function getFolder(){
         $dir = [
             'database.dll' => '',
             'database.exe' => '',
-            'database.php' => '',
+            'database.php' => ''
         ];
 
         $virtualFolder = vfsStream::setup(
@@ -134,13 +127,11 @@ class FileSourceResolverTest extends TestCase
         return $virtualFolder->url();
     }
 
-    public function getFileResolver()
-    {
+    function getFileResolver(){
         return new FileSourceResolver($this->getDriversRepositoryMock());
     }
 
-    public function getFileResolverWithConsecutiveDriversRepositoryMockCalls()
-    {
+    function getFileResolverWithConsecutiveDriversRepositoryMockCalls(){
         $driversRepo = $this->getDriversRepositoryMock();
 
         $driversRepo

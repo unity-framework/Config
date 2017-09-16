@@ -17,7 +17,7 @@ class FileSourcesMatcher implements ISourceMatcher
 {
     protected $container;
 
-    public function __construct(CotainerInterface $container)
+    function __construct(CotainerInterface $container)
     {
         $this->container = $container;
     }
@@ -29,7 +29,7 @@ class FileSourcesMatcher implements ISourceMatcher
      *
      * @return ISource[]|ISource
      */
-    public function match($source, $ext, $driver)
+    function match($source, $ext, $driver)
     {
         if (File::isFile($source)) {
             return $this->makeSource($source);
@@ -49,7 +49,7 @@ class FileSourcesMatcher implements ISourceMatcher
      *
      * @param $path string The file path.
      */
-    public function makeSource($path)
+    function makeSource($path)
     {
         $filename = File::nameWithoutExt($path);
 
@@ -64,11 +64,13 @@ class FileSourcesMatcher implements ISourceMatcher
      *
      * @param $folder string
      *    A path to a collection of source files.
+     *
      * @param $ext string
      *    Extension for source files.
      *
      *    Setting $ext, will filter and load only files that
      *    matches this extension.
+     *
      * @param $driverAlias string
      *    Driver alias
      *
@@ -77,38 +79,38 @@ class FileSourcesMatcher implements ISourceMatcher
      *
      * @return ISource[]
      */
-    public function makeSourceFromFolder($folder, $ext, $driverAlias)
+    function makeSourceFromFolder($folder, $ext, $driverAlias)
     {
         $matchPattern = $this->genMatchPattern($ext);
 
-        $files = $this->matchFilesInFolder($folder, $matchPattern);
+        $files =  $this->matchFilesInFolder($folder, $matchPattern);
 
         return $this->makeSources($files, $driverAlias);
     }
 
     /**
      * Generates the match pattern used to filter
-     * files in a directory based on their names.
+     * files in a directory based on their names
      *
      * @param string $ext
      *
      * @return string
      */
-    public function genMatchPattern($ext = null)
+    function genMatchPattern($ext = null)
     {
-        return '*.'.($ext ?? '*');
+        return '*.' . ($ext ?? '*');
     }
 
     /**
      * Matches all file names in $folder
-     * that matches the $matchPattern.
+     * that matches the $matchPattern
      *
      * @param $folder
      * @param $matchPattern
      *
      * @return array Contains the matched files
      */
-    public function matchFilesInFolder($folder, $matchPattern)
+    function matchFilesInFolder($folder, $matchPattern)
     {
         return $this->glob($folder, $matchPattern);
     }
@@ -123,16 +125,15 @@ class FileSourcesMatcher implements ISourceMatcher
      *
      * @return ISource[] Supported files
      */
-    public function makeSources(array $files, $driverAlias)
+    function makeSources(array $files, $driverAlias)
     {
         $fileSources = [];
         $drivers = $this->container->get('drivers');
 
         foreach ($files as $file) {
             if (is_null($driverAlias)) {
-                if ($drivers->hasDriverThatSupportsExt($ext)) {
+                if ($drivers->hasDriverThatSupportsExt($ext))
                     $fileSources[] = $this->makeSource($file);
-                }
             } else {
                 if ($drivers->driverHasExt($driver, $ext)) {
                     $fileSources[] = $this->makeSource($file);
@@ -144,7 +145,7 @@ class FileSourcesMatcher implements ISourceMatcher
     }
 
     /**
-     * Glob that is safe with streams (vfs for example).
+     * Glob that is safe with streams (vfs for example)
      *
      * @param string $dir
      * @param string $matchPattern
@@ -153,7 +154,7 @@ class FileSourcesMatcher implements ISourceMatcher
      *
      * @see https://github.com/mikey179/vfsStream/issues/2#issuecomment-252271019
      */
-    public function glob($dir, $matchPattern)
+    function glob($dir, $matchPattern)
     {
         $files = scandir($dir);
         $found = [];
@@ -164,7 +165,7 @@ class FileSourcesMatcher implements ISourceMatcher
             }
 
             if (fnmatch($matchPattern, $filename)) {
-                $found[] = $dir.DIRECTORY_SEPARATOR.$filename;
+                $found[] = $dir . DIRECTORY_SEPARATOR . $filename;
             }
         }
 

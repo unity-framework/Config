@@ -8,7 +8,7 @@ use Unity\Component\Config\Contracts\ISource;
  * Class Source.
  *
  * Represents a configuration data source.
- *
+ * 
  * @author Eleandro Duzentos <eleandro@inbox.ru|github:e200>
  */
 class Source implements ISource
@@ -25,7 +25,7 @@ class Source implements ISource
 
     /**
      * @var string Alias of the driver that can parse
-     *             the $source content as an array
+     * the $source content as an array
      */
     protected $driverAlias;
 
@@ -39,7 +39,7 @@ class Source implements ISource
      *
      * @param ContainerInterface $container
      */
-    public function __construct(ContainerInterface $container)
+    function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
@@ -49,9 +49,9 @@ class Source implements ISource
      *
      * @return array
      */
-    public function getData()
+    function getData()
     {
-        $source = $this->getSource();
+        $source      = $this->getSource();
         $driverAlias = $this->getDriverAlias();
 
         return $this->container->get($driverAlias)->load($source);
@@ -60,7 +60,7 @@ class Source implements ISource
     /**
      * @return mixed
      */
-    public function getSource()
+    function getSource()
     {
         return $this->source;
     }
@@ -68,7 +68,7 @@ class Source implements ISource
     /**
      * @return string
      */
-    public function getKey()
+    function getKey()
     {
         return $this->key;
     }
@@ -76,7 +76,7 @@ class Source implements ISource
     /**
      * @return bool
      */
-    public function hasKey()
+    function hasKey()
     {
         return !is_null($this->key);
     }
@@ -84,7 +84,7 @@ class Source implements ISource
     /**
      * @return string
      */
-    public function getDriverAlias()
+    function getDriverAlias()
     {
         return $this->driverAlias;
     }

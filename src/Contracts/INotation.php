@@ -7,11 +7,11 @@ use Unity\Component\Config\Notation\NotationBag;
 interface INotation
 {
     /**
-     * Denotes a string.
+     * Denotes a string
      *
      * @param $notation
      *
      * @return NotationBag
      */
-    public static function denote($notation);
+    static function denote($notation);
 }

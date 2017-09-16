@@ -16,17 +16,17 @@ class SourcesCollection
     protected $sources = [];
     protected $container;
 
-    public function __construct(ContainerInterface $container)
+    function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
 
     /**
-     * Adds ISource instances to the collection.
+     * Adds ISource instances to the collection
      *
      * @param $source ISource[]|ISource
      */
-    public function add($source)
+    function add($source)
     {
         if (is_array($source)) {
             foreach ($source as $src) {
@@ -43,7 +43,7 @@ class SourcesCollection
      *
      * @param $source ISource
      */
-    public function addIfValid($source)
+    function addIfValid($source)
     {
         $this->validate($source);
 
@@ -55,7 +55,7 @@ class SourcesCollection
      *
      * @param $source ISource
      */
-    public function validate(ISource $source)
+    function validate(ISource $source)
     {
         //This method is as it is.
     }
@@ -64,7 +64,7 @@ class SourcesCollection
      * Joins all configurations data from each
      * source in the collection.
      */
-    public function joinData()
+    function joinData()
     {
         $data = [];
 
@@ -80,11 +80,11 @@ class SourcesCollection
     }
 
     /**
-     * Collects and returns an array containing all configurations data.
+     * Collects and returns an array containing all configurations data
      *
      * @return array
      */
-    public function collectData()
+    function collectData()
     {
         return $this->joinData();
     }
@@ -98,7 +98,7 @@ class SourcesCollection
      *
      * @return bool
      */
-    public function hasChanges()
+    function hasChanges()
     {
         $lastCacheTime = $this->container->configCache->lastCacheTime();
 
@@ -116,7 +116,7 @@ class SourcesCollection
      *
      * @return ISource[]
      */
-    public function getAll()
+    function getAll()
     {
         return $this->sources;
     }

@@ -3,11 +3,11 @@
 namespace Unity\Component\Config\Contracts;
 
 /**
- * Interface ISourceMatcher.
+ * Interface ISourceMatcher
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
  */
 interface ISourceMatcher
 {
-    public function match($src, $ext, $driver);
+    function match($src, $ext, $driver);
 }

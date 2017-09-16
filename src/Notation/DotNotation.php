@@ -12,13 +12,13 @@ use Unity\Component\Config\Contracts\INotation;
 class DotNotation implements INotation
 {
     /**
-     * Denotes a string using dot (.) as separator.
+     * Denotes a string using dot (.) as separator
      *
      * @param $notation
      *
      * @return string[]
      */
-    public static function denote($notation)
+    static function denote($notation)
     {
         return explode('.', $notation);
     }

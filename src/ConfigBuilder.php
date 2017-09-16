@@ -16,13 +16,13 @@ class ConfigBuilder
     protected $cachePath;
 
     /**
-     * Sets the source for configurations.
+     * Sets the source for configurations
      *
      * @param $src
      *
      * @return mixed
      */
-    public function setSource($src)
+    function setSource($src)
     {
         $this->src = $src;
 
@@ -30,13 +30,13 @@ class ConfigBuilder
     }
 
     /**
-     * Sets the extension of the configuration files.
+     * Sets the extension of the configuration files
      *
      * @param mixed $ext
      *
      * @return ConfigBuilder
      */
-    public function setExt($ext)
+    function setExt($ext)
     {
         $this->ext = $ext;
 
@@ -44,13 +44,13 @@ class ConfigBuilder
     }
 
     /**
-     * Sets the Driver to be used to get Configuration values.
+     * Sets the Driver to be used to get Configuration values
      *
      * @param string $driver
      *
      * @return ConfigBuilder
      */
-    public function setDriver($driver)
+    function setDriver($driver)
     {
         $this->driverAlias = $driver;
 
@@ -60,19 +60,19 @@ class ConfigBuilder
     /**
      * @return bool
      */
-    public function hasDriver()
+    function hasDriver()
     {
         return !is_null($this->driverAlias);
     }
 
     /**
-     * Sets the DI container.
+     * Sets the DI container
      *
      * @param ContainerInterface $container
      *
      * @return ConfigBuilder
      */
-    public function setContainer(ContainerInterface $container)
+    function setContainer(ContainerInterface $container)
     {
         $this->container = $container;
 
@@ -80,27 +80,27 @@ class ConfigBuilder
     }
 
     /**
-     * Gets the DI container.
-     *
-     * @return ContainerInterface
-     */
-    public function getContainer()
+    * Gets the DI container
+    *
+    * @return ContainerInterface
+    */
+    function getContainer()
     {
         return $this->container;
     }
 
     /**
-     * Checks if a ContainerInterface instance was set.
-     *
-     * @return bool
-     */
-    public function hasContainer()
+    * Checks if a ContainerInterface instance was set
+    *
+    * @return bool
+    */
+    function hasContainer()
     {
         return !is_null($this->container);
     }
 
     /**
-     * Sets the cache path.
+     * Sets the cache path
      *
      * It's also actives the caching
      *
@@ -108,7 +108,7 @@ class ConfigBuilder
      *
      * @return ConfigBuilder
      */
-    public function setCachePath($path)
+    function setCachePath($path)
     {
         $this->cachePath = $path;
 
@@ -118,49 +118,49 @@ class ConfigBuilder
     /**
      * Returns the cache path.
      */
-    public function getCachePath()
+    function getCachePath()
     {
         return $this->cachePath;
     }
 
     /**
-     * Checks if cache is enabled.
+     * Checks if cache is enabled
      *
      * @return bool
      */
-    public function isCacheEnabled()
+    function isCacheEnabled()
     {
         return !is_null($this->cachePath);
     }
 
-    public function setupDependencies()
+    function setupDependencies()
     {
         $container = $this->getContainer();
 
-        $container->register('config', Config::class);
-        $container->register('loader', Loader::class);
-        $container->register('drivers', DriversRegistry::class);
-        $container->register('source', Source::class)->give($container);
+        $container->register('config',            Config::class);
+        $container->register('loader',            Loader::class);
+        $container->register('drivers',           DriversRegistry::class);
+        $container->register('source',            Source::class)->give($container);
         $container->register('sourcesCollection', SourcesCollection::class);
-        $container->register('sourcesMatcher', SourcesMatcher::class)->give($container);
+        $container->register('sourcesMatcher',    SourcesMatcher::class)->give($container);
 
-        if ($this->isCacheEnabled()) {
+        if($this->isCacheEnabled()) {
             $container->register('configCache', Cache::class)
                 ->give($this->getCachePath());
         }
 
-        $container->register('php', PhpDriver::class);
-        $container->register('ini', IniDriver::class);
+        $container->register('php',  PhpDriver::class);
+        $container->register('ini',  IniDriver::class);
         $container->register('json', JsonDriver::class);
-        $container->register('yml', YamlDriver::class);
+        $container->register('yml',  YamlDriver::class);
     }
 
     /**
-     * Builds and returns a new instance of Config class.
+     * Builds and returns a new instance of Config class
      *
      * @return Config
      */
-    public function build()
+    function build()
     {
         if (!$this->hasContainer()) {
             $this->setContainer(new Container());

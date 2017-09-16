@@ -7,12 +7,11 @@ use Unity\Component\Config\Resolvers\SourceResolver;
 
 class SourceResolverTest extends TestCase
 {
-    public function testResolve()
-    {
+    function testResolve(){
         $folder = $this->getFolder();
         $sourceResolver = $this->getSourceResolver();
 
-        $expectedSource = $folder.DIRECTORY_SEPARATOR.'vars.php';
+        $expectedSource = $folder . DIRECTORY_SEPARATOR . 'vars.php';
 
         $src = $sourceResolver->resolve(
             $folder,
@@ -23,12 +22,11 @@ class SourceResolverTest extends TestCase
         $this->assertEquals($expectedSource, $src);
     }
 
-    public function testResolveWithSourceArray()
-    {
+    function testResolveWithSourceArray(){
         $folder = $this->getFolder();
         $sourceResolver = $this->getSourceResolver();
 
-        $expectedSource = $folder.DIRECTORY_SEPARATOR.'vars.php';
+        $expectedSource = $folder . DIRECTORY_SEPARATOR . 'vars.php';
 
         $src = $sourceResolver->resolve(
             ['?', '??', '???', $folder],
@@ -39,8 +37,7 @@ class SourceResolverTest extends TestCase
         $this->assertEquals($expectedSource, $src);
     }
 
-    public function getFolder()
-    {
+    function getFolder(){
         $dir = ['vars.php' => ''];
 
         $virtualFolder = vfsStream::setup(
@@ -49,11 +46,10 @@ class SourceResolverTest extends TestCase
             $dir
         );
 
-        return $virtualFolder->url().DIRECTORY_SEPARATOR;
+        return $virtualFolder->url() . DIRECTORY_SEPARATOR;
     }
 
-    public function getSourceResolver()
-    {
+    function getSourceResolver(){
         $driversRegistryMock = $this->createMock(DriversRegistry::class);
 
         $driversRegistryMock

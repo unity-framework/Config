@@ -5,7 +5,7 @@ use Unity\Component\Config\Notation\NotationBag;
 
 class NotationBagTest extends TestCase
 {
-    public function testGetRoot()
+    function testGetRoot()
     {
         $root = 'database';
 
@@ -14,7 +14,7 @@ class NotationBagTest extends TestCase
         $this->assertEquals($root, $notationBag->getRoot());
     }
 
-    public function testGetKeys()
+    function testGetKeys()
     {
         $keys = ['user', 'db', 'host'];
 

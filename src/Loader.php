@@ -2,6 +2,10 @@
 
 namespace Unity\Component\Config;
 
+use Unity\Component\Config\Drivers\DriverFactory;
+use Unity\Component\Config\Matcher\SourceMatcher;
+use Unity\Component\Config\DriversRegistry as Drivers;
+
 /**
  * Class Loader.
  *
@@ -13,13 +17,13 @@ class Loader
 {
     protected $container;
 
-    public function __construct(ContainerInterface $container)
+    function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
 
     /**
-     * Loads the configurations in $source.
+     * Loads the configurations in $source
      *
      * @param $source string|array
      *    A source or a collection of sources.
@@ -28,6 +32,7 @@ class Loader
      *
      *    A source can be a (file|folder), an array
      *    containing (files|folders) or a string.
+     *
      * @param $ext string
      *    Extension for source files.
      *
@@ -35,6 +40,7 @@ class Loader
      *
      *    Setting $ext, will filter and load only files that
      *    matchs this extension.
+     *
      * @param $driverAlias string
      *    Driver alias
      *
@@ -43,9 +49,9 @@ class Loader
      *
      * @return mixed
      */
-    public function load($source, $ext, $driverAlias)
+    function load($source, $ext, $driverAlias)
     {
-        if ($this->isCacheEnabled()) {
+        if($this->isCacheEnabled()) {
             $cache = $this->container->get('cache');
             $sources = $this->matchSources($source, $ext, $driverAlias);
 
@@ -65,17 +71,17 @@ class Loader
         return $data;
     }
 
-    public function matchSources($source, $ext, $driverAlias)
+    function matchSources($source, $ext, $driverAlias)
     {
         return $this->container->get('sourcesMatcher')->match($source, $ext, $driverAlias);
     }
 
-    public function fetchData($sources)
+    function fetchData($sources)
     {
         return $sources->collectData();
     }
 
-    public function fetchAndCacheData($sources)
+    function fetchAndCacheData($sources)
     {
         $data = $this->fetchData($sources);
 
@@ -85,11 +91,11 @@ class Loader
     }
 
     /**
-     * Checks if cache is enabled.
+     * Checks if cache is enabled
      *
      * @return bool
      */
-    public function isCacheEnabled()
+    function isCacheEnabled()
     {
         return $this->container->has('configCache');
     }

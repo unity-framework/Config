@@ -17,13 +17,13 @@ class SourcesMatcher
     protected $sources = [];
     protected $container;
 
-    public function __construct(ContainerInterface $container)
+    function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
 
     /**
-     * Matches sources and adds to SourcesCollection.
+     * Matches sources and adds to SourcesCollection
      *
      * @param $source mixed
      * @param $ext string
@@ -31,7 +31,7 @@ class SourcesMatcher
      *
      * @return ISource[]|ISource
      */
-    public function match($source, $ext, $driverAlias)
+    function match($source, $ext, $driverAlias)
     {
         $sources = $this->container->get('sourcesCollection');
 
@@ -46,11 +46,11 @@ class SourcesMatcher
         return $sources;
     }
 
-    public function _match($source, $ext, $driverAlias)
+    function _match($source, $ext, $driverAlias)
     {
         if (File::exists($source)) {
             return $this->container->get('FileSourceMatcher')->match($source, $ext, $driverAlias);
-        } elseif (is_string($source)) {
+        } else if (is_string($source)) {
             return $this->container->get('StringSourceMatcher')->match($source, $ext, $driverAlias);
         } else {
             /* Maybe a database :/ */

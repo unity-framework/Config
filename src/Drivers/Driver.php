@@ -5,7 +5,7 @@ namespace Unity\Component\Config\Drivers;
 use Unity\Component\Config\Contracts\IDriver;
 
 /**
- * Class Driver.
+ * Class Driver
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
  */

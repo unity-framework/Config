@@ -4,9 +4,10 @@ namespace Unity\Component\Config;
 
 use ArrayAccess;
 use Countable;
-use Unity\Component\Config\Contracts\IConfig;
-use Unity\Component\Config\Notation\DotNotation;
 use Unity\Support\Arr;
+use Unity\Component\Config\Contracts\IConfig;
+use Unity\Component\Config\Exceptions\ConfigNotFoundException;
+use Unity\Component\Config\Notation\DotNotation;
 
 /**
  * Class Config.
@@ -22,19 +23,19 @@ class Config implements IConfig, ArrayAccess, Countable
     /**
      * @param $data array Contains configurations data
      */
-    public function __construct(array $data)
+    function __construct(array $data)
     {
         $this->data = $data;
     }
 
     /**
-     * Gets a configuration value.
+     * Gets a configuration value
      *
      * @param $config
      *
      * @return mixed
      */
-    public function get($config)
+    function get($config)
     {
         $keys = DotNotation::denote($config);
 
@@ -42,13 +43,13 @@ class Config implements IConfig, ArrayAccess, Countable
     }
 
     /**
-     * Checks ifs a configuration exists.
+     * Checks ifs a configuration exists
      *
      * @param $config
      *
      * @return bool
      */
-    public function has($config)
+    function has($config)
     {
         $keys = DotNotation::denote($config);
 
@@ -56,29 +57,25 @@ class Config implements IConfig, ArrayAccess, Countable
     }
 
     /**
-     * Gets all available configurations.
+     * Gets all available configurations
      *
      * @return array
      */
-    public function getAll()
+    function getAll()
     {
         return $this->data;
     }
 
     /**
-     * Whether a offset exists.
-     *
+     * Whether a offset exists
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
-     *
      * @param mixed $offset <p>
-     *                      An offset to check for.
-     *                      </p>
-     *
-     * @return bool true on success or false on failure.
-     *              </p>
-     *              <p>
-     *              The return value will be casted to boolean if non-boolean was returned.
-     *
+     * An offset to check for.
+     * </p>
+     * @return boolean true on success or false on failure.
+     * </p>
+     * <p>
+     * The return value will be casted to boolean if non-boolean was returned.
      * @since 5.0.0
      */
     public function offsetExists($offset)
@@ -87,16 +84,12 @@ class Config implements IConfig, ArrayAccess, Countable
     }
 
     /**
-     * Offset to retrieve.
-     *
+     * Offset to retrieve
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
-     *
      * @param mixed $offset <p>
-     *                      The offset to retrieve.
-     *                      </p>
-     *
+     * The offset to retrieve.
+     * </p>
      * @return mixed Can return all value types.
-     *
      * @since 5.0.0
      */
     public function offsetGet($offset)
@@ -105,19 +98,15 @@ class Config implements IConfig, ArrayAccess, Countable
     }
 
     /**
-     * Offset to set.
-     *
+     * Offset to set
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
-     *
      * @param mixed $offset <p>
-     *                      The offset to assign the value to.
-     *                      </p>
-     * @param mixed $value  <p>
-     *                      The value to set.
-     *                      </p>
-     *
+     * The offset to assign the value to.
+     * </p>
+     * @param mixed $value <p>
+     * The value to set.
+     * </p>
      * @return void
-     *
      * @since 5.0.0
      */
     public function offsetSet($offset, $value)
@@ -126,16 +115,12 @@ class Config implements IConfig, ArrayAccess, Countable
     }
 
     /**
-     * Offset to unset.
-     *
+     * Offset to unset
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
-     *
      * @param mixed $offset <p>
-     *                      The offset to unset.
-     *                      </p>
-     *
+     * The offset to unset.
+     * </p>
      * @return void
-     *
      * @since 5.0.0
      */
     public function offsetUnset($offset)
@@ -144,15 +129,12 @@ class Config implements IConfig, ArrayAccess, Countable
     }
 
     /**
-     * Count elements of an object.
-     *
+     * Count elements of an object
      * @link http://php.net/manual/en/countable.count.php
-     *
      * @return int The custom count as an integer.
-     *             </p>
-     *             <p>
-     *             The return value is cast to an integer.
-     *
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
      * @since 5.1.0
      */
     public function count()

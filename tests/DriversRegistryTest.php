@@ -1,9 +1,9 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Drivers\File\PhpDriver;
 use Unity\Component\Config\Drivers\File\YamlDriver;
 use Unity\Component\Config\DriversRegistry;
+use PHPUnit\Framework\TestCase;
 
 class DriversRegistryTest extends TestCase
 {
@@ -13,11 +13,10 @@ class DriversRegistryTest extends TestCase
     {
         parent::setUp();
 
-        $this->driversRepo = new DriversRegistry();
+        $this->driversRepo = new DriversRegistry;
     }
 
-    public function testGetDrivers()
-    {
+    function testGetDrivers(){
         $drivers = $this->driversRepo->getDrivers();
 
         $this->assertInternalType('array', $drivers);
@@ -25,8 +24,7 @@ class DriversRegistryTest extends TestCase
         $this->assertArrayHasKey('php', $drivers);
     }
 
-    public function testGetDriverExts()
-    {
+    function testGetDriverExts(){
         $supportedExts = $this->driversRepo->getDriversExts();
 
         $this->assertInternalType('array', $supportedExts);
@@ -36,40 +34,35 @@ class DriversRegistryTest extends TestCase
         $this->assertArrayHasKey('yml', $supportedExts);
     }
 
-    public function testHasAlias()
-    {
+    function testHasAlias(){
         $this->assertTrue($this->driversRepo->hasAlias('php'));
         $this->assertFalse($this->driversRepo->hasAlias('exe'));
     }
 
-    public function testGetFromAlias()
-    {
+    function testGetFromAlias(){
         $driver = $this->driversRepo->getFromAlias('php');
 
         $this->assertEquals(PhpDriver::class, $driver);
     }
 
-    public function testHasExtension()
-    {
+    function testHasExtension(){
         $this->assertTrue($this->driversRepo->driverHasExt('php', 'php'));
         $this->assertFalse($this->driversRepo->driverHasExt('php', 'exe'));
     }
 
-    public function testGetDriverSupportedExts()
-    {
+    function testGetDriverSupportedExts(){
         $supportedExt = $this->driversRepo->getDriverSupportedExts('php');
 
         $this->assertEquals(['php', 'inc'], $supportedExt);
     }
 
-    public function testGetFromExt()
-    {
+    function testGetFromExt() {
         $driver = $this->driversRepo->getFromExt('yaml');
 
         $this->assertEquals(YamlDriver::class, $driver);
     }
 
-    public function testDriverSupportsExt()
+    function testDriverSupportsExt()
     {
         $this->assertTrue($this->driversRepo->driverSupportsExt('yaml'));
     }

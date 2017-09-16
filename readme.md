@@ -12,7 +12,7 @@ An extensible configuration library for your PHP projects that uses dot notation
 
 ## Installation
 To install you must have [composer](https://getcomposer.org/) installed, then run:
-    
+
     composer require unity/config
 
 using a **terminal/prompt** in your project folder.
@@ -42,7 +42,6 @@ $config = (new ConfigBuilder)
             ->setSource('configurations/')
             ->build();
 ```
-
 Now, to access a configuration just:
 
 ```php
@@ -50,7 +49,7 @@ $config->get('database.user');
 ```
 This will return: `'root'`. See how easy it is!?
 
-For more information about the how to use this library, see the [Documentation]().
+For more information about the how to use this library, see the [documentation]().
 
 ## Contributing
 
@@ -59,7 +58,7 @@ To contribute, please, read the [contributing](https://github.com/unity-framewor
 ## Credits
 
  - [Eleandro Duzentos](https://e200.github.com/) and contributors.
- 
+
 ## License
- 
-The Unity Framework is licensed under the MIT license. See [License](https://github.com/unity-framework/Config/blob/master/license.md) file for more information.
+
+The Unity Framework is licensed under the MIT license. See [license](https://github.com/unity-framework/Config/blob/master/license.md) file for more information.

@@ -1,0 +1,4 @@
+./tests
+.gitattributes
+.gitignore
+phpunit.xml

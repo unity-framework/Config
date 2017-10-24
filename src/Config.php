@@ -2,12 +2,10 @@
 
 namespace Unity\Component\Config;
 
-use ArrayAccess;
 use Countable;
-use Unity\Support\Arr;
-use Unity\Component\Config\Contracts\IConfig;
+use ArrayAccess;
+use Unity\Contracts\Config\IConfig;
 use Unity\Component\Config\Exceptions\ConfigNotFoundException;
-use Unity\Component\Config\Notation\DotNotation;
 
 /**
  * Class Config.
@@ -21,7 +19,7 @@ class Config implements IConfig, ArrayAccess, Countable
     protected $data;
 
     /**
-     * @param $data array Contains configurations data
+     * @param $data array Contains configurations data.
      */
     function __construct(array $data)
     {
@@ -29,7 +27,7 @@ class Config implements IConfig, ArrayAccess, Countable
     }
 
     /**
-     * Gets a configuration value
+     * Gets a configuration value.
      *
      * @param $config
      *
@@ -37,13 +35,13 @@ class Config implements IConfig, ArrayAccess, Countable
      */
     function get($config)
     {
-        $keys = DotNotation::denote($config);
+        $keys = $this->denote($config);
 
-        return Arr::nestedGet($this->data, $keys);
+        return $this->getConfig($keys, $this->data);
     }
 
     /**
-     * Checks ifs a configuration exists
+     * Checks ifs a configuration exists.
      *
      * @param $config
      *
@@ -51,13 +49,13 @@ class Config implements IConfig, ArrayAccess, Countable
      */
     function has($config)
     {
-        $keys = DotNotation::denote($config);
+        $keys = $this->denote($config);
 
-        return Arr::nestedHas($this->data, $keys);
+        return $this->hasConfig($keys, $this->data);
     }
 
     /**
-     * Gets all available configurations
+     * Gets all available configurations.
      *
      * @return array
      */
@@ -140,5 +138,98 @@ class Config implements IConfig, ArrayAccess, Countable
     public function count()
     {
         return count($this->data);
+    }
+
+    /**
+     * Denotes a string using dot (.) as separator.
+     *
+     * @param string $notation
+     *
+     * @return string[]
+     */
+    protected function denote($notation)
+    {
+        return explode('.', $notation);
+    }
+
+    /**
+     * Gets the configuration value.
+     *
+     * @param array $keys Keys to match
+     * @param array $data The top most array
+     *
+     * @return mixed
+     */
+    protected function getConfig(array $keys, array $data)
+    {
+        $matchedData = null;
+        $count = count($keys);
+
+        /************************************************************************
+         * If `$keys` contains only one key, we return the `$array`             *
+         * data associated to that key.                                         *
+         *                                                                      *
+         * If $keys contains more then one key, we access                       *
+         * and stores the first `$data[$key]` value (it should be an array)     *
+         * to the `$matchedData`, and we do the same with the remaining of keys *
+         * until they finish. The last `$key` contains the value.               *
+         ************************************************************************/
+        for ($i = 0; $i < $count; $i++) {
+            $key = $keys[$i];
+
+            if ($i == 0) {
+                $matchedData = $data[$key];
+            } else {
+                $matchedData = $matchedData[$key];
+            }
+        }
+
+        return $matchedData;
+    }
+
+    /**
+     * Checks if a configuration exists.
+     *
+     * @param array $keys Keys to match
+     * @param array $data The top most array
+     *
+     * @return bool
+     */
+    protected function hasConfig(array $keys, array $data)
+    {
+        $matchedData = null;
+        $count = count($keys);
+
+        /*****************************************************************
+         * If `$keys` contains only one key, we just                     *
+         * returns if that key exists.                                   *
+         *                                                               *
+         * If `$keys` contains more then one key, we first check         *
+         * if the first key exists, if not, we return false              *
+         * imediatly, else, we keep checking if the remaining keys       *
+         * exists until we find one that does'nt exists and return false *
+         * or return true if all keys exists.                            *
+         *****************************************************************/
+        for ($i = 0; $i < $count; $i++) {
+            $key = $keys[$i];
+
+            if ($i == 0) {
+                if (!array_key_exists($key, $matchedData)) {
+                    return false;
+                }
+
+                $matchedData = $matchedData[$key];
+            } else {
+                if (!array_key_exists($key, $matchedData)) {
+                    return false;
+                }
+
+                $matchedData = $matchedData[$key];
+            }
+
+            if (($i + 1) == $count) {
+                return true;
+            }
+        }
     }
 }

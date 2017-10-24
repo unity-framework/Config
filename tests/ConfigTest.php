@@ -3,6 +3,8 @@
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\ConfigBuilder;
+use Unity\Component\Config\Exceptions\DriverNotFoundException;
+use Unity\Component\Config\Exceptions\UnsupportedExtensionException;
 
 class ConfigTest extends TestCase
 {
@@ -30,8 +32,8 @@ class ConfigTest extends TestCase
         $this->folder = $this->virtualFolder->url() . DIRECTORY_SEPARATOR;
         $this->database = $this->folder . 'database.php';
         $this->arrayFiles = [
-            $this->folder . 'settings.dll',
-            $this->database
+            $this->folder . 'settings.exe',
+            $this->folder .'database.php'
         ];
     }
 
@@ -44,52 +46,49 @@ class ConfigTest extends TestCase
         $this->assertEquals('root', $config->get("user"));
     }
 
+    function testGetWithFileWithoutExt()
+    {
+        $this->expectException(DriverNotFoundException::class);
+
+        $dir = ['cache' => 'expiration=300'];
+
+        $this->virtualFolder = vfsStream::setup(
+            'configs',
+            444,
+            $dir
+        );
+
+        $file = $this->virtualFolder->url() . DIRECTORY_SEPARATOR . 'cache';
+
+        (new ConfigBuilder)
+            ->setSource($file)
+            ->build();
+    }
+
+    function testGetWithFileWithoutExtAndProvidingDriver()
+    {
+        $dir = ['cache' => 'expiration=300'];
+
+        $this->virtualFolder = vfsStream::setup(
+            'configs',
+            444,
+            $dir
+        );
+
+        $file = $this->virtualFolder->url() . DIRECTORY_SEPARATOR . 'cache';
+
+        $config = (new ConfigBuilder)
+            ->setSource($file)
+            ->setDriver('ini')
+            ->build();
+
+        $this->assertEquals('300', $config->get('expiration'));
+    }
+
     function testGetWithFolder()
     {
         $config = (new ConfigBuilder)
             ->setSource($this->folder)
-            ->build();
-
-        $this->assertEquals('root', $config->get("database.user"));
-    }
-
-    /**
-     * @covers Config::get()
-     */
-    function testGetWithArrayFiles()
-    {
-        $config = (new ConfigBuilder)
-                        ->setSource($this->arrayFiles)
-                        ->build();
-
-        $this->assertEquals('root', $config->get("database.user"));
-    }
-
-    /**
-     * @covers Config::get()
-     */
-    function testGetWithArrayFolders()
-    {
-        $folders = [
-            'configs' => [
-                'database.dll' => ''
-            ],
-            'settings' => [
-                'database.json' => '{"user": "root"}'
-            ]
-        ];
-
-        $virtualFolder = vfsStream::setup(
-            'folder',
-            444,
-            $folders
-        );
-
-        $config = (new ConfigBuilder)
-            ->setSource([
-                $virtualFolder->url() . DIRECTORY_SEPARATOR . 'configs',
-                $virtualFolder->url() . DIRECTORY_SEPARATOR . 'settings'
-            ])
             ->build();
 
         $this->assertEquals('root', $config->get("database.user"));

@@ -2,11 +2,11 @@
 
 namespace Unity\Component\Config\Factories;
 
-use Unity\Contracts\Config\Sources\ISource;
-use Unity\Support\FileInfo;
-use Unity\Contracts\Container\IContainer;
 use Unity\Contracts\Config\Factories\IDriverFactory;
 use Unity\Contracts\Config\Factories\ISourceFactory;
+use Unity\Contracts\Config\Sources\ISource;
+use Unity\Contracts\Container\IContainer;
+use Unity\Support\FileInfo;
 
 class SourceFactory implements ISourceFactory
 {
@@ -19,7 +19,7 @@ class SourceFactory implements ISourceFactory
     /** @var FileInfo */
     protected $fileInfo;
 
-    function __construct(
+    public function __construct(
         IDriverFactory $driverFactory,
         IContainer $container,
         FileInfo $fileInfo
@@ -32,13 +32,13 @@ class SourceFactory implements ISourceFactory
     /**
      * Makes and returns an ISource instance that represents a file.
      *
-     * @param string $file The source.
+     * @param string $file   The source.
      * @param string $driver The driver that will be used.
      * @param string $ext
      *
      * @return ISource|bool
      */
-    function makeFromFile($file, $driver = null, $ext = null)
+    public function makeFromFile($file, $driver = null, $ext = null)
     {
         if (!is_object($driver)) {
             if (!is_null($driver)) {
@@ -71,10 +71,10 @@ class SourceFactory implements ISourceFactory
      * @param string $folder
      * @param string $driver The driver that will be used.
      * @param string $ext
-     * 
+     *
      * @return ISource
      */
-    function makeFromFolder($folder, $driver = null, $ext = null)
+    public function makeFromFolder($folder, $driver = null, $ext = null)
     {
         return $this->container->make('folderSource', [$folder, $driver, $ext]);
     }

@@ -10,7 +10,7 @@ class ConfigBuilder
     protected $ext;
     protected $driver;
     protected $source;
-    
+
     protected $cachePath;
 
     protected $container;
@@ -22,7 +22,7 @@ class ConfigBuilder
      *
      * @return ConfigBuilder
      */
-    function setSource($source)
+    public function setSource($source)
     {
         $this->source = $source;
 
@@ -36,7 +36,7 @@ class ConfigBuilder
      *
      * @return ConfigBuilder
      */
-    function setExt($ext)
+    public function setExt($ext)
     {
         $this->ext = $ext;
 
@@ -51,7 +51,7 @@ class ConfigBuilder
      *
      * @return ConfigBuilder
      */
-    function setDriver($driver)
+    public function setDriver($driver)
     {
         $this->driver = $driver;
 
@@ -65,7 +65,7 @@ class ConfigBuilder
      *
      * @return ConfigBuilder
      */
-    function setContainer($container)
+    public function setContainer($container)
     {
         $this->container = $container;
 
@@ -77,7 +77,7 @@ class ConfigBuilder
      *
      * @return ContainerInterface
      */
-    function getContainer()
+    public function getContainer()
     {
         return $this->container;
     }
@@ -87,7 +87,7 @@ class ConfigBuilder
      *
      * @return bool
      */
-    function hasContainer()
+    public function hasContainer()
     {
         return !is_null($this->container);
     }
@@ -101,7 +101,7 @@ class ConfigBuilder
      *
      * @return ConfigBuilder
      */
-    function setCachePath($path)
+    public function setCachePath($path)
     {
         $this->cachePath = $path;
 
@@ -111,7 +111,7 @@ class ConfigBuilder
     /**
      * Returns the cache path.
      */
-    function getCachePath()
+    public function getCachePath()
     {
         return $this->cachePath;
     }
@@ -121,7 +121,7 @@ class ConfigBuilder
      *
      * @return bool
      */
-    function canCache()
+    public function canCache()
     {
         return !is_null($this->cachePath);
     }
@@ -131,18 +131,18 @@ class ConfigBuilder
      *
      * @return Config
      */
-    function build()
+    public function build()
     {
         $source = $this->source;
         $driver = $this->driver;
-        $ext    = $this->ext;
+        $ext = $this->ext;
 
         $cache = null;
 
         $data = [];
 
         if (!$this->hasContainer()) {
-            $container = (new ContainerBuilder)->build();
+            $container = (new ContainerBuilder())->build();
 
             $container->setServiceProvider(new ConfigServiceProvider());
 
@@ -150,7 +150,7 @@ class ConfigBuilder
         }
 
         $container = $this->getContainer();
-        
+
         $loader = $container->loader;
 
         if ($this->canCache()) {

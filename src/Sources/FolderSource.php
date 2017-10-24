@@ -22,7 +22,7 @@ class FolderSource implements ISource
     protected $sourceFilesMatcher;
     protected $cache;
 
-    function __construct(
+    public function __construct(
         $folder,
         $driver,
         $ext,
@@ -38,7 +38,7 @@ class FolderSource implements ISource
     /**
      * @return string
      */
-    function getSource()
+    public function getSource()
     {
         return $this->folder;
     }
@@ -48,7 +48,7 @@ class FolderSource implements ISource
      *
      * @return array
      */
-    function getData()
+    public function getData()
     {
         $data = [];
 
@@ -62,7 +62,7 @@ class FolderSource implements ISource
     /**
      * Returns an array containing all source files
      * founded on `$this->folder`.
-     * 
+     *
      * @return IFileSource[]
      */
     protected function getSourceFiles()

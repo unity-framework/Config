@@ -26,27 +26,28 @@ class FileSource implements IFileSource
 
     /**
      * @var string Alias of the driver that can parse
-     * the `$source` content as an array
+     *             the `$source` content as an array
      */
     protected $driver;
 
     /**
      * Sources constructor.
      *
-     * @param string $key
-     * @param string $source
+     * @param string  $key
+     * @param string  $source
      * @param IDriver $driver
      */
-    function __construct($key, $source, IDriver $driver) {
-        $this->key    = $key;
+    public function __construct($key, $source, IDriver $driver)
+    {
+        $this->key = $key;
         $this->source = $source;
         $this->driver = $driver;
     }
-    
+
     /**
      * @return string
      */
-    function getKey()
+    public function getKey()
     {
         return $this->key;
     }
@@ -54,7 +55,7 @@ class FileSource implements IFileSource
     /**
      * @return string
      */
-    function getSource()
+    public function getSource()
     {
         return $this->source;
     }
@@ -64,7 +65,7 @@ class FileSource implements IFileSource
      *
      * @return array
      */
-    function getData()
+    public function getData()
     {
         return $this->driver->parse($this->source);
     }

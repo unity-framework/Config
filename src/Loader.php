@@ -2,8 +2,8 @@
 
 namespace Unity\Component\Config;
 
-use Unity\Contracts\Config\Factories\ISourceFactory;
 use Unity\Component\Config\Exceptions\DriverNotFoundException;
+use Unity\Contracts\Config\Factories\ISourceFactory;
 
 /**
  * Class Loader.
@@ -16,7 +16,7 @@ class Loader
 {
     protected $sourceFactory;
 
-    function __construct(ISourceFactory $sourceFactory)
+    public function __construct(ISourceFactory $sourceFactory)
     {
         $this->sourceFactory = $sourceFactory;
     }
@@ -28,9 +28,9 @@ class Loader
      * @param string $driver
      * @param string $ext
      *
-     * @return mixed
-     *
      * @throws DriverNotFoundException
+     *
+     * @return mixed
      */
     public function load($source, $driver, $ext)
     {
@@ -38,7 +38,7 @@ class Loader
 
         if (is_file($source)) {
             $sourceInstance = $this->sourceFactory->makeFromFile($source, $driver, $ext);
-        } elseif(is_dir($source)) {
+        } elseif (is_dir($source)) {
             $sourceInstance = $this->sourceFactory->makeFromFolder($source, $driver, $ext);
         }
 

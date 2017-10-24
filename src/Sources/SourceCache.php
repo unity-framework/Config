@@ -13,7 +13,7 @@ class SourceCache
      *
      * @return bool
      */
-    function hasChanges()
+    public function hasChanges()
     {
         if (filemtime($this->folder) > $this->cache->time($this->folder)) {
             return true;

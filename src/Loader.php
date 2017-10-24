@@ -2,101 +2,50 @@
 
 namespace Unity\Component\Config;
 
-use Unity\Component\Config\Drivers\DriverFactory;
-use Unity\Component\Config\Matcher\SourceMatcher;
-use Unity\Component\Config\DriversRegistry as Drivers;
+use Unity\Contracts\Config\Factories\ISourceFactory;
+use Unity\Component\Config\Exceptions\DriverNotFoundException;
 
 /**
  * Class Loader.
  *
- * Loads all availables configurations.
+ * Loads all available and supported configuration sources.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
  */
 class Loader
 {
-    protected $container;
+    protected $sourceFactory;
 
-    function __construct(ContainerInterface $container)
+    function __construct(ISourceFactory $sourceFactory)
     {
-        $this->container = $container;
+        $this->sourceFactory = $sourceFactory;
     }
 
     /**
-     * Loads the configurations in $source
+     * Loads a source and get their data.
      *
-     * @param $source string|array
-     *    A source or a collection of sources.
-     *
-     *    A source is where the configurations are stored.
-     *
-     *    A source can be a (file|folder), an array
-     *    containing (files|folders) or a string.
-     *
-     * @param $ext string
-     *    Extension for source files.
-     *
-     *    Used only with source files, ignored otherwise.
-     *
-     *    Setting $ext, will filter and load only files that
-     *    matchs this extension.
-     *
-     * @param $driverAlias string
-     *    Driver alias
-     *
-     *    Setting the $driverAlias will filter and load only sources
-     *    supported by the driver associated to this $driverAlias.
+     * @param string $source
+     * @param string $driver
+     * @param string $ext
      *
      * @return mixed
+     *
+     * @throws DriverNotFoundException
      */
-    function load($source, $ext, $driverAlias)
+    public function load($source, $driver, $ext)
     {
-        if($this->isCacheEnabled()) {
-            $cache = $this->container->get('cache');
-            $sources = $this->matchSources($source, $ext, $driverAlias);
+        $sourceInstance = null;
 
-            if ($sources->hasChanges()) {
-                $data = $this->fetchAndCacheData($source, $ext, $driverAlias);
-            } else {
-                if ($cache->isHit('parsedConfigurations')) {
-                    $data = $cache->get('parsedConfigurations');
-                } else {
-                    $data = $this->fetchAndCacheData($source, $ext, $driverAlias);
-                }
-            }
-        } else {
-            $data = $this->fetchData($source, $ext, $driverAlias);
+        if (is_file($source)) {
+            $sourceInstance = $this->sourceFactory->makeFromFile($source, $driver, $ext);
+        } elseif(is_dir($source)) {
+            $sourceInstance = $this->sourceFactory->makeFromFolder($source, $driver, $ext);
         }
 
-        return $data;
-    }
+        if ($sourceInstance === false) {
+            throw new DriverNotFoundException('Cannot find any driver that supports the given source.');
+        }
 
-    function matchSources($source, $ext, $driverAlias)
-    {
-        return $this->container->get('sourcesMatcher')->match($source, $ext, $driverAlias);
-    }
-
-    function fetchData($sources)
-    {
-        return $sources->collectData();
-    }
-
-    function fetchAndCacheData($sources)
-    {
-        $data = $this->fetchData($sources);
-
-        $cache->set('parsedConfigurations', $data);
-
-        return $data;
-    }
-
-    /**
-     * Checks if cache is enabled
-     *
-     * @return bool
-     */
-    function isCacheEnabled()
-    {
-        return $this->container->has('configCache');
+        return $sourceInstance->getData();
     }
 }

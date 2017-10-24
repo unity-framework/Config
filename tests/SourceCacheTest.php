@@ -12,7 +12,7 @@ class ConfigTest extends TestCase
         parent::setUp();
 
         $dir = [
-            'database.php' => "<?php return ['user' => 'root'];"
+            'database.php' => "<?php return ['user' => 'root'];",
         ];
 
         $this->virtualFolder = vfsStream::setup(

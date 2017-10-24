@@ -4,7 +4,6 @@ use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\ConfigBuilder;
 use Unity\Component\Config\Exceptions\DriverNotFoundException;
-use Unity\Component\Config\Exceptions\UnsupportedExtensionException;
 
 class ConfigTest extends TestCase
 {
@@ -20,7 +19,7 @@ class ConfigTest extends TestCase
 
         $dir = [
             'settings.exe' => '',
-            'database.php' => "<?php return ['user' => 'root'];"
+            'database.php' => "<?php return ['user' => 'root'];",
         ];
 
         $this->virtualFolder = vfsStream::setup(
@@ -29,24 +28,24 @@ class ConfigTest extends TestCase
             $dir
         );
 
-        $this->folder = $this->virtualFolder->url() . DIRECTORY_SEPARATOR;
-        $this->database = $this->folder . 'database.php';
+        $this->folder = $this->virtualFolder->url().DIRECTORY_SEPARATOR;
+        $this->database = $this->folder.'database.php';
         $this->arrayFiles = [
-            $this->folder . 'settings.exe',
-            $this->folder .'database.php'
+            $this->folder.'settings.exe',
+            $this->folder.'database.php',
         ];
     }
 
-    function testGetWithFile()
+    public function testGetWithFile()
     {
-        $config = (new ConfigBuilder)
+        $config = (new ConfigBuilder())
             ->setSource($this->database)
             ->build();
 
-        $this->assertEquals('root', $config->get("user"));
+        $this->assertEquals('root', $config->get('user'));
     }
 
-    function testGetWithFileWithoutExt()
+    public function testGetWithFileWithoutExt()
     {
         $this->expectException(DriverNotFoundException::class);
 
@@ -58,14 +57,14 @@ class ConfigTest extends TestCase
             $dir
         );
 
-        $file = $this->virtualFolder->url() . DIRECTORY_SEPARATOR . 'cache';
+        $file = $this->virtualFolder->url().DIRECTORY_SEPARATOR.'cache';
 
-        (new ConfigBuilder)
+        (new ConfigBuilder())
             ->setSource($file)
             ->build();
     }
 
-    function testGetWithFileWithoutExtAndProvidingDriver()
+    public function testGetWithFileWithoutExtAndProvidingDriver()
     {
         $dir = ['cache' => 'expiration=300'];
 
@@ -75,9 +74,9 @@ class ConfigTest extends TestCase
             $dir
         );
 
-        $file = $this->virtualFolder->url() . DIRECTORY_SEPARATOR . 'cache';
+        $file = $this->virtualFolder->url().DIRECTORY_SEPARATOR.'cache';
 
-        $config = (new ConfigBuilder)
+        $config = (new ConfigBuilder())
             ->setSource($file)
             ->setDriver('ini')
             ->build();
@@ -85,12 +84,12 @@ class ConfigTest extends TestCase
         $this->assertEquals('300', $config->get('expiration'));
     }
 
-    function testGetWithFolder()
+    public function testGetWithFolder()
     {
-        $config = (new ConfigBuilder)
+        $config = (new ConfigBuilder())
             ->setSource($this->folder)
             ->build();
 
-        $this->assertEquals('root', $config->get("database.user"));
+        $this->assertEquals('root', $config->get('database.user'));
     }
 }

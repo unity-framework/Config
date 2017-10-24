@@ -3,10 +3,10 @@
 namespace Unity\Component\Config\Sources;
 
 use Unity\Component\Config\Exceptions\UnreadableFolderException;
+use Unity\Component\Config\Exceptions\UnsupportedExtensionException;
 use Unity\Contracts\Config\Drivers\IDriver;
 use Unity\Contracts\Config\Factories\IDriverFactory;
 use Unity\Contracts\Config\Factories\ISourceFactory;
-use Unity\Component\Config\Exceptions\UnsupportedExtensionException;
 use Unity\Contracts\Config\Sources\IFileSource;
 use Unity\Contracts\Config\Sources\ISourceFilesMatcher;
 
@@ -22,7 +22,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
     protected $driverFactory;
     protected $sourceFactory;
 
-    function __construct(IDriverFactory $driverFactory, ISourceFactory $sourceFactory)
+    public function __construct(IDriverFactory $driverFactory, ISourceFactory $sourceFactory)
     {
         $this->driverFactory = $driverFactory;
         $this->sourceFactory = $sourceFactory;
@@ -32,21 +32,19 @@ class SourceFilesMatcher implements ISourceFilesMatcher
      * Matchs source files in `$folder`.
      *
      * @param string $folder Folder containing source files.
-     *
      * @param string $driver Driver alias
-     *
-     * @param string $ext Extension for source files.
-     *                    Setting `$ext`, will filter and load only files that
-     *                    matches this extension.
+     * @param string $ext    Extension for source files.
+     *                       Setting `$ext`, will filter and load only files that
+     *                       matches this extension.
      *
      *                    Setting the `$driver` will filter and load only files
      *                    supported by the driver associated with this `$driver`.
      *
-     * @return IFileSource[]
-     *
      * @throws UnreadableFolderException
+     *
+     * @return IFileSource[]
      */
-    function match($folder, $driver, $ext)
+    public function match($folder, $driver, $ext)
     {
         if (is_null($driver) && !($ext)) {
             $driver = $this->tryGetDriverUsingExt($ext);
@@ -55,7 +53,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
         if (is_readable($folder)) {
             return $this->matchSources($folder, $driver, $ext);
         } else {
-            throw new UnreadableFolderException("Unreadable source folder.");
+            throw new UnreadableFolderException('Unreadable source folder.');
         }
     }
 
@@ -65,15 +63,15 @@ class SourceFilesMatcher implements ISourceFilesMatcher
      *
      * @param $extension
      *
-     * @return null|IDriver
-     *
      * @throws UnsupportedExtensionException
+     *
+     * @return null|IDriver
      */
     protected function tryGetDriverUsingExt($extension)
     {
         if (!is_null($extension)) {
             $driver = $this->driverFactory->makeFromExt($extension);
-            
+
             if ($driver === false) {
                 throw new UnsupportedExtensionException("Cannot find a driver that support \"{$extension}\" extension.");
             }
@@ -86,12 +84,10 @@ class SourceFilesMatcher implements ISourceFilesMatcher
      * Matches source files in `$folder`.
      *
      * @param string $folder Folder containing source files.
-     *
      * @param string $driver Driver alias
-     *
-     * @param string $ext Extension for source files.
-     *                    Setting `$ext`, will filter and load only files that
-     *                    matches this extension.
+     * @param string $ext    Extension for source files.
+     *                       Setting `$ext`, will filter and load only files that
+     *                       matches this extension.
      *
      *                    Setting the `$driver` will filter and load only files
      *                    supported by the driver associated with this `$driver`.
@@ -118,7 +114,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
      */
     protected function getFilterPattern($ext = null)
     {
-        return '*.' . ($ext ?? '*');
+        return '*.'.($ext ?? '*');
     }
 
     /**
@@ -139,7 +135,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
      *
      * @param string[] $sourceFiles
      * @param string   $driver
-     * 
+     *
      * @return IFileSource[]|false
      */
     protected function getSourceFiles(array $sourceFiles, $driver)
@@ -158,7 +154,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
     }
 
     /**
-     * Glob that is safe with streams (vfs for example)
+     * Glob that is safe with streams (vfs for example).
      *
      * @param string $dir
      * @param string $filterPattern
@@ -178,7 +174,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
             }
 
             if (fnmatch($filterPattern, $filename)) {
-                $found[] = $dir . DIRECTORY_SEPARATOR . $filename;
+                $found[] = $dir.DIRECTORY_SEPARATOR.$filename;
             }
         }
 

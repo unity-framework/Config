@@ -2,13 +2,13 @@
 
 namespace Unity\Component\Config\Factories;
 
-use Unity\Contracts\Config\IDriver;
-use Unity\Support\FileInfo;
-use Unity\Component\Config\Drivers\PhpDriver;
 use Unity\Component\Config\Drivers\IniDriver;
 use Unity\Component\Config\Drivers\JsonDriver;
+use Unity\Component\Config\Drivers\PhpDriver;
 use Unity\Component\Config\Drivers\YamlDriver;
 use Unity\Contracts\Config\Factories\IDriverFactory;
+use Unity\Contracts\Config\IDriver;
+use Unity\Support\FileInfo;
 
 class DriverFactory implements IDriverFactory
 {
@@ -22,10 +22,10 @@ class DriverFactory implements IDriverFactory
 
     /** Available drivers, their aliases and extensions */
     protected $drivers = [
-        'php' =>  PhpDriver::class,
-        'ini' =>  IniDriver::class,
+        'php'  => PhpDriver::class,
+        'ini'  => IniDriver::class,
         'json' => JsonDriver::class,
-        'yml' =>  YamlDriver::class
+        'yml'  => YamlDriver::class,
     ];
 
     /**
@@ -35,7 +35,7 @@ class DriverFactory implements IDriverFactory
      *
      * @return string
      */
-    function get($alias)
+    public function get($alias)
     {
         return $this->drivers[$alias];
     }
@@ -47,7 +47,7 @@ class DriverFactory implements IDriverFactory
      *
      * @return bool
      */
-    function has($alias)
+    public function has($alias)
     {
         return array_key_exists($alias, $this->drivers);
     }
@@ -57,7 +57,7 @@ class DriverFactory implements IDriverFactory
      *
      * @return array
      */
-    function getAll()
+    public function getAll()
     {
         return $this->drivers;
     }
@@ -69,7 +69,7 @@ class DriverFactory implements IDriverFactory
      *
      * @return IDriver|false
      */
-    function makeFromExt($extension)
+    public function makeFromExt($extension)
     {
         $drivers = $this->getAll();
 
@@ -87,19 +87,19 @@ class DriverFactory implements IDriverFactory
     }
 
     /**
-     * Makes an IDriver instance based on the given `$file` extension
+     * Makes an IDriver instance based on the given `$file` extension.
      *
      * @param $file string
      *
      * @return IDriver|false
      */
-    function makeFromFile($file)
+    public function makeFromFile($file)
     {
         $ext = $this->fileInfo->ext($file);
 
         return $this->makeFromExt($ext);
     }
-    
+
     /**
      * Makes an IDriver instance based on the given `$alias`.
      *
@@ -107,11 +107,11 @@ class DriverFactory implements IDriverFactory
      *
      * @return IDriver|false
      */
-    function makeFromAlias($alias)
+    public function makeFromAlias($alias)
     {
         if ($this->has($alias)) {
             $driver = $this->get($alias);
-            
+
             return new $driver();
         }
 

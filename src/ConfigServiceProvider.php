@@ -8,8 +8,8 @@ use Unity\Component\Config\Drivers\PhpDriver;
 use Unity\Component\Config\Drivers\YamlDriver;
 use Unity\Component\Config\Factories\DriverFactory;
 use Unity\Component\Config\Factories\SourceFactory;
-use Unity\Component\Config\Sources\FileSource;
-use Unity\Component\Config\Sources\FolderSource;
+use Unity\Component\Config\Sources\SourceFile;
+use Unity\Component\Config\Sources\SourceFolder;
 use Unity\Component\Config\Sources\SourceFilesMatcher;
 use Unity\Contracts\Config\Factories\IDriverFactory;
 use Unity\Contracts\Config\Factories\ISourceFactory;
@@ -38,7 +38,7 @@ class ConfigServiceProvider implements IServiceProvider
 
         $container->set('driverFactory', DriverFactory::class);
 
-        $container->set('fileSource', FileSource::class);
+        $container->set('sourceFile', SourceFile::class);
 
         $container->set('sourceFilesMatcher', SourceFilesMatcher::class)
             ->bind(IDriverFactory::class, function ($container) {
@@ -48,7 +48,7 @@ class ConfigServiceProvider implements IServiceProvider
                 return $container->get('sourceFactory');
             });
 
-        $container->set('folderSource', FolderSource::class)
+        $container->set('sourceFolder', SourceFolder::class)
             ->bind(ISourceFilesMatcher::class, function ($container) {
                 return $container->get('sourceFilesMatcher');
             });

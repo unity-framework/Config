@@ -171,7 +171,7 @@ class ConfigBuilder
                 $this->cacheExpTime
             ]);
 
-            if (!$cache->isExpired() && !$cache->hasChanges()) {
+            if (!$cache->isHit() && !$cache->hasChanges()) {
                 $data = $cache->get();
             } else {
                 $data = $loader->load($source, $driver, $ext);

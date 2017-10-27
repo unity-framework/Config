@@ -2,9 +2,8 @@
 
 namespace Unity\Component\Config;
 
-use Psr\Container\ContainerInterface;
-use Unity\Contracts\Container\IContainer;
 use Unity\Component\Container\ContainerBuilder;
+use Unity\Contracts\Container\IContainer;
 
 class ConfigBuilder
 {
@@ -16,10 +15,10 @@ class ConfigBuilder
 
     /** @var string */
     protected $source;
-    
+
     /** @var string */
     protected $cachePath;
-        
+
     /** @var string */
     protected $cacheExpTime;
 
@@ -168,7 +167,7 @@ class ConfigBuilder
             $cache = $container->make('sourceCache', [
                 $source,
                 $this->cachePath,
-                $this->cacheExpTime
+                $this->cacheExpTime,
             ]);
 
             if (!$cache->isHit() && !$cache->hasChanges()) {

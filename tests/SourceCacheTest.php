@@ -1,7 +1,7 @@
 <?php
 
-use org\bovigo\vfs\vfsStream;
 use e200\MakeAccessible\Make;
+use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Sources\SourceCache;
 
@@ -11,9 +11,9 @@ class SourceCacheTest extends TestCase
     {
         $value = 'config.json';
         $expected = md5($value);
-        
+
         $sourceCache = $this->getAccessibleSourceCache($value, null);
-        
+
         $this->assertEquals($expected, $sourceCache->getHash());
     }
 
@@ -22,7 +22,7 @@ class SourceCacheTest extends TestCase
         $sourcePath = 'source/path';
         $cachePath = 'cache/path';
 
-        $expected = $cachePath . DIRECTORY_SEPARATOR . md5($sourcePath);
+        $expected = $cachePath.DIRECTORY_SEPARATOR.md5($sourcePath);
 
         $sourceCache = $this->getAccessibleSourceCache($sourcePath, $cachePath);
 
@@ -31,7 +31,7 @@ class SourceCacheTest extends TestCase
 
     public function testLastCacheTime()
     {
-        // Testing with a folder.        
+        // Testing with a folder.
         $virtualFolder = vfsStream::setup()->lastModified(12345);
 
         $sourceCache = $this->getAccessibleSourceCache(null, $virtualFolder->url());
@@ -48,12 +48,12 @@ class SourceCacheTest extends TestCase
 
     public function testLastSourceModTime()
     {
-        // Testing with a folder.        
+        // Testing with a folder.
         $virtualFolder = vfsStream::setup()->lastModified(12345);
 
         $sourceCache = $this->getAccessibleSourceCache($virtualFolder->url(), null);
         $this->assertEquals(12345, $sourceCache->lastSourceModTime());
-        
+
         // Testing with a folder.
         $file = vfsStream::newFile('config.json')
             ->at($virtualFolder)
@@ -67,7 +67,7 @@ class SourceCacheTest extends TestCase
     {
         // Source time < cache time
         $virtualFolder = vfsStream::setup();
-        
+
         $file = vfsStream::newFile('config.json')
             ->at($virtualFolder)
             ->lastModified(99);
@@ -84,17 +84,17 @@ class SourceCacheTest extends TestCase
             ->lastModified(100);
         $virtualFolder->lastModified(100);
         $sourceCache = $this->getSourceCache($file->url(), $virtualFolder->url());
-            
+
         $this->assertFalse($sourceCache->hasChanges());
 
         // Source time > cache time
         $virtualFolder = vfsStream::setup();
-        
+
         $file = vfsStream::newFile('config.json')
             ->at($virtualFolder)
             ->lastModified(101);
         $sourceCache = $this->getSourceCache($file->url(), $virtualFolder->url());
-        $virtualFolder->lastModified(100);        
+        $virtualFolder->lastModified(100);
 
         $this->assertTrue($sourceCache->hasChanges());
     }
@@ -102,30 +102,30 @@ class SourceCacheTest extends TestCase
     public function testGetSet()
     {
         $dir = [
-            'cache' => [],
-            'configs' => []
+            'cache'   => [],
+            'configs' => [],
         ];
 
         $virtualFolder = vfsStream::setup('root', null, $dir);
-        
-        $sourcePath = $virtualFolder->url() . DIRECTORY_SEPARATOR . 'configs';
-        $cachePath = $virtualFolder->url() . DIRECTORY_SEPARATOR . 'cache';
 
-        $expectedCachedFileName = $cachePath . DIRECTORY_SEPARATOR . md5($sourcePath);
-        
+        $sourcePath = $virtualFolder->url().DIRECTORY_SEPARATOR.'configs';
+        $cachePath = $virtualFolder->url().DIRECTORY_SEPARATOR.'cache';
+
+        $expectedCachedFileName = $cachePath.DIRECTORY_SEPARATOR.md5($sourcePath);
+
         $sourceCache = $this->getSourceCache($sourcePath, $cachePath);
 
         $expectedData = [
-            'timeout' => 300,
+            'timeout'   => 300,
             'can_cache' => false,
-            'users' => [
+            'users'     => [
                 'e200' => [
-                    'admin' => false
+                    'admin' => false,
                 ],
                 'd3a' => [
-                    'admin' => true
-                ]
-            ]
+                    'admin' => true,
+                ],
+            ],
         ];
 
         $sourceCache->set($expectedData);
@@ -142,8 +142,8 @@ class SourceCacheTest extends TestCase
 
         $file = vfsStream::newFile('file')
             ->at($virtualFolder)
-            ->setContent($expectedExpTime . "\nCache data");
-        
+            ->setContent($expectedExpTime."\nCache data");
+
         $sourceCache = $this->getAccessibleSourceCache();
 
         $this->assertEquals($expectedExpTime, $sourceCache->getExpTime($file->url()));
@@ -151,23 +151,23 @@ class SourceCacheTest extends TestCase
 
     public function testIsHit()
     {
-        $virtualFolder = vfsStream::setup();     
+        $virtualFolder = vfsStream::setup();
 
         $file = vfsStream::newFile('file')->at($virtualFolder);
 
         $cachedFilename = md5($file->url());
-        
+
         $cacheFile = vfsStream::newFile($cachedFilename)
             ->at($virtualFolder)
-            ->setContent(time() - 1000 . "\nCache data");
-            
+            ->setContent(time() - 1000 ."\nCache data");
+
         $sourceCache = $this->getSourceCache($file->url(), $virtualFolder->url());
 
         $this->assertFalse($sourceCache->isHit());
 
-        $cacheFile->setContent(time() + 1000 . "\nCache data");
+        $cacheFile->setContent(time() + 1000 ."\nCache data");
 
-        $this->assertTrue($sourceCache->isHit());        
+        $this->assertTrue($sourceCache->isHit());
     }
 
     public function testGetInvalidExpTime()
@@ -176,7 +176,7 @@ class SourceCacheTest extends TestCase
 
         $file = vfsStream::newFile('file')
             ->at($virtualFolder);
-        
+
         $sourceCache = $this->getAccessibleSourceCache();
 
         $this->assertFalse($sourceCache->getExpTime($file->url()));

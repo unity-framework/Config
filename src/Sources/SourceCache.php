@@ -28,7 +28,7 @@ class SourceCache
     {
         return md5($this->source);
     }
-    
+
     /**
      * Returns the cache file name.
      *
@@ -36,7 +36,7 @@ class SourceCache
      */
     protected function getCacheFileName()
     {
-        return $this->cachePath . DIRECTORY_SEPARATOR . $this->getHash();
+        return $this->cachePath.DIRECTORY_SEPARATOR.$this->getHash();
     }
 
     /**
@@ -66,7 +66,7 @@ class SourceCache
     /**
      * Checks if the cached data is hit.
      *
-     * @return boolean
+     * @return bool
      */
     public function isHit()
     {
@@ -88,24 +88,24 @@ class SourceCache
     }
 
     protected function prependExpTime($data)
-    {        
-        return $this->getExpirationTimestamp() . "\n" . $data;
+    {
+        return $this->getExpirationTimestamp()."\n".$data;
     }
 
     /**
      * Gets the expiration time for this source cache.
      *
      * @param $file Name of the file in the cache.
-     * 
+     *
      * @return int|false
      */
     protected function getExpTime($file)
     {
         $expTime = trim(fgets(fopen($file, 'r+')));
-                
+
         return is_numeric($expTime) ? (int) $expTime : false;
     }
-    
+
     /**
      * Gets the expiration time timestamp from the
      * cache expiration string.

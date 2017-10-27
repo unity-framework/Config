@@ -2,10 +2,10 @@
 
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
-use Unity\Component\Config\Loader;
-use Unity\Contracts\Config\Sources\ISource;
-use Unity\Contracts\Config\Factories\ISourceFactory;
 use Unity\Component\Config\Exceptions\DriverNotFoundException;
+use Unity\Component\Config\Loader;
+use Unity\Contracts\Config\Factories\ISourceFactory;
+use Unity\Contracts\Config\Sources\ISource;
 
 class LoaderTest extends TestCase
 {
@@ -17,7 +17,7 @@ class LoaderTest extends TestCase
             ->expects($this->once())
             ->method('getData')
             ->willReturn(true);
-        
+
         $sourceFactoryMock = $this->createMock(ISourceFactory::class);
 
         $sourceFactoryMock
@@ -42,7 +42,7 @@ class LoaderTest extends TestCase
             ->expects($this->once())
             ->method('getData')
             ->willReturn(true);
-        
+
         $sourceFactoryMock = $this->createMock(ISourceFactory::class);
 
         $sourceFactoryMock
@@ -60,7 +60,7 @@ class LoaderTest extends TestCase
     public function testDriverNotFoundExceptionOnLoadUnsupportedFile()
     {
         $this->expectException(DriverNotFoundException::class);
-        
+
         $sourceFactoryMock = $this->createMock(ISourceFactory::class);
 
         $sourceFactoryMock
@@ -69,9 +69,9 @@ class LoaderTest extends TestCase
             ->willReturn(false);
 
         $folder = vfsStream::setup();
-        
+
         $file = vfsStream::newFile('config.ini')->at($folder);
-        
+
         $loader = $this->getLoader($sourceFactoryMock);
 
         $this->assertTrue($loader->load($file->url(), null, null));

@@ -2,7 +2,7 @@
   "name": "unity/config",
   "description": "Extensible configuration manager for PHP projects that uses dot notation and supports json, ini, array based and many more common formats",
   "type": "library",
-  "keywords": ["config", "configuration", "unity-framework", "unity", "php", "extensible"],
+  "keywords": [ "unity-framework", "unity", "php", "config", "configuration", "extensible"],
   "homepage": "https://github.com/unity-framework/Config",
   "license": "MIT",
   "authors": [
@@ -13,13 +13,44 @@
       "role": "developer"
     }
   ],
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
+  "prefer-stable" : true,
   "require": {
-    "unity/support": "^1.0"
+    "unity/container": "dev-master",
+    "unity/support": "dev-master",
+    "unity/contracts": "dev-master",
+    "make/accessible": "dev-master"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "../container"
+    },
+    {
+      "type": "vcs",
+      "url": "../Reflector"
+    },
+    {
+      "type": "vcs",
+      "url": "../contracts"
+    },
+    {
+      "type": "vcs",
+      "url": "../support"
+    },
+    {
+      "type": "vcs",
+      "url": "../MakeAccessible"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "Unity\\Component\\Config\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Unity\\Tests\\Config\\": "tests/"
     }
   },
   "require-dev": {

@@ -8,18 +8,20 @@
 >
     <testsuites>
         <testsuite name="Test Suite">
-            <file>./tests/Notation/NotationBagTest.php</file>
-            <file>./tests/Notation/DotNotationTest.php</file>
+            <file>./tests/DriverFactoryTest.php</file>
+            <file>./tests/SourceFactoryTest.php</file>
+            
+            <file>./tests/SourceFilesMatcherTest.php</file>
 
-            <file>./tests/Resolvers/FileSourceResolverTest.php</file>
-            <file>./tests/Resolvers/SourceResolverTest.php</file>
+            <file>./tests/SourceFileTest.php</file>
+            <file>./tests/SourceFolderTest.php</file>
 
-            <file>./tests/Drivers/FileDriverFactoryTest.php</file>
-            <file>./tests/Drivers/DriverFactoryTest.php</file>
+            <file>./tests/SourceCacheTest.php</file>
+
+            <file>./tests/LoaderTest.php</file>
 
             <file>./tests/ConfigTest.php</file>
-            <!--<file>./tests/PhpDriverTest.php</file>-->
-            <file>./tests/DriversRegistryTest.php</file>
+            <file>./tests/ConfigBuilderTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

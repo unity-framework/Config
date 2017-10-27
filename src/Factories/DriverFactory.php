@@ -6,8 +6,8 @@ use Unity\Component\Config\Drivers\IniDriver;
 use Unity\Component\Config\Drivers\JsonDriver;
 use Unity\Component\Config\Drivers\PhpDriver;
 use Unity\Component\Config\Drivers\YamlDriver;
+use Unity\Contracts\Config\Drivers\IDriver;
 use Unity\Contracts\Config\Factories\IDriverFactory;
-use Unity\Contracts\Config\IDriver;
 use Unity\Support\FileInfo;
 
 class DriverFactory implements IDriverFactory
@@ -63,9 +63,9 @@ class DriverFactory implements IDriverFactory
     }
 
     /**
-     * Makes an IDriver instance based on the given `$extension`.
+     * Makes an `IDrive` instance based on the given `$extension`.
      *
-     * @param $extension string
+     * @param string $extension
      *
      * @return IDriver|false
      */

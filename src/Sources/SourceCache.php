@@ -22,11 +22,13 @@ class SourceCache
     /**
      * Gets the hash for the source.
      *
+     * @param string $filename
+     * 
      * @return string
      */
-    protected function getHash()
+    protected function getHashedFileName($filename)
     {
-        return md5($this->source);
+        return md5($filename);
     }
 
     /**
@@ -36,17 +38,7 @@ class SourceCache
      */
     protected function getCacheFileName()
     {
-        return $this->cachePath.DIRECTORY_SEPARATOR.$this->getHash();
-    }
-
-    /**
-     * Gets the cached data.
-     *
-     * @return mixed
-     */
-    public function get()
-    {
-        return unserialize(file_get_contents($this->getCacheFileName()));
+        return $this->cachePath.DIRECTORY_SEPARATOR.$this->getHashedFileName($this->source);
     }
 
     /**
@@ -58,9 +50,43 @@ class SourceCache
     {
         $serializedData = serialize($data);
 
-        //$data = $this->prependExpTime();
+        $dataWithPrependedExpTime = $this->prependExpTime($this->cacheExpTime, $serializedData);
+        
+        $cacheFileName = $this->getCacheFileName();
+        
+        file_put_contents($cacheFileName, $dataWithPrependedExpTime);
+    }
 
-        file_put_contents($this->getCacheFileName(), $serializedData);
+    /**
+     * Gets the cached data.
+     *
+     * @return mixed
+     */
+    public function get()
+    {
+        $cacheFileName = $this->getCacheFileName();
+
+        $serializedData = '';
+
+        $handler = fopen($cacheFileName, 'r');        
+
+        while (!feof($handler)) {
+            /**
+             * If $firstRun is set, that means we successfully
+             * skiped the first line.
+             */
+            if (!isset($firstRun)) {
+                fgets($handler);
+            } else {
+                $serializedData .= fgets($handler);                
+            }
+
+            $firstRun = false;
+        }
+
+        fclose($handler);
+        
+        return unserialize($serializedData);
     }
 
     /**
@@ -70,7 +96,9 @@ class SourceCache
      */
     public function isHit()
     {
-        return $this->getExpTime($this->getCacheFileName()) > time();
+        $cacheFileName = $this->getCacheFileName();
+
+        return $this->getExpTime($cacheFileName) > time();
     }
 
     /**
@@ -87,9 +115,17 @@ class SourceCache
         return $this->lastSourceModTime() > $this->lastCacheTime();
     }
 
-    protected function prependExpTime($data)
+    /**
+     * Prepends the expiration data into the first line
+     * of the data that will be cached.
+     *
+     * @param string $data
+     * 
+     * @return string
+     */
+    protected function prependExpTime($expTime, $data)
     {
-        return $this->getExpirationTimestamp()."\n".$data;
+        return $this->getExpTimeInTimestamp($expTime).PHP_EOL.$data;
     }
 
     /**
@@ -107,14 +143,16 @@ class SourceCache
     }
 
     /**
-     * Gets the expiration time timestamp from the
-     * cache expiration string.
+     * Gets the expiration time in timestamp from a string.
      *
+     * @param $expTime Represents the expiration time as string.
+     *                 e.g.: '1 hour', '2 days', '6 months'.
+     * 
      * @return int
      */
-    protected function getExpirationTimestamp()
+    protected function getExpTimeInTimestamp($expTime)
     {
-        return strtotime($this->cacheExpTime);
+        return strtotime($expTime);
     }
 
     /**

@@ -23,7 +23,7 @@ class SourceCache
      * Gets the hash for the source.
      *
      * @param string $filename
-     * 
+     *
      * @return string
      */
     protected function getHashedFileName($filename)
@@ -51,9 +51,9 @@ class SourceCache
         $serializedData = serialize($data);
 
         $dataWithPrependedExpTime = $this->prependExpTime($this->cacheExpTime, $serializedData);
-        
+
         $cacheFileName = $this->getCacheFileName();
-        
+
         file_put_contents($cacheFileName, $dataWithPrependedExpTime);
     }
 
@@ -68,7 +68,7 @@ class SourceCache
 
         $serializedData = '';
 
-        $handler = fopen($cacheFileName, 'r');        
+        $handler = fopen($cacheFileName, 'r');
 
         while (!feof($handler)) {
             /**
@@ -78,14 +78,14 @@ class SourceCache
             if (!isset($firstRun)) {
                 fgets($handler);
             } else {
-                $serializedData .= fgets($handler);                
+                $serializedData .= fgets($handler);
             }
 
             $firstRun = false;
         }
 
         fclose($handler);
-        
+
         return unserialize($serializedData);
     }
 
@@ -120,7 +120,7 @@ class SourceCache
      * of the data that will be cached.
      *
      * @param string $data
-     * 
+     *
      * @return string
      */
     protected function prependExpTime($expTime, $data)
@@ -147,7 +147,7 @@ class SourceCache
      *
      * @param $expTime Represents the expiration time as string.
      *                 e.g.: '1 hour', '2 days', '6 months'.
-     * 
+     *
      * @return int
      */
     protected function getExpTimeInTimestamp($expTime)

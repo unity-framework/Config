@@ -2,8 +2,8 @@
 
 use e200\MakeAccessible\Make;
 use PHPUnit\Framework\TestCase;
-use Unity\Contracts\Config\Sources\ISourceFile;
 use Unity\Component\Config\Sources\SourceFolder;
+use Unity\Contracts\Config\Sources\ISourceFile;
 use Unity\Contracts\Config\Sources\ISourceFilesMatcher;
 
 class SourceFolderTest extends TestCase
@@ -35,7 +35,7 @@ class SourceFolderTest extends TestCase
     {
         $fileSourceMock1 = $this->createMock(ISourceFile::class);
 
-        /**
+        /*
          * Folder source uses the `IFileSource::getKey()`
          * to struct the array data.
          */
@@ -44,7 +44,7 @@ class SourceFolderTest extends TestCase
             ->method('getKey')
             ->willReturn('fileSource1');
 
-        /**
+        /*
          * Folder source uses the `IFileSource::getData()`
          * to get this source data.
          */
@@ -62,7 +62,7 @@ class SourceFolderTest extends TestCase
 
         $folderSource = $this->getFolderSource(null, null, null, $sourceFilesMatcherMock);
 
-        /**
+        /*
          * The expected value is the structured collected data.
          */
         $this->assertEquals(['fileSource1' => true], $folderSource->getData());
@@ -77,7 +77,7 @@ class SourceFolderTest extends TestCase
         if (!$sourceFilesMatcher) {
             $sourceFilesMatcher = $this->createMock(ISourceFilesMatcher::class);
         }
-        
+
         return new SourceFolder($source, $driver, $ext, $sourceFilesMatcher);
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Unity\Component\Config\Sources;
 
-use Unity\Contracts\Config\Sources\ISourceFile;
 use Unity\Contracts\Config\Sources\ISource;
+use Unity\Contracts\Config\Sources\ISourceFile;
 use Unity\Contracts\Config\Sources\ISourceFilesMatcher;
 
 /**

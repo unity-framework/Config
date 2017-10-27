@@ -27,7 +27,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
         $this->driverFactory = $driverFactory;
         $this->sourceFactory = $sourceFactory;
     }
-    
+
     /**
      * Gets an IDriver instance that supports `$extension`,
      * if `$extension` isn't null, otherwise does nothing.
@@ -43,7 +43,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
         if (!is_null($extension)) {
             $driver = $this->driverFactory->makeFromExt($extension);
 
-            /**
+            /*
              * If there's no driver that supports the given
              * extension we should throw this exception and
              * stop here.
@@ -54,7 +54,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
 
             return $driver;
         }
-    }    
+    }
 
     /**
      * Generates the filter pattern that will be used
@@ -72,7 +72,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
 
     /**
      * Filter all files in `$folder` that matches the `$filterPattern`.
-     * 
+     *
      * Original description: Glob that is safe with streams (vfs for example).
      *
      * @param string $folder
@@ -93,7 +93,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
             }
 
             if (fnmatch($filterPattern, $filename)) {
-                $found[] = $folder . DIRECTORY_SEPARATOR . $filename;
+                $found[] = $folder.DIRECTORY_SEPARATOR.$filename;
             }
         }
 
@@ -128,10 +128,10 @@ class SourceFilesMatcher implements ISourceFilesMatcher
     /**
      * Matches source files in `$folder`.
      *
-     * @param string $folder Folder containing source files.
-     * @param string $driver Driver alias
-     * @param string $extension    Extension for source files.
-     *                             
+     * @param string $folder    Folder containing source files.
+     * @param string $driver    Driver alias
+     * @param string $extension Extension for source files.
+     *
      *                             Setting `$extension`, will filter and load only files that
      *                             matches this extension.
      *
@@ -142,17 +142,16 @@ class SourceFilesMatcher implements ISourceFilesMatcher
      */
     protected function matchSourceFiles($folder, $driver, $extension)
     {
-        
     }
 
     /**
      * Matches source files in `$folder`.
      *
-     * @param string $folder Folder containing source files.
-     * @param string $driver Driver alias
-     * @param string $extension    Extension for source files.
-     *                       Setting `$extension`, will filter and load only files that
-     *                       matches this extension.
+     * @param string $folder    Folder containing source files.
+     * @param string $driver    Driver alias
+     * @param string $extension Extension for source files.
+     *                          Setting `$extension`, will filter and load only files that
+     *                          matches this extension.
      *
      *                    Setting the `$driver` will filter and load only files
      *                    supported by the driver associated with this `$driver`.
@@ -173,9 +172,9 @@ class SourceFilesMatcher implements ISourceFilesMatcher
 
         if (is_readable($folder)) {
             $filterPattern = $this->getFilterPattern($extension);
-            
+
             $files = $this->filterFiles($folder, $filterPattern);
-            
+
             return $this->getSourceFiles($files, $driver);
         } else {
             throw new UnreadableFolderException('Unreadable source folder.');

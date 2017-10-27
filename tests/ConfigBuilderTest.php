@@ -18,7 +18,7 @@ class ConfigBuilderTest extends TestCase
         $this->assertEquals($expectedSource, $configBuilder->source);
         $this->assertInstanceOf(ConfigBuilder::class, $instance);
     }
-    
+
     public function testSetExt()
     {
         $configBuilder = $this->getAccessibleConfigBuilder();
@@ -31,7 +31,7 @@ class ConfigBuilderTest extends TestCase
         $this->assertEquals($expectedExt, $configBuilder->ext);
         $this->assertInstanceOf(ConfigBuilder::class, $instance);
     }
-    
+
     public function testSetDriver()
     {
         $configBuilder = $this->getAccessibleConfigBuilder();
@@ -44,7 +44,7 @@ class ConfigBuilderTest extends TestCase
         $this->assertEquals($expectedDriver, $configBuilder->driver);
         $this->assertInstanceOf(ConfigBuilder::class, $instance);
     }
-    
+
     public function testSetContainer()
     {
         $configBuilder = $this->getAccessibleConfigBuilder();
@@ -72,7 +72,7 @@ class ConfigBuilderTest extends TestCase
         $configBuilder = $this->getAccessibleConfigBuilder();
 
         $this->assertFalse($configBuilder->hasContainer());
-        
+
         $configBuilder->container = true;
         $this->assertTrue($configBuilder->getContainer());
 
@@ -107,7 +107,7 @@ class ConfigBuilderTest extends TestCase
         $configBuilder = $this->getAccessibleConfigBuilder();
 
         $this->assertFalse($configBuilder->canCache());
-        
+
         $configBuilder->cachePath = 'cache_path';
         $this->assertTrue($configBuilder->canCache());
 

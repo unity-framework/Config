@@ -3,12 +3,12 @@
 namespace Unity\Component\Config\Factories;
 
 use Unity\Contracts\Config\Drivers\IDriver;
-use Unity\Contracts\Config\Sources\ISourceFile;
-use Unity\Support\FileInfo;
-use Unity\Contracts\Container\IContainer;
-use Unity\Contracts\Config\Sources\ISource;
 use Unity\Contracts\Config\Factories\IDriverFactory;
 use Unity\Contracts\Config\Factories\ISourceFactory;
+use Unity\Contracts\Config\Sources\ISource;
+use Unity\Contracts\Config\Sources\ISourceFile;
+use Unity\Contracts\Container\IContainer;
+use Unity\Support\FileInfo;
 
 class SourceFactory implements ISourceFactory
 {
@@ -30,7 +30,7 @@ class SourceFactory implements ISourceFactory
         $this->container = $container;
         $this->fileInfo = $fileInfo;
     }
-    
+
     /**
      * Resolves the necessary driver to make
      * the `IFileSource` instance.
@@ -38,7 +38,7 @@ class SourceFactory implements ISourceFactory
      * @param string $file   The source.
      * @param string $driver The driver that will be used.
      * @param string $ext
-     * 
+     *
      * @return IDriver|bool
      */
     protected function resolveDriver($file, $driver, $ext)

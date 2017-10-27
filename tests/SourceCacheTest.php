@@ -7,14 +7,14 @@ use Unity\Component\Config\Sources\SourceCache;
 
 class SourceCacheTest extends TestCase
 {
-    public function testGetHash()
+    public function testGetHashedFileName()
     {
         $value = 'config.json';
         $expected = md5($value);
 
         $sourceCache = $this->getAccessibleSourceCache($value, null);
 
-        $this->assertEquals($expected, $sourceCache->getHash());
+        $this->assertEquals($expected, $sourceCache->getHashedFileName($value));
     }
 
     public function testGetCacheFileName()
@@ -99,6 +99,11 @@ class SourceCacheTest extends TestCase
         $this->assertTrue($sourceCache->hasChanges());
     }
 
+    public function testPrependExpTime()
+    {
+        $this->assertTrue(true);
+    }
+
     public function testGetSet()
     {
         $dir = [
@@ -113,7 +118,7 @@ class SourceCacheTest extends TestCase
 
         $expectedCachedFileName = $cachePath.DIRECTORY_SEPARATOR.md5($sourcePath);
 
-        $sourceCache = $this->getSourceCache($sourcePath, $cachePath);
+        $sourceCache = $this->getSourceCache($sourcePath, $cachePath, '1 hour');
 
         $expectedData = [
             'timeout'   => 300,
@@ -159,13 +164,13 @@ class SourceCacheTest extends TestCase
 
         $cacheFile = vfsStream::newFile($cachedFilename)
             ->at($virtualFolder)
-            ->setContent(time() - 1000 ."\nCache data");
+            ->setContent(time() - 1000 . PHP_EOL . 'Cache data');
 
         $sourceCache = $this->getSourceCache($file->url(), $virtualFolder->url());
 
         $this->assertFalse($sourceCache->isHit());
 
-        $cacheFile->setContent(time() + 1000 ."\nCache data");
+        $cacheFile->setContent(time() + 1000 . PHP_EOL . 'Cache data');
 
         $this->assertTrue($sourceCache->isHit());
     }
@@ -180,6 +185,14 @@ class SourceCacheTest extends TestCase
         $sourceCache = $this->getAccessibleSourceCache();
 
         $this->assertFalse($sourceCache->getExpTime($file->url()));
+    }
+
+    public function testGetExpInTimestamp()
+    {
+        $sourceCache = $this->getAccessibleSourceCache();
+
+        $this->assertGreaterThan(strtotime('1 hour'), $sourceCache->getExpTimeInTimestamp('2 hours'));
+        $this->assertLessThan(strtotime('1 hour'), $sourceCache->getExpTimeInTimestamp('-2 hours'));
     }
 
     public function getSourceCache($source = null, $cachePath = null, $cacheExpTime = null)

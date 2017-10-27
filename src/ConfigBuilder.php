@@ -3,16 +3,27 @@
 namespace Unity\Component\Config;
 
 use Psr\Container\ContainerInterface;
+use Unity\Contracts\Container\IContainer;
 use Unity\Component\Container\ContainerBuilder;
 
 class ConfigBuilder
 {
+    /** @var string */
     protected $ext;
+
+    /** @var string */
     protected $driver;
+
+    /** @var string */
     protected $source;
-
+    
+    /** @var string */
     protected $cachePath;
+        
+    /** @var string */
+    protected $cacheExpTime;
 
+    /** @var IContainer */
     protected $container;
 
     /**
@@ -61,11 +72,11 @@ class ConfigBuilder
     /**
      * Sets the DI container.
      *
-     * @param $container
+     * @param IContainer $container
      *
-     * @return ConfigBuilder
+     * @return static
      */
-    public function setContainer($container)
+    public function setContainer(IContainer $container)
     {
         $this->container = $container;
 
@@ -75,7 +86,7 @@ class ConfigBuilder
     /**
      * Gets the DI container.
      *
-     * @return ContainerInterface
+     * @return IContainer
      */
     public function getContainer()
     {
@@ -99,7 +110,7 @@ class ConfigBuilder
      *
      * @param $path
      *
-     * @return ConfigBuilder
+     * @return static
      */
     public function setCachePath($path)
     {
@@ -127,7 +138,7 @@ class ConfigBuilder
     }
 
     /**
-     * Builds and returns a new instance of Config class.
+     * Builds and returns a new instance of `Config::class`.
      *
      * @return Config
      */
@@ -154,14 +165,18 @@ class ConfigBuilder
         $loader = $container->loader;
 
         if ($this->canCache()) {
-            $cache = $container->sourceCache;
+            $cache = $container->make('sourceCache', [
+                $source,
+                $this->cachePath,
+                $this->cacheExpTime
+            ]);
 
-            if (!$cache->isExpired($source) && !$cache->hasChanges(source)) {
-                $data = $cache->get($source);
+            if (!$cache->isExpired() && !$cache->hasChanges()) {
+                $data = $cache->get();
             } else {
                 $data = $loader->load($source, $driver, $ext);
 
-                $cache->set($source, $data);
+                $cache->set($data);
             }
         } else {
             $data = $loader->load($source, $driver, $ext);

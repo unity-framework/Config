@@ -164,13 +164,13 @@ class SourceCacheTest extends TestCase
 
         $cacheFile = vfsStream::newFile($cachedFilename)
             ->at($virtualFolder)
-            ->setContent(time() - 1000 . PHP_EOL . 'Cache data');
+            ->setContent(time() - 1000 .PHP_EOL.'Cache data');
 
         $sourceCache = $this->getSourceCache($file->url(), $virtualFolder->url());
 
         $this->assertFalse($sourceCache->isHit());
 
-        $cacheFile->setContent(time() + 1000 . PHP_EOL . 'Cache data');
+        $cacheFile->setContent(time() + 1000 .PHP_EOL.'Cache data');
 
         $this->assertTrue($sourceCache->isHit());
     }

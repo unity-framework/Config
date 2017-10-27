@@ -2,11 +2,13 @@
 
 namespace Unity\Component\Config\Factories;
 
+use Unity\Contracts\Config\Drivers\IDriver;
+use Unity\Contracts\Config\Sources\ISourceFile;
+use Unity\Support\FileInfo;
+use Unity\Contracts\Container\IContainer;
+use Unity\Contracts\Config\Sources\ISource;
 use Unity\Contracts\Config\Factories\IDriverFactory;
 use Unity\Contracts\Config\Factories\ISourceFactory;
-use Unity\Contracts\Config\Sources\ISource;
-use Unity\Contracts\Container\IContainer;
-use Unity\Support\FileInfo;
 
 class SourceFactory implements ISourceFactory
 {
@@ -28,6 +30,27 @@ class SourceFactory implements ISourceFactory
         $this->container = $container;
         $this->fileInfo = $fileInfo;
     }
+    
+    /**
+     * Resolves the necessary driver to make
+     * the `IFileSource` instance.
+     *
+     * @param string $file   The source.
+     * @param string $driver The driver that will be used.
+     * @param string $ext
+     * 
+     * @return IDriver|bool
+     */
+    protected function resolveDriver($file, $driver, $ext)
+    {
+        if (!is_null($driver)) {
+            return $this->driverFactory->makeFromAlias($driver);
+        } elseif (!is_null($ext)) {
+            return $this->driverFactory->makeFromExt($ext);
+        } else {
+            return $this->driverFactory->makeFromFile($file);
+        }
+    }
 
     /**
      * Makes and returns an ISource instance that represents a file.
@@ -36,29 +59,28 @@ class SourceFactory implements ISourceFactory
      * @param string $driver The driver that will be used.
      * @param string $ext
      *
-     * @return ISource|bool
+     * @return ISourceFile|bool
      */
     public function makeFromFile($file, $driver = null, $ext = null)
     {
+        /**
+         * If `$driver` is an object that means our driver was
+         * already resolved outside of `$this` scope, so, we
+         * don't need to resolve it again.
+         */
         if (!is_object($driver)) {
-            if (!is_null($driver)) {
-                $driver = $this->driverFactory->makeFromAlias($driver);
-            } elseif (!is_null($ext)) {
-                $driver = $this->driverFactory->makeFromExt($ext);
-            } else {
-                $driver = $this->driverFactory->makeFromFile($file);
-            }
+            $driver = $this->resolveDriver($file, $driver, $ext);
         }
 
         /*
          * If `$driver` isn't false, that means we got our driver.
          *
-         * We can make a new ISource instance.
+         * We can make a new IFileSource instance.
          */
         if ($driver) {
             $filename = $this->fileInfo->name($file);
 
-            return $this->container->make('fileSource', [$filename, $file, $driver]);
+            return $this->container->make('sourceFile', [$filename, $file, $driver]);
         }
 
         // There's no driver that supports `$file`, unfortunately.
@@ -76,6 +98,6 @@ class SourceFactory implements ISourceFactory
      */
     public function makeFromFolder($folder, $driver = null, $ext = null)
     {
-        return $this->container->make('folderSource', [$folder, $driver, $ext]);
+        return $this->container->make('sourceFolder', [$folder, $driver, $ext]);
     }
 }

@@ -7,101 +7,170 @@ use Unity\Component\Config\Sources\SourceCache;
 
 class SourceCacheTest extends TestCase
 {
-    public function testGetHashedFileName()
+    /**
+     * Test if `SourceCache::getSourceHash()`
+     * returns the md5 hash of the `$source`.
+     */
+    public function testGetSourceHash()
     {
-        $value = 'config.json';
-        $expected = md5($value);
+        $source = 'config.json';
+        $expected = md5($source);
 
-        $sourceCache = $this->getAccessibleSourceCache($value, null);
+        $instance = $this->getAccessibleInstance($source);
 
-        $this->assertEquals($expected, $sourceCache->getHashedFileName($value));
+        $this->assertEquals($expected, $instance->getSourceHash());
     }
 
-    public function testGetCacheFileName()
+    /**
+     * Test if `SourceCache::getCacheName()`
+     * returns the concatenation of `$cachePath`
+     * with a backslash and the md5 hash of the
+     * `$sourcePath`.
+     */
+    public function testGetCacheName()
     {
         $sourcePath = 'source/path';
         $cachePath = 'cache/path';
 
         $expected = $cachePath.DIRECTORY_SEPARATOR.md5($sourcePath);
 
-        $sourceCache = $this->getAccessibleSourceCache($sourcePath, $cachePath);
+        $instance = $this->getAccessibleInstance($sourcePath, $cachePath);
 
-        $this->assertEquals($expected, $sourceCache->getCacheFileName());
+        $this->assertEquals($expected, $instance->getCacheName());
     }
 
-    public function testLastCacheTime()
+    /**
+     * Test if `SourceCache::cacheModTime()`
+     * returns the last modification time of
+     * the cache.
+     */
+    public function testCacheModTime()
     {
-        // Testing with a folder.
-        $virtualFolder = vfsStream::setup()->lastModified(12345);
+        $expectedModTime = 1996;
 
-        $sourceCache = $this->getAccessibleSourceCache(null, $virtualFolder->url());
-        $this->assertEquals(12345, $sourceCache->lastCacheTime());
+        $cacheFolder = vfsStream::setup()->lastModified($expectedModTime);
 
-        // Testing with a folder.
-        $file = vfsStream::newFile('config.json')
-            ->at($virtualFolder)
-            ->lastModified(54321);
-
-        $sourceCache = $this->getAccessibleSourceCache(null, $file->url());
-        $this->assertEquals(54321, $sourceCache->lastCacheTime());
+        $instance = $this->getAccessibleInstance(null, $cacheFolder->url());
+        $this->assertEquals($expectedModTime, $instance->CacheModTime());
     }
 
-    public function testLastSourceModTime()
+    /**
+     * Test if `SourceCache::sourceModTime()`
+     * returns the last modification time of
+     * the source.
+     */
+    public function testSourceModTime()
     {
-        // Testing with a folder.
-        $virtualFolder = vfsStream::setup()->lastModified(12345);
-
-        $sourceCache = $this->getAccessibleSourceCache($virtualFolder->url(), null);
-        $this->assertEquals(12345, $sourceCache->lastSourceModTime());
+        $expectedModTime = 1996;
 
         // Testing with a folder.
-        $file = vfsStream::newFile('config.json')
-            ->at($virtualFolder)
-            ->lastModified(54321);
+        $cacheFolder = vfsStream::setup()->lastModified($expectedModTime);
 
-        $sourceCache = $this->getAccessibleSourceCache($file->url(), null);
-        $this->assertEquals(54321, $sourceCache->lastSourceModTime());
+        $instance = $this->getAccessibleInstance($cacheFolder->url(), null);
+        $this->assertEquals($expectedModTime, $instance->sourceModTime());
+
+
+        $expectedModTime = 2090;
+
+        // Testing with a file.
+        $sourceFile = vfsStream::newFile('config.json')
+            ->at($cacheFolder)
+            ->lastModified($expectedModTime);
+
+        $instance = $this->getAccessibleInstance($sourceFile->url(), null);
+        $this->assertEquals($expectedModTime, $instance->sourceModTime());
     }
 
-    public function testHasChanges()
+    /**
+     * Test if `SourceCache::hasChangesOnSource()`
+     * returns false when the cache data is updated.
+     * 
+     * The cache data is updated when the source
+     * modification time is less than the cache
+     * modification time.
+     *
+     * @covers SourceCache::hasChangesOnSource()
+     */
+    public function testHasChangesOnSourceWhenCacheDataIsUpdated()
     {
-        // Source time < cache time
-        $virtualFolder = vfsStream::setup();
+        $cacheFolder = vfsStream::setup();
 
-        $file = vfsStream::newFile('config.json')
-            ->at($virtualFolder)
-            ->lastModified(99);
-        $virtualFolder->lastModified(100);
-        $sourceCache = $this->getSourceCache($file->url(), $virtualFolder->url());
+        $cacheModTime = 1996;
+        $sourceModTime = $cacheModTime - 1;
 
-        $this->assertFalse($sourceCache->hasChanges());
+        $sourceFile = vfsStream::newFile('config.json')
+            ->at($cacheFolder)
+            ->lastModified($sourceModTime);
 
-        // Source time == cache time
-        $virtualFolder = vfsStream::setup();
+        $cacheFolder->lastModified($cacheModTime);
 
-        $file = vfsStream::newFile('config.json')
-            ->at($virtualFolder)
-            ->lastModified(100);
-        $virtualFolder->lastModified(100);
-        $sourceCache = $this->getSourceCache($file->url(), $virtualFolder->url());
+        $instance = $this->getAccessibleInstance(
+            $sourceFile->url(),
+            $cacheFolder->url()
+        );
 
-        $this->assertFalse($sourceCache->hasChanges());
+        $this->assertFalse($instance->hasChangesOnSource());
+    }
 
-        // Source time > cache time
-        $virtualFolder = vfsStream::setup();
+    /**
+     * Test if `SourceCache::hasChangesOnSource()`
+     * returns true when the cache data is outdated.
+     * 
+     * The cache data is outdated when the source
+     * modification time is greater than the cache
+     * modification time.
+     *
+     * @covers SourceCache::hasChangesOnSource()
+     */
+    public function testHasChangesOnSourceWhenCacheDataIsOutdated()
+    {
+        $cacheFolder = vfsStream::setup();
 
-        $file = vfsStream::newFile('config.json')
-            ->at($virtualFolder)
-            ->lastModified(101);
-        $sourceCache = $this->getSourceCache($file->url(), $virtualFolder->url());
-        $virtualFolder->lastModified(100);
+        $sourceModTime = 1996;        
+        $cacheModTime = $sourceModTime - 1;
 
-        $this->assertTrue($sourceCache->hasChanges());
+        $sourceFile = vfsStream::newFile('config.json')
+            ->at($cacheFolder)
+            ->lastModified($sourceModTime);
+
+        $cacheFolder->lastModified($cacheModTime);
+
+        $instance = $this->getAccessibleInstance(
+            $sourceFile->url(),
+            $cacheFolder->url()
+        );
+
+        $this->assertTrue($instance->hasChangesOnSource());
     }
 
     public function testPrependExpTime()
     {
-        $this->assertTrue(true);
+        $time = time();
+
+        $expected = $time . PHP_EOL . 'data';
+
+        $instance = $this->getAccessibleInstance(null, null, '0 seconds');
+
+        $this->assertEquals($expected, $instance->prependExpTime('data'));
+    }
+
+    /**
+     * Tests if `SourceCache::prependExpTime()`
+     * prepends the `SourceCache::CACHE_FOREVER_SYMBOL`
+     * to the cached file expiration time on the first
+     * line.
+     * 
+     * @covers SourceCache::prependExpTime()
+     */
+    public function testPrependExpTimeForever()
+    {
+        $serializedData = 'serializedData';
+
+        $expected = SourceCache::CACHE_FOREVER_SYMBOL . PHP_EOL . $serializedData;
+
+        $instance = $this->getAccessibleInstance(null, null, 'forever');
+
+        $this->assertEquals($expected, $instance->prependExpTime($serializedData));
     }
 
     public function testGetSet()
@@ -111,14 +180,14 @@ class SourceCacheTest extends TestCase
             'configs' => [],
         ];
 
-        $virtualFolder = vfsStream::setup('root', null, $dir);
+        $cacheFolder = vfsStream::setup('root', null, $dir);
 
-        $sourcePath = $virtualFolder->url().DIRECTORY_SEPARATOR.'configs';
-        $cachePath = $virtualFolder->url().DIRECTORY_SEPARATOR.'cache';
+        $sourcePath = $cacheFolder->url().DIRECTORY_SEPARATOR.'configs';
+        $cachePath = $cacheFolder->url().DIRECTORY_SEPARATOR.'cache';
 
         $expectedCachedFileName = $cachePath.DIRECTORY_SEPARATOR.md5($sourcePath);
 
-        $sourceCache = $this->getSourceCache($sourcePath, $cachePath, '1 hour');
+        $instance = $this->getInstance($sourcePath, $cachePath, '1 hour');
 
         $expectedData = [
             'timeout'   => 300,
@@ -133,75 +202,295 @@ class SourceCacheTest extends TestCase
             ],
         ];
 
-        $sourceCache->set($expectedData);
+        $instance->set($expectedData);
 
         $this->assertFileExists($expectedCachedFileName);
-        $this->assertEquals($expectedData, $sourceCache->get());
+        $this->assertEquals($expectedData, $instance->get());
     }
 
-    public function testGetExpTime()
+    /**
+     * Tests if `SourceCache::getInstanceExpTime()`
+     * extracts the first line of the cached files.
+     */
+    public function testGetSourceCacheExpTime()
     {
-        $expectedExpTime = 12345;
+        $expectedExpTime = time();
+        $cachedContent = $expectedExpTime.PHP_EOL.'some content';
 
-        $virtualFolder = vfsStream::setup();
+        $cacheFolder = vfsStream::setup();
 
-        $file = vfsStream::newFile('file')
-            ->at($virtualFolder)
-            ->setContent($expectedExpTime."\nCache data");
+        $sourceFile = vfsStream::newFile('file')
+            ->at($cacheFolder)
+            ->setContent($cachedContent);
 
-        $sourceCache = $this->getAccessibleSourceCache();
+        /**
+         * We need this because `SourceCache::class`
+         * will hash the source path.
+         */
+        $cachedFile = md5($sourceFile->url());
+            
+        vfsStream::newFile($cachedFile)
+            ->at($cacheFolder)
+            ->setContent($cachedContent);
+            
+        $instance = $this->getAccessibleInstance(
+            $sourceFile->url(),
+            $cacheFolder->url()
+        );
 
-        $this->assertEquals($expectedExpTime, $sourceCache->getExpTime($file->url()));
+        $this->assertEquals($expectedExpTime, $instance->getSourceCacheExpTime());
     }
 
+    /**
+     * Tests if `SourceCache::getSourceCacheExpTime()`
+     * extracts the first line and returns true if
+     * the first line is a string containing the text
+     * 'forever'.
+     * 
+     * @covers SourceCache::getInstanceExpTime()
+     */
+    public function testGetSourceCacheExpTimeForever()
+    {
+        $cacheFolder = vfsStream::setup();
+        $sourceFile  = vfsStream::newFile('file')
+            ->at($cacheFolder);
+            
+        $cachedFile = md5($sourceFile->url());
+                        
+        vfsStream::newFile($cachedFile)
+            ->at($cacheFolder)
+            ->setContent(SourceCache::CACHE_FOREVER_SYMBOL.PHP_EOL.'some content');
+
+        $instance = $this->getAccessibleInstance($sourceFile->url(), $cacheFolder->url());
+
+        $this->assertTrue($instance->getSourceCacheExpTime());
+    }
+
+    /**
+     * Tests if `SourceCache::getSourceCacheExpTime()`
+     * extracts the first line and returns false if
+     * something is wrong with the first line of
+     * the cache file.
+     * 
+     * @covers SourceCache::getInstanceExpTime()
+     */
+    public function testGetSourceCacheExpTimeInvalid()
+    {
+        $cacheFolder = vfsStream::setup();
+
+        $sourceFile = vfsStream::newFile('file')
+            ->at($cacheFolder);
+            
+        $cachedFile = md5($sourceFile->url());
+                        
+        vfsStream::newFile($cachedFile)
+            ->at($cacheFolder);
+
+        $instance = $this->getAccessibleInstance(
+            $sourceFile->url(),
+            $cacheFolder->url()
+        );
+
+        $this->assertFalse($instance->getSourceCacheExpTime());
+    }
+
+    /**
+     * Tests if `SourceCache::isHit()`
+     * returns `true` if `!isExpired()`,
+     * `!hasChangesOnSource()` and the
+     * `$cacheFile` exists.
+     */
     public function testIsHit()
     {
-        $virtualFolder = vfsStream::setup();
+        $expTime = time() - 1000;
 
-        $file = vfsStream::newFile('file')->at($virtualFolder);
+        $cacheFolder = vfsStream::setup();
+        $sourceFile  = vfsStream::newFile('file')
+            ->at($cacheFolder);
 
-        $cachedFilename = md5($file->url());
+        $cachedName = md5($sourceFile->url());
+        $cachedContent = $expTime.PHP_EOL.'some content';
 
-        $cacheFile = vfsStream::newFile($cachedFilename)
-            ->at($virtualFolder)
-            ->setContent(time() - 1000 .PHP_EOL.'Cache data');
+        $cacheFile = vfsStream::newFile($cachedName)
+            ->at($cacheFolder)
+            ->setContent($cachedContent);
 
-        $sourceCache = $this->getSourceCache($file->url(), $virtualFolder->url());
+        $instance = $this->getInstance(
+            $sourceFile->url(),
+            $cacheFolder->url()
+        );
 
-        $this->assertFalse($sourceCache->isHit());
-
-        $cacheFile->setContent(time() + 1000 .PHP_EOL.'Cache data');
-
-        $this->assertTrue($sourceCache->isHit());
+        $this->assertTrue($instance->isHit());
     }
 
-    public function testGetInvalidExpTime()
+    /**
+     * Tests if `SourceCache::isHit()`
+     * returns `false` if isExpired()`,
+     * `!hasChangesOnSource()` and the
+     * `$cacheFile` exists.
+     */
+    public function testIsHitWithExpiredCachedData()
     {
-        $virtualFolder = vfsStream::setup();
+        $expTime = time() + 1000;
 
-        $file = vfsStream::newFile('file')
-            ->at($virtualFolder);
+        $cacheFolder = vfsStream::setup();
+        $sourceFile  = vfsStream::newFile('file')
+            ->at($cacheFolder);
 
-        $sourceCache = $this->getAccessibleSourceCache();
+        $cachedName = md5($sourceFile->url());
+        $cachedContent = $expTime.PHP_EOL.'some content';
 
-        $this->assertFalse($sourceCache->getExpTime($file->url()));
+        $cacheFile = vfsStream::newFile($cachedName)
+            ->at($cacheFolder)
+            ->setContent($cachedContent);
+
+        $instance = $this->getInstance(
+            $sourceFile->url(),
+            $cacheFolder->url()
+        );
+
+        $this->assertFalse($instance->isHit());
     }
 
-    public function testGetExpInTimestamp()
+    /**
+     * Tests if `SourceCache::isHit()`
+     * returns `true` if `!isExpired()`,
+     * `!hasChangesOnSource()` and the
+     * `$cacheFile` doesn't exists.
+     */
+    public function testIsHitWithNotExistingSourceFile()
     {
-        $sourceCache = $this->getAccessibleSourceCache();
+        $expTime = time() - 1000;
 
-        $this->assertGreaterThan(strtotime('1 hour'), $sourceCache->getExpTimeInTimestamp('2 hours'));
-        $this->assertLessThan(strtotime('1 hour'), $sourceCache->getExpTimeInTimestamp('-2 hours'));
+        $cacheFolder = vfsStream::setup();
+        $sourceFile  = vfsStream::newFile('file')
+            ->at($cacheFolder);
+
+        $cachedName = md5($sourceFile->url());
+        $cachedContent = $expTime.PHP_EOL.'some content';
+
+        $cacheFile = vfsStream::newFile($cachedName)
+            ->at($cacheFolder)
+            ->setContent($cachedContent);
+
+        $instance = $this->getInstance(
+            $sourceFile->url(),
+            $cacheFolder->url()
+        );
+
+        unlink($cacheFile->url());
+
+        $this->assertFalse($instance->isHit());
     }
 
-    public function getSourceCache($source = null, $cachePath = null, $cacheExpTime = null)
+    /**
+     * Tests if `SourceCache::isMiss()`
+     * returns `true` if `isExpired()`,
+     * `!hasChangesOnSource()` and the
+     * `$cacheFile` exists.
+     */
+    public function testIsMiss()
+    {
+        $expTime = time() + 1000;
+
+        $cacheFolder = vfsStream::setup();
+        $sourceFile  = vfsStream::newFile('file')
+            ->at($cacheFolder);
+
+        $cachedName = md5($sourceFile->url());
+        $cachedContent = $expTime.PHP_EOL.'some content';
+
+        $cacheFile = vfsStream::newFile($cachedName)
+            ->at($cacheFolder)
+            ->setContent($cachedContent);
+
+        $instance = $this->getInstance(
+            $sourceFile->url(),
+            $cacheFolder->url()
+        );
+
+        $this->assertTrue($instance->isMiss());
+    }
+
+    /**
+     * Tests if `SourceCache::isMiss()`
+     * returns `true` if `!isExpired()`,
+     * `hasChangesOnSource()` and the
+     * `$cacheFile` exists.
+     */
+    public function testIsMissWithExpiredCachedData()
+    {
+        $expTime = time() - 1000;
+        $sourceChangeTime = time() + 1000;
+
+        $cacheFolder = vfsStream::setup();
+        $sourceFile  = vfsStream::newFile('file')
+            ->at($cacheFolder)
+            // Will tell to `SourceCache::hasChangesOnSource()`
+            // that the source was changed.
+            ->lastModified($sourceChangeTime);
+
+        $cachedName = md5($sourceFile->url());
+        $cachedContent = $expTime.PHP_EOL.'some content';
+
+        $cacheFile = vfsStream::newFile($cachedName)
+            ->at($cacheFolder)
+            ->setContent($cachedContent);
+
+        $instance = $this->getInstance(
+            $sourceFile->url(),
+            $cacheFolder->url()
+        );
+
+        $this->assertTrue($instance->isMiss());
+    }
+
+    /**
+     * Tests if `SourceCache::isMiss()`
+     * returns `true` if `!isExpired()`,
+     * `!hasChangesOnSource()` and the
+     * `$cacheFile` doesn't exists.
+     */
+    public function testIsMissWithNotExistingSourceFile()
+    {
+        $expTime = time() - 1000;
+
+        $cacheFolder = vfsStream::setup();
+        $sourceFile  = vfsStream::newFile('file')
+            ->at($cacheFolder);
+
+        $cachedName = md5($sourceFile->url());
+        $cachedContent = $expTime.PHP_EOL.'some content';
+
+        $cacheFile = vfsStream::newFile($cachedName)
+            ->at($cacheFolder)
+            ->setContent($cachedContent);
+
+        $instance = $this->getInstance(
+            $sourceFile->url(),
+            $cacheFolder->url()
+        );
+
+        unlink($cacheFile->url());
+
+        $this->assertTrue($instance->isMiss());
+    }
+
+    public function testConvertoToTimestamp()
+    {
+        $instance = $this->getAccessibleInstance();
+
+        $this->assertGreaterThan(strtotime('1 hour'), $instance->convertoToTimestamp('2 hours'));
+        $this->assertLessThan(strtotime('1 hour'), $instance->convertoToTimestamp('-2 hours'));
+    }
+
+    public function getInstance($source = null, $cachePath = null, $cacheExpTime = null)
     {
         return new SourceCache($source, $cachePath, $cacheExpTime);
     }
 
-    public function getAccessibleSourceCache($source = null, $cachePath = null, $cacheExpTime = null)
+    public function getAccessibleInstance($source = null, $cachePath = null, $cacheExpTime = null)
     {
-        return Make::accessible($this->getSourceCache($source, $cachePath, $cacheExpTime));
+        return Make::accessible($this->getInstance($source, $cachePath, $cacheExpTime));
     }
 }

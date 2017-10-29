@@ -26,7 +26,7 @@ class SourceFileTest extends TestCase
 
         $driverMock
             ->expects($this->once())
-            ->method('parse')
+            ->method('load')
             ->willReturn([true]);
 
         $fileSource = $this->getFileSource(null, null, $driverMock);

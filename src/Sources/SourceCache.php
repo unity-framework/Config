@@ -2,14 +2,32 @@
 
 namespace Unity\Component\Config\Sources;
 
-class SourceCache
+use Unity\Contracts\Config\Sources\ISourceCache;
+
+/**
+ * Class SourceCache.
+ * 
+ * Cache manager for a source.
+ * 
+ * @author Eleandro Duzentos <eleandro@inbox.ru>
+ * @link   https://github.com/e200/
+ */
+class SourceCache implements ISourceCache
 {
+    /**
+     * @var string Symbol that indicates whether a
+     *             cache file should be cached forever
+     *             or not.
+     * */
+    const CACHE_FOREVER_SYMBOL = 'f';
+
     /** @var string Cache source */
     protected $source;
 
     /** @var string Where cache will be stored */
     protected $cachePath;
 
+    /** @var string Expiration time in string, e.g: '2 hours', '2 seconds' */
     protected $cacheExpTime;
 
     public function __construct($source, $cachePath, $cacheExpTime)
@@ -20,41 +38,17 @@ class SourceCache
     }
 
     /**
-     * Gets the hash for the source.
-     *
-     * @param string $filename
-     *
-     * @return string
-     */
-    protected function getHashedFileName($filename)
-    {
-        return md5($filename);
-    }
-
-    /**
-     * Returns the cache file name.
-     *
-     * @return string
-     */
-    protected function getCacheFileName()
-    {
-        return $this->cachePath.DIRECTORY_SEPARATOR.$this->getHashedFileName($this->source);
-    }
-
-    /**
      * Sets the cache data.
      *
      * @param $data
      */
     public function set($data)
     {
-        $serializedData = serialize($data);
+        $expTimeWithSerializedData = $this->prependExpTime(serialize($data));
 
-        $dataWithPrependedExpTime = $this->prependExpTime($this->cacheExpTime, $serializedData);
+        $cacheName = $this->getCacheName();
 
-        $cacheFileName = $this->getCacheFileName();
-
-        file_put_contents($cacheFileName, $dataWithPrependedExpTime);
+        file_put_contents($cacheName, $expTimeWithSerializedData);
     }
 
     /**
@@ -64,16 +58,16 @@ class SourceCache
      */
     public function get()
     {
-        $cacheFileName = $this->getCacheFileName();
+        $cacheName = $this->getCacheName();
 
         $serializedData = '';
 
-        $handler = fopen($cacheFileName, 'r');
+        $handler = fopen($cacheName, 'r');
 
         while (!feof($handler)) {
             /**
-             * If $firstRun is set, that means we successfully
-             * skiped the first line.
+             * If `$firstRun` is set, that means we successfully
+             * skipped the first line.
              */
             if (!isset($firstRun)) {
                 fgets($handler);
@@ -91,76 +85,156 @@ class SourceCache
 
     /**
      * Checks if the cached data is hit.
+     * 
+     * The cached data is hit if:
+     * 
+     * - The cached data is present.
+     * 
+     * - The cached data does'nt rish
+     *   the expiration time.
+     * 
+     * - The source was not modified
+     *   since the last cache.
      *
      * @return bool
      */
     public function isHit()
     {
-        $cacheFileName = $this->getCacheFileName();
+        $cacheName = $this->getCacheName();
 
-        return $this->getExpTime($cacheFileName) > time();
+        return file_exists($cacheName)
+        &&
+        !$this->isExpired()
+        &&
+        !$this->hasChangesOnSource();
     }
 
     /**
-     * Checks if at least one source was changed after
-     * the last cache time.
-     *
-     * If any source was changed after the last cache time,
-     * our current cached data is outdated.
+     * Checks if the cached data is miss.
+     * 
+     * The cached data is miss if:
+     * 
+     * - The cached data isn't present.
+     * 
+     * - The cached data rished
+     *   the expiration time.
+     * 
+     * - The source was modified
+     *   since the last cache.
      *
      * @return bool
      */
-    public function hasChanges()
+    public function isMiss()
     {
-        return $this->lastSourceModTime() > $this->lastCacheTime();
+        $cacheName = $this->getCacheName();
+
+        return !file_exists($cacheName)
+        ||
+        $this->isExpired()
+        ||
+        $this->hasChangesOnSource();
+    }
+
+    /**
+     * Gets the source hash.
+     *
+     * @return string
+     */
+    protected function getSourceHash()
+    {
+        return md5($this->source);
+    }
+
+    /**
+     * Returns the cache file name.
+     *
+     * @return string
+     */
+    protected function getCacheName()
+    {
+        return $this->cachePath.DIRECTORY_SEPARATOR.$this->getSourceHash($this->source);
+    }
+
+    /**
+     * Checks if the cached data is expired.
+     *
+     * @return bool
+     */
+    protected function isExpired()
+    {
+        return $this->getSourceCacheExpTime() > time();
+    }
+
+    /**
+     * Checks if the source was changed after
+     * the last cache modification time.
+     *
+     * If the source was changed after the last cache modification
+     * time, our current cached data is outdated.
+     *
+     * @return bool
+     */
+    protected function hasChangesOnSource()
+    {
+        return $this->sourceModTime() > $this->cacheModTime();
     }
 
     /**
      * Prepends the expiration data into the first line
-     * of the data that will be cached.
+     * of the serialized data that will be cached.
      *
      * @param string $data
      *
      * @return string
      */
-    protected function prependExpTime($expTime, $data)
+    protected function prependExpTime($data)
     {
-        return $this->getExpTimeInTimestamp($expTime).PHP_EOL.$data;
+        if ($this->cacheExpTime == 'forever') {
+            $expTime = self::CACHE_FOREVER_SYMBOL;
+        } else {
+            $expTime = $this->convertoToTimestamp($this->cacheExpTime);            
+        }
+
+        return $expTime.PHP_EOL.$data;
     }
 
     /**
      * Gets the expiration time for this source cache.
      *
-     * @param $file Name of the file in the cache.
-     *
-     * @return int|false
+     * @return int|bool
      */
-    protected function getExpTime($file)
+    protected function getSourceCacheExpTime()
     {
-        $expTime = trim(fgets(fopen($file, 'r+')));
+        $expTime = trim(fgets(fopen($this->getCacheName(), 'r+')));
 
-        return is_numeric($expTime) ? (int) $expTime : false;
+        if (is_numeric($expTime)) {
+            return (int) $expTime;
+        } elseif($expTime == self::CACHE_FOREVER_SYMBOL) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
-     * Gets the expiration time in timestamp from a string.
+     * Converts an expiration time string to timestamp.
      *
      * @param $expTime Represents the expiration time as string.
      *                 e.g.: '1 hour', '2 days', '6 months'.
      *
      * @return int
      */
-    protected function getExpTimeInTimestamp($expTime)
+    protected function convertoToTimestamp($expTime)
     {
         return strtotime($expTime);
     }
 
     /**
-     * Returns the last cache time.
+     * Returns the last cache modification time.
      *
      * @return int
      */
-    protected function lastCacheTime()
+    protected function cacheModTime()
     {
         return filemtime($this->cachePath);
     }
@@ -170,7 +244,7 @@ class SourceCache
      *
      * @return int
      */
-    protected function lastSourceModTime()
+    protected function sourceModTime()
     {
         return filemtime($this->source);
     }

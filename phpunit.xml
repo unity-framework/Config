@@ -21,7 +21,9 @@
             <file>./tests/LoaderTest.php</file>
 
             <file>./tests/ConfigTest.php</file>
-            <file>./tests/ConfigBuilderTest.php</file>
+            <file>./tests/ConfigManagerTest.php</file>
+
+            <directory>./tests/Drivers</directory>
         </testsuite>
     </testsuites>
 </phpunit>

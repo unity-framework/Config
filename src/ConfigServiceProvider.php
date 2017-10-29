@@ -17,6 +17,12 @@ use Unity\Contracts\Config\Sources\ISourceFilesMatcher;
 use Unity\Contracts\Container\IContainer;
 use Unity\Contracts\Container\IServiceProvider;
 
+/**
+ * Class ConfigServiceProvider.
+ *
+ * @author Eleandro Duzentos <eleandro@inbox.ru>
+ * @link   https://github.com/e200/
+ */
 class ConfigServiceProvider implements IServiceProvider
 {
     public function register(IContainer $container)

@@ -1,95 +1,371 @@
 <?php
 
-use org\bovigo\vfs\vfsStream;
+use e200\MakeAccessible\Make;
 use PHPUnit\Framework\TestCase;
-use Unity\Component\Config\ConfigBuilder;
-use Unity\Component\Config\Exceptions\DriverNotFoundException;
+use Unity\Component\Config\Config;
+use Unity\Component\Config\Exceptions\ConfigRuntimeException;
 
 class ConfigTest extends TestCase
 {
-    protected $virtualFolder;
-    protected $folder;
-    protected $database;
-    protected $arrayFiles;
-    protected $arrayFolders;
-
-    protected function setUp()
+    public function testIsOnReadOnlyMode()
     {
-        parent::setUp();
+        $instance = $this->getAccessibleInstance([]);
+        $this->assertTrue($instance->readOnlyMode);
 
-        $dir = [
-            'settings.exe' => '',
-            'database.php' => "<?php return ['user' => 'root'];",
+        $instance = $this->getAccessibleInstance([], false);
+        $this->assertFalse($instance->readOnlyMode);
+    }
+
+    public function testRecCount()
+    {
+        $expected = [
+            'database' => [
+                'user' => [
+                    'name' => true,
+                    'psw' => false
+                ]
+            ]
         ];
 
-        $this->virtualFolder = vfsStream::setup(
-            'configs',
-            444,
-            $dir
-        );
+        $instance = $this->getAccessibleInstance($expected);
 
-        $this->folder = $this->virtualFolder->url().DIRECTORY_SEPARATOR;
-        $this->database = $this->folder.'database.php';
-        $this->arrayFiles = [
-            $this->folder.'settings.exe',
-            $this->folder.'database.php',
+        $this->assertEquals(4, $instance->recCount($expected));
+    }
+
+    public function testDenote()
+    {
+        $instance = $this->getAccessibleInstance();
+
+        $this->assertEquals(['configs'], $instance->denote('configs'));
+        $this->assertEquals(['configs', 'database'], $instance->denote('configs.database'));
+        $this->assertEquals(['configs', 'database', 'user'], $instance->denote('configs.database.user'));
+        $this->assertEquals(['configs', 'database', 'user', 'name'], $instance->denote('configs.database.user.name'));
+    }
+
+    public function testInnerSet()
+    {
+        $data = [
+            'database' => [
+                'user' => [
+                    'name' => true,
+                    'psw' => false
+                ]
+            ]
         ];
+
+        $instance = $this->getAccessibleInstance($data);
+
+        $instance->innerSet(['database', 'user', 'psw'], true);
+        $this->assertTrue($instance->data['database']['user']['psw']);
+        $instance->innerSet(['database', 'user'], true);
+        $this->assertTrue($instance->data['database']['user']);
+        $instance->innerSet(['database'], true);
+        $this->assertTrue($instance->data['database']);
     }
 
-    public function testGetWithFile()
+    public function testInnerGet()
     {
-        $config = (new ConfigBuilder())
-            ->setSource($this->database)
-            ->build();
+        $data = [
+            'database' => [
+                'user' => [
+                    'name' => true,
+                    'psw' => false
+                ]
+            ]
+        ];
 
-        $this->assertEquals('root', $config->get('user'));
+        $instance = $this->getAccessibleInstance($data);
+
+
+        $this->assertArrayHasKey('user', $instance->innerGet(['database']));
+        $this->assertArrayHasKey('name', $instance->innerGet(['database', 'user']));
+        $this->assertArrayHasKey('psw', $instance->innerGet(['database', 'user']));
+        
+        $this->assertTrue($instance->innerGet(['database', 'user', 'name']));
+        $this->assertFalse($instance->innerGet(['database', 'user', 'psw']));
     }
 
-    public function testGetWithFileWithoutExt()
+    public function testInnerHas()
     {
-        $this->expectException(DriverNotFoundException::class);
+        $data = [
+            'database' => [
+                'user' => [
+                    'name' => true,
+                    'psw' => false
+                ]
+            ]
+        ];
 
-        $dir = ['cache' => 'expiration=300'];
+        $instance = $this->getAccessibleInstance($data);
 
-        $this->virtualFolder = vfsStream::setup(
-            'configs',
-            444,
-            $dir
+        $this->assertTrue($instance->innerHas(['database']));
+        $this->assertTrue($instance->innerHas(['database', 'user']));
+        $this->assertTrue($instance->innerHas(['database', 'user', 'name']));
+        $this->assertTrue($instance->innerHas(['database', 'user', 'psw']));
+
+        $this->assertFalse($instance->innerHas(['db']));
+        $this->assertFalse($instance->innerHas(['database', 'db']));
+        $this->assertFalse($instance->innerHas(['database', 'user', 'db']));
+    }
+
+    public function testCount()
+    {
+        $expected = [
+            'database' => [
+                'user' => [
+                    'name' => true,
+                    'psw' => false
+                ]
+            ]
+        ];
+
+        $instance = $this->getInstance($expected);
+
+        $this->assertCount(4, $instance);
+    }
+
+    /**
+     * Testing if sets.
+     */
+    public function testSet()
+    {
+        $accessibleInstance = $this->getAccessibleInstance([], false);
+        $instance = $accessibleInstance->getInstance();
+
+        $instance->set('can_cache', true);
+
+        $this->assertArrayHasKey('can_cache', $accessibleInstance->data);
+        $this->assertTrue($accessibleInstance->data['can_cache']);
+    }
+
+    /**
+     * Testing if Replaces.
+     * 
+     * @covers Config::set()
+     */
+    public function testIfSetReplaces()
+    {
+        $accessibleInstance = $this->getAccessibleInstance(['can_cache' => false], false);
+        $instance = $accessibleInstance->getInstance();
+
+        $instance->set('can_cache', true);
+
+        $this->assertArrayHasKey('can_cache', $accessibleInstance->data);
+        $this->assertTrue($accessibleInstance->data['can_cache']);
+
+        $instance->set('database.user.exists', true);
+        
+        $this->assertArrayHasKey('database', $accessibleInstance->data);
+        $this->assertArrayHasKey('user', $accessibleInstance->data['database']);
+        $this->assertArrayHasKey('exists', $accessibleInstance->data['database']['user']);
+        $this->assertTrue($accessibleInstance->data['database']['user']['exists']);
+    }
+
+    /**
+     * @covers Config::set()
+     */
+    public function testConfigRuntimeExceptionOnSet()
+    {
+        $this->expectException(ConfigRuntimeException::class);
+        
+        $instance = $this->getInstance([], true);
+
+        $instance->set('', null);
+    }
+
+    /**
+     * @covers Config::set()
+     */
+    public function testConfigRuntimeExceptionOnSetByDefault()
+    {
+        $this->expectException(ConfigRuntimeException::class);
+        
+        $instance = $this->getInstance([]);
+
+        $instance->set('', null);
+    }
+
+    public function testGet()
+    {
+        $instance = $this->getInstance([
+            'config' => [
+                    'is_working' => true
+                ]
+            ]);
+
+        $this->assertTrue($instance->get('config.is_working'));
+    }
+
+    public function testHas()
+    {
+        $instance = $this->getInstance([
+            'config' => [
+                    'is_working' => null
+                ]
+            ]);
+
+        $this->assertTrue($instance->has('config.is_working'));
+        $this->assertFalse($instance->has('config.not_working'));
+
+        $this->assertTrue($instance->has('config'));
+        $this->assertFalse($instance->has('configurations'));
+    }
+
+    public function testOffsetSet()
+    {
+        $accessibleInstance = $this->getAccessibleInstance([], false);        
+        $instance = $accessibleInstance->getInstance();
+
+        $instance['is_working'] = true;
+        $this->assertTrue($accessibleInstance->data['is_working']);
+    }
+
+    /**
+     * Testing if replaces.
+     * 
+     * @covers Config::offsetSet()
+     */
+    public function testOffsetSetReplace()
+    {
+        $accessibleInstance = $this->getAccessibleInstance(['is_working' => false], false);
+        $instance = $accessibleInstance->getInstance();
+
+        $instance['is_working'] = true;
+        $this->assertTrue($accessibleInstance->data['is_working']);
+    }
+
+    public function testOffsetGet()
+    {
+        $data = [
+            'database' => [
+                'can_cache' => true
+            ]
+        ];
+
+        $instance = $this->getInstance($data);
+
+        $this->assertTrue($instance['database']['can_cache']);
+    }
+
+    /**
+     * Tests if `Config::offsetGet()` returns
+     * the configuration by reference and if we can
+     * modify it when `Config::isOnReadOnlyMode()`
+     * is disabled.
+     * 
+     * @covers Config::offsetGet()
+     */
+    public function testSetUsingOffsetGetReturnedReference()
+    {
+        $data = [
+            'database' => [
+                'can_cache' => false
+            ]
+        ];
+
+        $accessibleInstance = $this->getAccessibleInstance($data, false);
+        $instance = $accessibleInstance->getInstance();
+
+        $instance['database']['can_cache'] = true;
+
+        $this->assertSame(
+            $accessibleInstance->data['database']['can_cache'],
+            $instance['database']['can_cache']
         );
-
-        $file = $this->virtualFolder->url().DIRECTORY_SEPARATOR.'cache';
-
-        (new ConfigBuilder())
-            ->setSource($file)
-            ->build();
+        $this->assertTrue($instance['database']['can_cache']);
+        
     }
 
-    public function testGetWithFileWithoutExtAndProvidingDriver()
+    /**
+     * Tests if `Config::offsetGet()` don't returns
+     * the configuration by reference and if we can't
+     * modify it when `Config::isOnReadOnlyMode()`
+     * is enabled.
+     * 
+     * @covers Config::offsetGet()
+     */
+    public function testSetUsingOffsetGetNotReturnedReference()
     {
-        $dir = ['cache' => 'expiration=300'];
+        $data = [
+            'database' => [
+                'can_cache' => false
+            ]
+        ];
 
-        $this->virtualFolder = vfsStream::setup(
-            'configs',
-            444,
-            $dir
-        );
+        $instance = $this->getInstance($data, true);
 
-        $file = $this->virtualFolder->url().DIRECTORY_SEPARATOR.'cache';
+        $instance['database']['can_cache'] = true;
 
-        $config = (new ConfigBuilder())
-            ->setSource($file)
-            ->setDriver('ini')
-            ->build();
+        $this->assertFalse($instance['database']['can_cache']);
+        
+    }
+    
+    public function testOffsetExists()
+    {
+        $data = [
+            'database' => [
+                'can_cache' => null
+            ]
+        ];
 
-        $this->assertEquals('300', $config->get('expiration'));
+        $instance = $this->getInstance($data);
+
+        $this->assertArrayHasKey('database', $instance);
+        $this->assertArrayHasKey('can_cache', $instance['database']);
+
+        $this->assertTrue(isset($instance['database']));
+
+        /**
+         * TODO: Fix this shit: $this->assertTrue(array_key_exists('database', $instance));
+         */
+
+        $this->assertFalse(isset($instance['db']));
+        $this->assertFalse(array_key_exists('db', (array) $instance));
     }
 
-    public function testGetWithFolder()
+    public function testOffsetUnset()
     {
-        $config = (new ConfigBuilder())
-            ->setSource($this->folder)
-            ->build();
+        $data = [
+            'database' => [
+                'can_cache' => null
+            ]
+        ];
 
-        $this->assertEquals('root', $config->get('database.user'));
+        $accessibleInstance = $this->getAccessibleInstance($data, false);        
+        $instance = $accessibleInstance->getInstance();
+        
+        unset($instance['database']['can_cache']);
+        $this->assertArrayNotHasKey('can_cache', $accessibleInstance->data['database']);
+
+        unset($instance['database']);
+        $this->assertArrayNotHasKey('can_cache', $instance);
+    }
+
+    public function testConfigRuntimeExceptionOnOffsetUnset()
+    {
+        $this->expectException(ConfigRuntimeException::class);
+
+        $instance = $this->getInstance();
+        
+        unset($instance['database']);
+    }
+
+    public function testGetAll()
+    {
+        $expected = ['data'];
+
+        $instance = $this->getInstance($expected);
+
+        $this->assertEquals($expected, $instance->getAll());
+    }
+    
+    public function getInstance($data = [], $readOnly = true)
+    {
+        return new Config($data, $readOnly);
+    }
+
+    public function getAccessibleInstance($data = [], $readOnly = true)
+    {
+        return Make::accessible($this->getInstance($data, $readOnly));
     }
 }

@@ -4,16 +4,22 @@ namespace Unity\Component\Config\Drivers;
 
 use Unity\Contracts\Config\Drivers\IDriver;
 
+/**
+ * Class JsonDriver.
+ *
+ * @author Eleandro Duzentos <eleandro@inbox.ru>
+ * @link   https://github.com/e200/
+ */
 class JsonDriver implements IDriver
 {
     /**
-     * Returns the configuration as an array.
+     * Loads and returns the configurations array.
      *
      * @param $jsonfile
      *
      * @return array
      */
-    public function parse($jsonfile) : array
+    public function load($jsonfile) : array
     {
         $file_content = file_get_contents($jsonfile);
 

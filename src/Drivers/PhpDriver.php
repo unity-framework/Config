@@ -4,18 +4,30 @@ namespace Unity\Component\Config\Drivers;
 
 use Unity\Contracts\Config\Drivers\IDriver;
 
+/**
+ * Class PhpDriver.
+ *
+ * @author Eleandro Duzentos <eleandro@inbox.ru>
+ * @link   https://github.com/e200/
+ */
 class PhpDriver implements IDriver
 {
     /**
-     * Returns the configuration as an array.
+     * Loads and returns the configurations array.
      *
      * @param $phpfile
      *
      * @return array
      */
-    public function parse($phpfile) : array
+    public function load($phpfile) : array
     {
-        return require $phpfile;
+        $return = require $phpfile;
+
+        if (is_callable($return)) {
+            return call_user_func($return);
+        } else {
+            return $return;
+        }
     }
 
     /**

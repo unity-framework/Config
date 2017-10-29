@@ -4,16 +4,22 @@ namespace Unity\Component\Config\Drivers;
 
 use Unity\Contracts\Config\Drivers\IDriver;
 
+/**
+ * Class IniDriver.
+ *
+ * @author Eleandro Duzentos <eleandro@inbox.ru>
+ * @link   https://github.com/e200/
+ */
 class IniDriver implements IDriver
 {
     /**
-     * Returns the configuration as an array.
+     * Loads and returns the configurations array.
      *
      * @param $inifile
      *
      * @return array
      */
-    public function parse($inifile) : array
+    public function load($inifile) : array
     {
         return parse_ini_file($inifile);
     }

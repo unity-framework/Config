@@ -10,6 +10,14 @@ use Unity\Contracts\Config\Sources\ISourceFile;
 use Unity\Contracts\Container\IContainer;
 use Unity\Support\FileInfo;
 
+/**
+ * Class DriverFactory.
+ * 
+ * Makes `ISource` instances.
+ *
+ * @author Eleandro Duzentos <eleandro@inbox.ru>
+ * @link   https://github.com/e200/
+ */
 class SourceFactory implements ISourceFactory
 {
     /** @var IContainer */

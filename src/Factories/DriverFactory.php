@@ -10,6 +10,14 @@ use Unity\Contracts\Config\Drivers\IDriver;
 use Unity\Contracts\Config\Factories\IDriverFactory;
 use Unity\Support\FileInfo;
 
+/**
+ * Class DriverFactory.
+ * 
+ * Makes `IDriver` instances.
+ *
+ * @author Eleandro Duzentos <eleandro@inbox.ru>
+ * @link   https://github.com/e200/
+ */
 class DriverFactory implements IDriverFactory
 {
     /** @var FileInfo */

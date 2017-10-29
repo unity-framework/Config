@@ -2,8 +2,9 @@
 
 namespace Unity\Component\Config;
 
-use Unity\Component\Config\Exceptions\DriverNotFoundException;
+use Unity\Contracts\Config\ILoader;
 use Unity\Contracts\Config\Factories\ISourceFactory;
+use Unity\Component\Config\Exceptions\DriverNotFoundException;
 
 /**
  * Class Loader.
@@ -11,8 +12,9 @@ use Unity\Contracts\Config\Factories\ISourceFactory;
  * Loads all available and supported configuration sources.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ * @link   https://github.com/e200/
  */
-class Loader
+class Loader implements ILoader
 {
     protected $sourceFactory;
 

@@ -12,6 +12,7 @@ use Unity\Contracts\Config\Sources\ISourceFilesMatcher;
  * Represents a folder source.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ * @link   https://github.com/e200/
  */
 class SourceFolder implements ISource
 {

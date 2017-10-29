@@ -11,6 +11,7 @@ use Unity\Contracts\Config\Sources\ISourceFile;
  * Represents a configuration file source.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ * @link   https://github.com/e200/
  */
 class SourceFile implements ISourceFile
 {
@@ -67,6 +68,6 @@ class SourceFile implements ISourceFile
      */
     public function getData()
     {
-        return $this->driver->parse($this->source);
+        return $this->driver->load($this->source);
     }
 }

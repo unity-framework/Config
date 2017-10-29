@@ -2,33 +2,66 @@
 
 namespace Unity\Component\Config;
 
-use ArrayAccess;
 use Countable;
+use ArrayAccess;
 use Unity\Contracts\Config\IConfig;
+use Unity\Component\Config\Exceptions\ConfigRuntimeException;
 
 /**
  * Class Config.
  *
- * Gets and checks configurations data.
+ * Configurations manager.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ * @link   https://github.com/e200/
  */
 class Config implements IConfig, ArrayAccess, Countable
 {
+    /** @var array */
     protected $data;
 
+    /** @var bool */
+    protected $readOnlyMode;
+
     /**
-     * @param $data array Contains configurations data.
+     * @param array $data Contains configurations data.
+     * @param bool $readOnlyMode Enable or disable read only mode.
      */
-    public function __construct(array $data)
+    public function __construct(array $data, $readOnlyMode = true)
     {
         $this->data = $data;
+        $this->readOnlyMode = $readOnlyMode;
+    }
+
+    /**
+     * Sets a configuration value at runtime.
+     *
+     * @param string $config dot notation string that references the
+     *                configuration to be replaced.
+     * @param mixed $value The new value.
+     *
+     * @return static
+     *
+     * @throws ConfigRuntimeException
+     */
+    public function set($config, $value)
+    {
+        if ($this->isOnReadOnlyMode()) {
+            throw new ConfigRuntimeException('Cannot modify configurations in read only mode.');            
+        }
+
+        $keys = $this->denote($config);
+
+        $this->innerSet($keys, $value);
+        
+        return $this;
     }
 
     /**
      * Gets a configuration value.
      *
-     * @param $config
+     * @param string $config A dot notation string that references the
+     *                configuration to be getted.
      *
      * @return mixed
      */
@@ -36,13 +69,14 @@ class Config implements IConfig, ArrayAccess, Countable
     {
         $keys = $this->denote($config);
 
-        return $this->getConfig($keys, $this->data);
+        return $this->innerGet($keys);
     }
 
     /**
      * Checks ifs a configuration exists.
      *
-     * @param $config
+     * @param string $config A dot notation string that references the
+     *                configuration to be checked.
      *
      * @return bool
      */
@@ -50,7 +84,17 @@ class Config implements IConfig, ArrayAccess, Countable
     {
         $keys = $this->denote($config);
 
-        return $this->hasConfig($keys, $this->data);
+        return $this->innerHas($keys);
+    }
+    
+    /**
+     * Counts the number of configurations.
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return $this->recCount($this->data);
     }
 
     /**
@@ -64,100 +108,81 @@ class Config implements IConfig, ArrayAccess, Countable
     }
 
     /**
-     * Whether a offset exists.
+     * Sets a configuration using the `$offset`.
      *
-     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
-     *
-     * @param mixed $offset <p>
-     *                      An offset to check for.
-     *                      </p>
-     *
-     * @return bool true on success or false on failure.
-     *              </p>
-     *              <p>
-     *              The return value will be casted to boolean if non-boolean was returned.
-     *
-     * @since 5.0.0
-     */
-    public function offsetExists($offset)
-    {
-        // TODO: Implement offsetExists() method.
-    }
-
-    /**
-     * Offset to retrieve.
-     *
-     * @link http://php.net/manual/en/arrayaccess.offsetget.php
-     *
-     * @param mixed $offset <p>
-     *                      The offset to retrieve.
-     *                      </p>
-     *
-     * @return mixed Can return all value types.
-     *
-     * @since 5.0.0
-     */
-    public function offsetGet($offset)
-    {
-        // TODO: Implement offsetGet() method.
-    }
-
-    /**
-     * Offset to set.
-     *
-     * @link http://php.net/manual/en/arrayaccess.offsetset.php
-     *
-     * @param mixed $offset <p>
-     *                      The offset to assign the value to.
-     *                      </p>
-     * @param mixed $value  <p>
-     *                      The value to set.
-     *                      </p>
-     *
-     * @return void
-     *
-     * @since 5.0.0
+     * @param mixed $offset Configuration offset.
+     * @param mixed $value The new value.
+     * 
+     * @throws ConfigRuntimeException
      */
     public function offsetSet($offset, $value)
     {
-        // TODO: Implement offsetSet() method.
+        if ($this->isOnReadOnlyMode()) {
+            throw new ConfigRuntimeException('Cannot modify configurations in read only mode.');            
+        }
+
+        $this->data[$offset] = $value;
     }
 
     /**
-     * Offset to unset.
+     * Gets a configuration using the `$offset`.
      *
-     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     * @param mixed $offset Configuration offset.
      *
-     * @param mixed $offset <p>
-     *                      The offset to unset.
-     *                      </p>
+     * @return mixed
+     */
+    public function &offsetGet($offset)
+    {
+        /**
+         * We're returning configurations
+         * by reference, that can let
+         * anyone modify configurations
+         * data.
+         * 
+         * But if read only mode is enabled,
+         * we can't let anyone modify configurations
+         * so, to prevent this, we'll return
+         * a copy of `$this->data` and if someone
+         * modify that returned copy, these changes
+         * will not be reflected to `$this->data`. 
+         */
+        if ($this->isOnReadOnlyMode()) {
+            $copy = $this->data[$offset];
+        } else {
+            return $this->data[$offset];
+        }
+
+        return $copy;
+    }
+
+    /**
+     * Checks if a configuration `$offset` exists.
      *
-     * @return void
+     * @param mixed $offset Configuration offset.
      *
-     * @since 5.0.0
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->data);
+    }
+
+    /**
+     * Unsets a configuration using the `$offset`.
+     *
+     * @param mixed $offset Configuration offset.
+     * 
+     * @throws ConfigRuntimeException
      */
     public function offsetUnset($offset)
     {
-        // TODO: Implement offsetUnset() method.
-    }
+        if ($this->isOnReadOnlyMode()) {
+            throw new ConfigRuntimeException('Cannot modify configurations in read only mode.');            
+        }
 
-    /**
-     * Count elements of an object.
-     *
-     * @link http://php.net/manual/en/countable.count.php
-     *
-     * @return int The custom count as an integer.
-     *             </p>
-     *             <p>
-     *             The return value is cast to an integer.
-     *
-     * @since 5.1.0
-     */
-    public function count()
-    {
-        return count($this->data);
+        unset($this->data[$offset]);        
     }
-
+    
     /**
      * Denotes a string using dot (.) as separator.
      *
@@ -171,17 +196,89 @@ class Config implements IConfig, ArrayAccess, Countable
     }
 
     /**
-     * Gets the configuration value.
+     * Checks if configurations read only mode is enabled.
+     * 
+     * This prevents modifications on configurations at runtime.
+     * 
+     * @return bool
+     */
+    protected function isOnReadOnlyMode()
+    {
+        return $this->readOnlyMode;
+    }
+
+    /**
+     * Recursively counts the number of configurations.
+     *
+     * @param array $data
+     * 
+     * @return int
+     */
+    protected function recCount(array $data)
+    {
+        $count = 0;
+
+        foreach ($data as $_data) {
+            $count++;
+
+            if (is_array($_data)) {
+                $count += $this->recCount($_data);
+            }
+        }
+
+        return $count;
+    }
+
+    /**
+     * Sets the configuration value.
      *
      * @param array $keys Keys to match
-     * @param array $data The top most array
+     * @param mixed $value The top most array
      *
      * @return mixed
      */
-    protected function getConfig(array $keys, array $data)
+    protected function innerSet(array $keys, $value)
     {
         $matchedData = null;
         $count = count($keys);
+
+        /************************************************************************
+         * If `$keys` contains only one key, we return the `$array`             *
+         * data associated to that key.                                         *
+         *                                                                      *
+         * If $keys contains more then one key, we access                       *
+         * and stores the first `&$data[$key]` value (it should be an array)    *
+         * to the `&$matchedData`, and we do the same with the remaining keys   *
+         * until they finish. The last `$matchedData` is where we must set our  *
+         * `$value`.                                                            *
+         ************************************************************************/
+        foreach ($keys as $index => $key) {
+            $key = $keys[$index];
+
+            if ($index == 0) {
+                $matchedData = &$this->data[$key];
+            } else {
+                $matchedData = &$matchedData[$key];
+            }
+            
+            if (($index + 1) == $count) {
+                $matchedData = $value;
+            }
+        }
+
+        return $matchedData;
+    }
+
+    /**
+     * Gets the configuration value.
+     *
+     * @param array $keys Keys to match.
+     *
+     * @return mixed
+     */
+    protected function innerGet(array $keys)
+    {
+        $matchedData = null;
 
         /************************************************************************
          * If `$keys` contains only one key, we return the `$array`             *
@@ -192,11 +289,11 @@ class Config implements IConfig, ArrayAccess, Countable
          * to the `$matchedData`, and we do the same with the remaining of keys *
          * until they finish. The last `$key` contains the value.               *
          ************************************************************************/
-        for ($i = 0; $i < $count; $i++) {
-            $key = $keys[$i];
+        foreach ($keys as $index => $key) {
+            $key = $keys[$index];
 
-            if ($i == 0) {
-                $matchedData = $data[$key];
+            if ($index == 0) {
+                $matchedData = $this->data[$key];
             } else {
                 $matchedData = $matchedData[$key];
             }
@@ -209,11 +306,10 @@ class Config implements IConfig, ArrayAccess, Countable
      * Checks if a configuration exists.
      *
      * @param array $keys Keys to match
-     * @param array $data The top most array
      *
      * @return bool
      */
-    protected function hasConfig(array $keys, array $data)
+    protected function innerHas(array $keys)
     {
         $matchedData = null;
         $count = count($keys);
@@ -224,19 +320,19 @@ class Config implements IConfig, ArrayAccess, Countable
          *                                                               *
          * If `$keys` contains more then one key, we first check         *
          * if the first key exists, if not, we return false              *
-         * imediatly, else, we keep checking if the remaining keys       *
+         * immediately, else, we keep checking if the remaining keys       *
          * exists until we find one that does'nt exists and return false *
          * or return true if all keys exists.                            *
          *****************************************************************/
-        for ($i = 0; $i < $count; $i++) {
-            $key = $keys[$i];
+        foreach ($keys as $index => $key) {
+            $key = $keys[$index];
 
-            if ($i == 0) {
-                if (!array_key_exists($key, $matchedData)) {
+            if ($index == 0) {
+                if (!array_key_exists($key, $this->data)) {
                     return false;
                 }
 
-                $matchedData = $matchedData[$key];
+                $matchedData = $this->data[$key];
             } else {
                 if (!array_key_exists($key, $matchedData)) {
                     return false;
@@ -245,7 +341,7 @@ class Config implements IConfig, ArrayAccess, Countable
                 $matchedData = $matchedData[$key];
             }
 
-            if (($i + 1) == $count) {
+            if (($index + 1) == $count) {
                 return true;
             }
         }

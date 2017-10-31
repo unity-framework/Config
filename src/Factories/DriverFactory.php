@@ -2,13 +2,14 @@
 
 namespace Unity\Component\Config\Factories;
 
-use Unity\Component\Config\Drivers\IniDriver;
-use Unity\Component\Config\Drivers\JsonDriver;
-use Unity\Component\Config\Drivers\PhpDriver;
-use Unity\Component\Config\Drivers\YamlDriver;
-use Unity\Contracts\Config\Drivers\IDriver;
-use Unity\Contracts\Config\Factories\IDriverFactory;
 use Unity\Support\FileInfo;
+use Unity\Contracts\Config\Drivers\IDriver;
+use Unity\Component\Config\Drivers\IniDriver;
+use Unity\Component\Config\Drivers\PhpDriver;
+use Unity\Component\Config\Drivers\XmlDriver;
+use Unity\Component\Config\Drivers\JsonDriver;
+use Unity\Component\Config\Drivers\YamlDriver;
+use Unity\Contracts\Config\Factories\IDriverFactory;
 
 /**
  * Class DriverFactory.
@@ -34,6 +35,7 @@ class DriverFactory implements IDriverFactory
         'ini'  => IniDriver::class,
         'json' => JsonDriver::class,
         'yml'  => YamlDriver::class,
+        'xml'  => XmlDriver::class,
     ];
 
     /**

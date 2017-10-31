@@ -156,7 +156,7 @@ class ConfigManagerTest extends TestCase
         $accessibleInstance->cachePath = null;
         $this->assertFalse($instance->isCacheEnabled());
     }
-    
+
     public function testSetupContainer()
     {
         $accessibleInstance = $this->getAccessibleInstance();

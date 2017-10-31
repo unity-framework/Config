@@ -18,6 +18,7 @@
   "require": {
     "unity/container": "dev-master",
     "unity/support": "dev-master",
+    "unity/notator": "dev-master",
     "unity/contracts": "dev-master",
     "make/accessible": "dev-master"
   },
@@ -37,6 +38,10 @@
     {
       "type": "vcs",
       "url": "../support"
+    },
+    {
+      "type": "vcs",
+      "url": "../notator"
     },
     {
       "type": "vcs",

@@ -3,9 +3,6 @@
 use e200\MakeAccessible\Make;
 use Unity\Component\Config\Exceptions\InvalidSourceException;
 use PHPUnit\Framework\TestCase;
-use Unity\Contracts\Config\ILoader;
-use Unity\Contracts\Config\IConfig;
-use Unity\Contracts\Container\IContainer;
 use Unity\Component\Config\ConfigManager;
 use Unity\Contracts\Config\Sources\ISourceCache;
 
@@ -157,8 +154,13 @@ class ConfigManagerTest extends TestCase
         $accessibleInstance->cachePath = null;
         $this->assertFalse($instance->isCacheEnabled());
     }
+<<<<<<< HEAD
     
     public function testSetupContainer()
+=======
+
+    public function testSetUpContainer()
+>>>>>>> d2d6db5792293b0d75fb4abeb563a3274e084217
     {
         $accessibleInstance = $this->getAccessibleInstance();
 
@@ -171,7 +173,7 @@ class ConfigManagerTest extends TestCase
      * Tests if `ContainerManager::setupContainer()`
      * doesn't makes a new instance of `IContainer`
      * when we already have one coming from outside.
-     * 
+     *
      * @covers ContainerManager::setupContainer()
      */
     public function testSetupContainerWithContainerAlreadyProvided()
@@ -192,7 +194,7 @@ class ConfigManagerTest extends TestCase
         $accessibleInstance = $this->getAccessibleInstance();
 
         $loaderMock = $this->createMock(ILoader::class);
-        
+
         $containerMock = $this->createMock(IContainer::class);
         $containerMock
             ->method('get')
@@ -208,13 +210,13 @@ class ConfigManagerTest extends TestCase
         $accessibleInstance = $this->getAccessibleInstance();
 
         $sourceCacheMock = $this->createMock(ISourceCache::class);
-        
+
         $containerMock = $this->createMock(IContainer::class);
         $containerMock
             ->method('make')
             ->willReturn($sourceCacheMock);
 
-        $accessibleInstance->container = $containerMock;            
+        $accessibleInstance->container = $containerMock;
 
         $this->assertInstanceOf(ISourceCache::class, $accessibleInstance->getSourceCache(null, null, null));
     }
@@ -227,7 +229,7 @@ class ConfigManagerTest extends TestCase
 
         $buildedInstance = $instance->build();
     }
-    
+
     public function testBuildWithoutCacheEnabled()
     {
         $accessibleInstance = $this->getAccessibleInstance();
@@ -242,7 +244,7 @@ class ConfigManagerTest extends TestCase
             ->method('load');
 
         $configMock = $this->createMock(IConfig::class);
-        
+
         $containerMock = $this->createMock(IContainer::class);
 
         $containerMock
@@ -285,7 +287,7 @@ class ConfigManagerTest extends TestCase
         $sourceCache
             ->expects($this->once())
             ->method('get');
-        
+
         $containerMock = $this->createMock(IContainer::class);
 
         $containerMock
@@ -333,7 +335,7 @@ class ConfigManagerTest extends TestCase
         $sourceCache
             ->expects($this->once())
             ->method('set');
-        
+
         $containerMock = $this->createMock(IContainer::class);
 
         $containerMock

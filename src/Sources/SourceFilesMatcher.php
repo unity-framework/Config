@@ -16,6 +16,7 @@ use Unity\Contracts\Config\Sources\ISourceFilesMatcher;
  * Matches files in a source folder.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ *
  * @link   https://github.com/e200/
  */
 class SourceFilesMatcher implements ISourceFilesMatcher

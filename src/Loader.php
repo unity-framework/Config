@@ -2,8 +2,6 @@
 
 namespace Unity\Component\Config;
 
-use Unity\Contracts\Config\ILoader;
-use Unity\Contracts\Config\Factories\ISourceFactory;
 use Unity\Component\Config\Exceptions\DriverNotFoundException;
 use Unity\Component\Config\Exceptions\UnreadableSourceException;
 
@@ -13,6 +11,7 @@ use Unity\Component\Config\Exceptions\UnreadableSourceException;
  * Loads all available and supported config sources.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ *
  * @link   https://github.com/e200/
  */
 class Loader implements ILoader

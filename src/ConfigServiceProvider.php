@@ -23,6 +23,7 @@ use Unity\Contracts\Config\Sources\ISourceFilesMatcher;
  * Class ConfigServiceProvider.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ *
  * @link   https://github.com/e200/
  */
 class ConfigServiceProvider implements IServiceProvider

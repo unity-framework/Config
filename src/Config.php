@@ -2,7 +2,6 @@
 
 namespace Unity\Component\Config;
 
-use Countable;
 use ArrayAccess;
 use Unity\Notator\DotNotator;
 use Unity\Contracts\Config\IConfig;
@@ -14,6 +13,7 @@ use Unity\Component\Config\Exceptions\RuntimeModificationException;
  * configs manager.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ *
  * @link   https://github.com/e200/
  */
 class Config extends DotNotator implements IConfig, ArrayAccess, Countable
@@ -48,13 +48,13 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
     public function set($config, $value)
     {
         if (!$this->allowModifications()) {
-            throw new RuntimeModificationException('Cannot modify configs in read only mode.');            
+            throw new RuntimeModificationException('Cannot modify configs in read only mode.');
         }
 
         $keys = $this->denote($config);
 
         $this->innerSet($keys, $value);
-        
+
         return $this;
     }
 
@@ -87,7 +87,7 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
 
         return $this->innerHas($keys);
     }
-    
+
     /**
      * Counts the number of configs.
      *
@@ -119,7 +119,7 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
     public function offsetSet($offset, $value)
     {
         if (!$this->allowModifications()) {
-            throw new RuntimeModificationException('Cannot modify configs in read only mode.');            
+            throw new RuntimeModificationException('Cannot modify configs in read only mode.');
         }
 
         $this->data[$offset] = $value;
@@ -139,13 +139,13 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
          * by reference, that can let
          * anyone modify configs
          * data.
-         * 
+         *
          * But if read only mode is enabled,
          * we can't let anyone modify configs
          * so, to prevent this, we'll return
          * a copy of `$this->data` and if someone
          * modify that returned copy, these changes
-         * will not be reflected to `$this->data`. 
+         * will not be reflected to `$this->data`.
          */
         if (!$this->allowModifications()) {
             $copy = $this->data[$offset];
@@ -181,7 +181,7 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
             throw new RuntimeModificationException('Cannot modify configs in read only mode.');            
         }
 
-        unset($this->data[$offset]);        
+        unset($this->data[$offset]);
     }
 
     /**
@@ -200,7 +200,7 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
      * Recursively counts the number of configs.
      *
      * @param array $data
-     * 
+     *
      * @return int
      */
     protected function recCount(array $data)

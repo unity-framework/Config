@@ -2,8 +2,8 @@
 
 namespace Unity\Component\Config\Sources;
 
-use Unity\Component\Config\Exceptions\UnreadableFolderException;
 use Unity\Component\Config\Exceptions\UnsupportedExtensionException;
+use Unity\Component\Config\Exceptions\DriverNotFoundException;
 use Unity\Contracts\Config\Drivers\IDriver;
 use Unity\Contracts\Config\Factories\IDriverFactory;
 use Unity\Contracts\Config\Factories\ISourceFactory;
@@ -30,18 +30,55 @@ class SourceFilesMatcher implements ISourceFilesMatcher
     }
 
     /**
-     * Gets an IDriver instance that supports `$extension`,
-     * if `$extension` isn't null, otherwise does nothing.
+     * Matches source files in `$folder`.
      *
-     * @param $extension
+     * @param string $folder    Folder containing source files.
+     * @param string $driver    Driver alias
+     * @param string $extension Extension for source files.
+     *                          Setting `$extension`, will filter and load only files that
+     *                          matches this extension.
+     *
+     *                          Setting the `$driver` will filter and load only files
+     *                          supported by the driver associated with this `$driver`.
+     *
+     * @throws UnreadableFolderException
+     *
+     * @return ISourceFile[]
+     */
+    public function match($folder, $driver, $extension)
+    {
+        $driver = $this->tryResolveDriver($driver, $extension);
+        
+        $filterPattern = $this->getFilterPattern($extension);
+
+        $files = $this->filterFiles($folder, $filterPattern);
+
+        return $this->getSourceFiles($files, $driver);
+    }
+
+    /**
+     * Tries resolve the driver using `$driver` and `$extension` arguments .
+     *
+     * @param string $driver A driver alias
+     * @param string $extension Source files extension
      *
      * @throws UnsupportedExtensionException
      *
-     * @return false|IDriver
+     * @return IDriver
      */
-    protected function tryGetDriverUsingExt($extension)
+    protected function tryResolveDriver($driver, $extension)
     {
-        if (!is_null($extension)) {
+        if (!is_null($driver)) {
+            $driver = $this->driverFactory->makeFromAlias($driver);
+
+            /*
+             * If there's no driver associated to this alias
+             * we should throw this exception and stop here.
+             */
+            if ($driver === false) {
+                throw new DriverNotFoundException("Cannot find driver \"{$driver}\".");
+            }
+        } elseif(!is_null($extension)) {
             $driver = $this->driverFactory->makeFromExt($extension);
 
             /*
@@ -52,11 +89,11 @@ class SourceFilesMatcher implements ISourceFilesMatcher
             if ($driver === false) {
                 throw new UnsupportedExtensionException("Cannot find a driver that support \"{$extension}\" extension.");
             }
-
-            return $driver;
         }
-    }
 
+        return $driver;
+    }
+    
     /**
      * Generates the filter pattern that will be used
      * to filter files in the folder based on their
@@ -68,7 +105,11 @@ class SourceFilesMatcher implements ISourceFilesMatcher
      */
     protected function getFilterPattern($extension = null)
     {
-        return '*.'.($extension ?? '*');
+        if (is_null($extension)) {
+            return '*';
+        } else {
+            return '*.' . $extension;
+        }
     }
 
     /**
@@ -94,10 +135,14 @@ class SourceFilesMatcher implements ISourceFilesMatcher
             }
 
             if (fnmatch($filterPattern, $filename)) {
-                $found[] = $folder.DIRECTORY_SEPARATOR.$filename;
+                $filepath = $folder.DIRECTORY_SEPARATOR.$filename;
+
+                if (is_readable($filepath)) {
+                    $found[] = $filepath;
+                }
             }
         }
-
+        
         return $found;
     }
 
@@ -107,7 +152,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
      * @param string[] $sourceFiles
      * @param string   $driver
      *
-     * @return ISourceFile[]|false
+     * @return ISourceFile[]
      */
     protected function getSourceFiles(array $sourceFiles, $driver)
     {
@@ -123,62 +168,6 @@ class SourceFilesMatcher implements ISourceFilesMatcher
         }
 
         // Our sources! :)
-        return $matchedSourceFiles ? $matchedSourceFiles : false;
-    }
-
-    /**
-     * Matches source files in `$folder`.
-     *
-     * @param string $folder    Folder containing source files.
-     * @param string $driver    Driver alias
-     * @param string $extension Extension for source files.
-     *
-     *                             Setting `$extension`, will filter and load only files that
-     *                             matches this extension.
-     *
-     *                             Setting the `$driver` will filter and load only files
-     *                             supported by the driver associated with this `$driver`.
-     *
-     * @return ISourceFile[]
-     */
-    protected function matchSourceFiles($folder, $driver, $extension)
-    {
-    }
-
-    /**
-     * Matches source files in `$folder`.
-     *
-     * @param string $folder    Folder containing source files.
-     * @param string $driver    Driver alias
-     * @param string $extension Extension for source files.
-     *                          Setting `$extension`, will filter and load only files that
-     *                          matches this extension.
-     *
-     *                    Setting the `$driver` will filter and load only files
-     *                    supported by the driver associated with this `$driver`.
-     *
-     * @throws UnreadableFolderException
-     *
-     * @return ISourceFile[]|false
-     */
-    public function match($folder, $driver, $extension)
-    {
-        /**
-         * If we haven't a `$driver` but we have an `$extension`
-         * we can try get a `$driver` using it.
-         */
-        if (is_null($driver) && !is_null($extension)) {
-            $driver = $this->tryGetDriverUsingExt($extension);
-        }
-
-        if (is_readable($folder)) {
-            $filterPattern = $this->getFilterPattern($extension);
-
-            $files = $this->filterFiles($folder, $filterPattern);
-
-            return $this->getSourceFiles($files, $driver);
-        } else {
-            throw new UnreadableFolderException('Unreadable source folder.');
-        }
+        return $matchedSourceFiles;
     }
 }

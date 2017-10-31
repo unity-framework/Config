@@ -1,64 +1,87 @@
 # Unity/Config
 
-An extensible configuration library for your PHP projects that uses dot notation and supports json, yml, ini, php (array file) and many more formats.
+An extensible configuration manager for PHP projects.
 
-## Table of contents
+**Get started managing your configurations.**
 
- - [Installation](#installation)
- - [Usage](#usage)
- - [Contribute](#contribute)
- - [Credits](#credits)
- - [License](#license)
+- [Documentation](https://github.com/unity-framework/Config/blob/master/docs/documentation.md)
+- [Examples](https://github.com/unity-framework/Config/blob/master/docs/examples.md)
+
+## Features
+
+- Array access
+- Dot notation access
+- Configurations cache
+- Auto driver detection
+- Runtime modification
+
+## Supported drivers
+
+- [INI](#ini)
+- [PHP](#php)
+- [XML](#xml)
+- [YAML](#yaml)
+- [jSON](#json)
 
 ## Installation
-To install you must have [composer](https://getcomposer.org/) installed, then run:
 
     composer require unity/config
 
-using a **terminal/prompt** in your project folder.
-
 ## Usage
 
-Suppose you have a **configurations/database.php** file in your project folder containing the following configurations:
+You have the follow configuration file: **configs/db.php** in your project folder containing the bellow configurations:
 
 ```php
 <?php
 
 return [
     'user' => 'root',
-    'psw' => '****',
-    'db' => 'test',
+    'psw'  => 'toor',
+    'db'   => 'example',
     'host' => 'localhost'
 ];
 ```
-and you want to access these configurations. This is all you need to do:
+
+and you want to manage these configurations, thats what you need to do:
 
 ```php
 <?php
 
 require "vendor/autoload.php";
 
-$config = (new ConfigBuilder)
-            ->setSource('configurations/')
+$config = (new ConfigManager())
+            ->setSource('configs')
             ->build();
 ```
-Now, to access a configuration just:
+
+Now, to access a configuration you can use the `$config->get()`, e.g.:
 
 ```php
-$config->get('database.user');
+echo $config->get('db.user');
 ```
-This will return: `'root'`. See how easy it is!?
 
-For more information about the how to use this library, see the [documentation]().
+Or in a more simple way, using array access:
+
+```php
+echo $config['db']['user'];
+```
+
+Both methods will have the same output:
+
+```php
+root
+```
+
+Ask your self, is it easy???
 
 ## Contributing
 
-To contribute, please, read the [contributing](https://github.com/unity-framework/Config/blob/master/contributing.md) file.
+We will be really thankful if you make a fork, make your changes and send a pull request!
 
 ## Credits
 
- - [Eleandro Duzentos](https://e200.github.com/) and contributors.
+- [Eleandro Duzentos](https://github.com/e200/) and [contributors](#).
 
 ## License
 
-The Unity Framework is licensed under the MIT license. See [license](https://github.com/unity-framework/Config/blob/master/license.md) file for more information.
+The Unity/Config is licensed under the MIT license. See [license](https://github.com/unity-framework/Config/blob/master/license.md) file for more information.

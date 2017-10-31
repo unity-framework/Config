@@ -8,7 +8,7 @@ use Unity\Contracts\Config\Sources\ISourceFile;
 /**
  * Class SourceFile.
  *
- * Represents a configuration file source.
+ * Represents a config file source.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
  * @link   https://github.com/e200/
@@ -21,7 +21,7 @@ class SourceFile implements ISourceFile
     protected $key;
 
     /**
-     * @var mixed Contains or gives a way to access configurations data.
+     * @var mixed Contains or gives a way to access configs data.
      */
     protected $source;
 
@@ -62,7 +62,7 @@ class SourceFile implements ISourceFile
     }
 
     /**
-     * Returns an array containing all configurations on this file.
+     * Returns an array containing all configs on this file.
      *
      * @return array
      */

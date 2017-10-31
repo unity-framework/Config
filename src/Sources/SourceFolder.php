@@ -44,7 +44,7 @@ class SourceFolder implements ISource
     }
 
     /**
-     * Gets all available configurations data.
+     * Gets all available configs data.
      *
      * @return array
      */

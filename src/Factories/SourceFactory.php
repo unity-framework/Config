@@ -83,7 +83,7 @@ class SourceFactory implements ISourceFactory
         /*
          * If `$driver` isn't false, that means we got our driver.
          *
-         * We can make a new IFileSource instance.
+         * We can make an `IFileSource` instance.
          */
         if ($driver) {
             $filename = $this->fileInfo->name($file);

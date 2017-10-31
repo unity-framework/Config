@@ -19,7 +19,7 @@ class SourceCache implements ISourceCache
      *             cache file should be cached forever
      *             or not.
      * */
-    const CACHE_FOREVER_SYMBOL = 'f';
+    const CACHE_FOREVER_SYMBOL = '...';
 
     /** @var string Cache source */
     protected $source;
@@ -40,7 +40,7 @@ class SourceCache implements ISourceCache
     /**
      * Sets the cache data.
      *
-     * @param $data
+     * @param array $data
      */
     public function set($data)
     {
@@ -189,7 +189,9 @@ class SourceCache implements ISourceCache
      */
     protected function prependExpTime($data)
     {
-        if ($this->cacheExpTime == 'forever') {
+        $cacheExpTime = $this->cacheExpTime;
+
+        if (is_null($cacheExpTime)) {
             $expTime = self::CACHE_FOREVER_SYMBOL;
         } else {
             $expTime = $this->convertoToTimestamp($this->cacheExpTime);            

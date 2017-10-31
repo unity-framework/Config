@@ -9,6 +9,7 @@ use Throwable;
  * Class ConfigRuntimeException.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ *
  * @link   https://github.com/e200/
  */
 class ConfigRuntimeException extends RuntimeException

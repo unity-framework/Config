@@ -1,7 +1,7 @@
 <?php
 
-use org\bovigo\vfs\vfsStream;
 use e200\MakeAccessible\Make;
+use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Drivers\XmlDriver;
 
@@ -39,7 +39,6 @@ class XmlDriverTest extends TestCase
 
         $subLoadedData = $loadedData['database'];
         $this->assertInternalType('array', $subLoadedData);
-        
 
         $this->assertEquals('root', $subLoadedData['user']);
         $this->assertEquals('toor', $subLoadedData['psw']);
@@ -116,8 +115,8 @@ class XmlDriverTest extends TestCase
             ->setContent($content);
 
         $loadedData = $this->getInstance()->load($dbFile->url());
-        
-        $this->assertInternalType('array', $loadedData);        
+
+        $this->assertInternalType('array', $loadedData);
         $this->assertCount(1, $loadedData);
         $this->assertArrayHasKey('exists', $loadedData);
 

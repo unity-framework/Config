@@ -2,12 +2,12 @@
 
 namespace Unity\Component\Config;
 
+use Unity\Component\Config\Exceptions\InvalidSourceException;
+use Unity\Component\Container\ContainerManager;
+use Unity\Contracts\Config\IConfigManager;
 use Unity\Contracts\Config\ILoader;
 use Unity\Contracts\Config\Sources\ISourceCache;
 use Unity\Contracts\Container\IContainer;
-use Unity\Contracts\Config\IConfigManager;
-use Unity\Component\Container\ContainerManager;
-use Unity\Component\Config\Exceptions\InvalidSourceException;
 
 /**
  * Class ConfigManager.
@@ -15,6 +15,7 @@ use Unity\Component\Config\Exceptions\InvalidSourceException;
  * Config class manager.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ *
  * @link   https://github.com/e200/
  */
 class ConfigManager implements IConfigManager
@@ -101,7 +102,6 @@ class ConfigManager implements IConfigManager
 
         return $this;
     }
-
 
     /**
      * Enable or disable configurations
@@ -211,9 +211,9 @@ class ConfigManager implements IConfigManager
     /**
      * Setups, builds and returns a new `IConfig` instance.
      *
-     * @return Config
-     *
      * @throws InvalidSourceException
+     *
+     * @return Config
      */
     public function build()
     {
@@ -221,17 +221,17 @@ class ConfigManager implements IConfigManager
             throw new InvalidSourceException('Invalid source provided.');
         }
 
-        $source       = $this->source;
-        $driver       = $this->driver;
-        $ext          = $this->ext;
-        $cachePath    = $this->cachePath;
+        $source = $this->source;
+        $driver = $this->driver;
+        $ext = $this->ext;
+        $cachePath = $this->cachePath;
         $cacheExpTime = $this->cacheExpTime;
 
         $this->setUpContainer();
 
         $loader = $this->getLoader();
 
-        /**
+        /*
          * TODO: Split this shit, and make it more testable.
          */
         if ($this->isCacheEnabled()) {

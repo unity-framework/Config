@@ -9,6 +9,7 @@ use Unity\Contracts\Config\Drivers\IDriver;
  * Class XmlDriver.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ *
  * @link   https://github.com/e200/
  */
 class XmlDriver implements IDriver
@@ -50,14 +51,14 @@ class XmlDriver implements IDriver
 
         foreach ($xml->children() as $xmlChildren) {
             $childrenName = $xmlChildren->getName();
-            
-            /**
+
+            /*
              * If this xml node has children's
              * we're going to resolve them
              * recursively.
              */
             if (count($xmlChildren->children())) {
-                /**
+                /*
                  * Nodes with the same name are merged.
                  * Last children's wins.
                  */
@@ -69,7 +70,7 @@ class XmlDriver implements IDriver
                     $data[$childrenName] = $this->xml2Array($xmlChildren);
                 }
             } else {
-                $data[$childrenName] = strval($xmlChildren);                
+                $data[$childrenName] = strval($xmlChildren);
             }
         }
 

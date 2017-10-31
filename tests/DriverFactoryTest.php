@@ -1,14 +1,14 @@
 <?php
 
-use Unity\Support\FileInfo;
 use e200\MakeAccessible\Make;
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Drivers\IniDriver;
+use Unity\Component\Config\Drivers\JsonDriver;
 use Unity\Component\Config\Drivers\PhpDriver;
 use Unity\Component\Config\Drivers\XmlDriver;
-use Unity\Component\Config\Drivers\JsonDriver;
 use Unity\Component\Config\Drivers\YamlDriver;
 use Unity\Component\Config\Factories\DriverFactory;
+use Unity\Support\FileInfo;
 
 class DriverFactoryTest extends TestCase
 {

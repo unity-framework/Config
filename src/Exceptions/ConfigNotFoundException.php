@@ -9,6 +9,7 @@ use Throwable;
  * Class ConfigNotFoundException.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ *
  * @link   https://github.com/e200/
  */
 class ConfigNotFoundException extends Exception

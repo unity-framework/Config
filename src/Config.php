@@ -2,11 +2,11 @@
 
 namespace Unity\Component\Config;
 
-use Countable;
 use ArrayAccess;
-use Unity\Notator\DotNotator;
-use Unity\Contracts\Config\IConfig;
+use Countable;
 use Unity\Component\Config\Exceptions\RuntimeModificationException;
+use Unity\Contracts\Config\IConfig;
+use Unity\Notator\DotNotator;
 
 /**
  * Class Config.
@@ -14,6 +14,7 @@ use Unity\Component\Config\Exceptions\RuntimeModificationException;
  * configs manager.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ *
  * @link   https://github.com/e200/
  */
 class Config extends DotNotator implements IConfig, ArrayAccess, Countable
@@ -25,8 +26,8 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
     protected $allowModifications;
 
     /**
-     * @param array $data Contains configs data.
-     * @param bool $allowModifications Enable or disable read only mode.
+     * @param array $data               Contains configs data.
+     * @param bool  $allowModifications Enable or disable read only mode.
      */
     public function __construct(array $data, $allowModifications = false)
     {
@@ -38,23 +39,23 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
      * Sets a config value at runtime.
      *
      * @param string $config dot notation string that references the
-     *                config to be replaced.
-     * @param mixed $value The new value.
-     *
-     * @return static
+     *                       config to be replaced.
+     * @param mixed  $value  The new value.
      *
      * @throws RuntimeModificationException
+     *
+     * @return static
      */
     public function set($config, $value)
     {
         if (!$this->allowModifications()) {
-            throw new RuntimeModificationException('Cannot modify configs in read only mode.');            
+            throw new RuntimeModificationException('Cannot modify configs in read only mode.');
         }
 
         $keys = $this->denote($config);
 
         $this->innerSet($keys, $value);
-        
+
         return $this;
     }
 
@@ -62,7 +63,7 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
      * Gets a config value.
      *
      * @param string $config A dot notation string that references the
-     *                config to be getted.
+     *                       config to be getted.
      *
      * @return mixed
      */
@@ -77,7 +78,7 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
      * Checks ifs a config exists.
      *
      * @param string $config A dot notation string that references the
-     *                config to be checked.
+     *                       config to be checked.
      *
      * @return bool
      */
@@ -87,7 +88,7 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
 
         return $this->innerHas($keys);
     }
-    
+
     /**
      * Counts the number of configs.
      *
@@ -112,14 +113,14 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
      * Sets a config using the `$offset`.
      *
      * @param mixed $offset Configuration offset.
-     * @param mixed $value The new value.
-     * 
+     * @param mixed $value  The new value.
+     *
      * @throws RuntimeModificationException
      */
     public function offsetSet($offset, $value)
     {
         if (!$this->allowModifications()) {
-            throw new RuntimeModificationException('Cannot modify configs in read only mode.');            
+            throw new RuntimeModificationException('Cannot modify configs in read only mode.');
         }
 
         $this->data[$offset] = $value;
@@ -132,20 +133,20 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
      *
      * @return mixed
      */
-    public function & offsetGet($offset)
+    public function &offsetGet($offset)
     {
         /**
          * We're returning configs
          * by reference, that can let
          * anyone modify configs
          * data.
-         * 
+         *
          * But if read only mode is enabled,
          * we can't let anyone modify configs
          * so, to prevent this, we'll return
          * a copy of `$this->data` and if someone
          * modify that returned copy, these changes
-         * will not be reflected to `$this->data`. 
+         * will not be reflected to `$this->data`.
          */
         if (!$this->allowModifications()) {
             $copy = $this->data[$offset];
@@ -172,23 +173,23 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
      * Unsets a config using the `$offset`.
      *
      * @param mixed $offset Configuration offset.
-     * 
+     *
      * @throws RuntimeModificationException
      */
     public function offsetUnset($offset)
     {
         if (!$this->allowModifications()) {
-            throw new RuntimeModificationException('Cannot modify configs in read only mode.');            
+            throw new RuntimeModificationException('Cannot modify configs in read only mode.');
         }
 
-        unset($this->data[$offset]);        
+        unset($this->data[$offset]);
     }
 
     /**
      * Checks if configs modifications are allowed.
-     * 
+     *
      * This prevents modifications on configs at runtime if disabled.
-     * 
+     *
      * @return bool
      */
     protected function allowModifications()
@@ -200,7 +201,7 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
      * Recursively counts the number of configs.
      *
      * @param array $data
-     * 
+     *
      * @return int
      */
     protected function recCount(array $data)
@@ -221,7 +222,7 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
     /**
      * Sets a config.
      *
-     * @param array $keys Keys to match
+     * @param array $keys  Keys to match
      * @param mixed $value Config value
      *
      * @return mixed
@@ -244,9 +245,9 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
             $key = $keys[$index];
 
             if ($index == 0) {
-                $currentItem = & $this->data[$key];
+                $currentItem = &$this->data[$key];
             } else {
-                $currentItem = & $currentItem[$key];
+                $currentItem = &$currentItem[$key];
             }
         }
 
@@ -357,14 +358,14 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
             $key = $keys[$index];
 
             if ($index == 0) {
-                $currentItem = & $this->data[$key];
+                $currentItem = &$this->data[$key];
             } else {
-                $oldItem = & $currentItem;
+                $oldItem = &$currentItem;
 
-                $currentItem = & $currentItem[$key];
+                $currentItem = &$currentItem[$key];
             }
         }
-        
+
         /**
          * Since unset variable by reference only unsets
          * the variable inside the function scope, we'll
@@ -373,7 +374,6 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
          * the old item with the new item containing the fresh
          * changes.
          */
-
         $copy = $oldItem;
 
         unset($copy[$key]);

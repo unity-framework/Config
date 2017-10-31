@@ -11,6 +11,7 @@ use Unity\Contracts\Config\Sources\ISourceFile;
  * Represents a config file source.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ *
  * @link   https://github.com/e200/
  */
 class SourceFile implements ISourceFile

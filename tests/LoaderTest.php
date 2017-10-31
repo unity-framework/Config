@@ -2,11 +2,11 @@
 
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
-use Unity\Component\Config\Loader;
-use Unity\Contracts\Config\Sources\ISource;
-use Unity\Contracts\Config\Factories\ISourceFactory;
 use Unity\Component\Config\Exceptions\DriverNotFoundException;
 use Unity\Component\Config\Exceptions\UnreadableSourceException;
+use Unity\Component\Config\Loader;
+use Unity\Contracts\Config\Factories\ISourceFactory;
+use Unity\Contracts\Config\Sources\ISource;
 
 class LoaderTest extends TestCase
 {
@@ -61,7 +61,7 @@ class LoaderTest extends TestCase
     public function testUnreadableSourceExceptionOnLoadNotReabableFile()
     {
         $this->expectException(UnreadableSourceException::class);
-        
+
         $folder = vfsStream::setup();
 
         $file = vfsStream::newFile('config.ini', 000)->at($folder);

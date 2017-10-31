@@ -1,8 +1,8 @@
 <?php
 
-use Unity\Component\Config\Drivers\IniDriver;
-use PHPUnit\Framework\TestCase;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\TestCase;
+use Unity\Component\Config\Drivers\IniDriver;
 
 class IniDriverTest extends TestCase
 {
@@ -10,15 +10,15 @@ class IniDriverTest extends TestCase
     {
         $extensions = $this->getInstance()->extensions();
 
-        $this->count(1, $extensions);        
+        $this->count(1, $extensions);
         $this->assertTrue(in_array('ini', $extensions));
     }
 
     public function testLoad()
     {
-        $content = "
+        $content = '
         exists=true
-        ";
+        ';
 
         $folder = vfsStream::setup();
         $dbFile = vfsStream::newFile('db')

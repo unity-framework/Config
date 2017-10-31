@@ -69,7 +69,6 @@ class SourceCacheTest extends TestCase
         $instance = $this->getAccessibleInstance($cacheFolder->url(), null);
         $this->assertEquals($expectedModTime, $instance->sourceModTime());
 
-
         $expectedModTime = 2090;
 
         // Testing with a file.
@@ -84,7 +83,7 @@ class SourceCacheTest extends TestCase
     /**
      * Test if `SourceCache::hasChangesOnSource()`
      * returns false when the cache data is updated.
-     * 
+     *
      * The cache data is updated when the source
      * modification time is less than the cache
      * modification time.
@@ -115,7 +114,7 @@ class SourceCacheTest extends TestCase
     /**
      * Test if `SourceCache::hasChangesOnSource()`
      * returns true when the cache data is outdated.
-     * 
+     *
      * The cache data is outdated when the source
      * modification time is greater than the cache
      * modification time.
@@ -126,7 +125,7 @@ class SourceCacheTest extends TestCase
     {
         $cacheFolder = vfsStream::setup();
 
-        $sourceModTime = 1996;        
+        $sourceModTime = 1996;
         $cacheModTime = $sourceModTime - 1;
 
         $sourceFile = vfsStream::newFile('config.json')
@@ -147,7 +146,7 @@ class SourceCacheTest extends TestCase
     {
         $time = time();
 
-        $expected = $time . PHP_EOL . 'data';
+        $expected = $time.PHP_EOL.'data';
 
         $instance = $this->getAccessibleInstance(null, null, '0 seconds');
 
@@ -159,14 +158,14 @@ class SourceCacheTest extends TestCase
      * prepends the `SourceCache::CACHE_FOREVER_SYMBOL`
      * to the cached file expiration time on the first
      * line.
-     * 
+     *
      * @covers SourceCache::prependExpTime()
      */
     public function testPrependExpTimeForever()
     {
         $serializedData = 'serializedData';
 
-        $expected = SourceCache::CACHE_FOREVER_SYMBOL . PHP_EOL . $serializedData;
+        $expected = SourceCache::CACHE_FOREVER_SYMBOL.PHP_EOL.$serializedData;
 
         $instance = $this->getAccessibleInstance(null, null, null);
 
@@ -228,11 +227,11 @@ class SourceCacheTest extends TestCase
          * will hash the source path.
          */
         $cachedFile = md5($sourceFile->url());
-            
+
         vfsStream::newFile($cachedFile)
             ->at($cacheFolder)
             ->setContent($cachedContent);
-            
+
         $instance = $this->getAccessibleInstance(
             $sourceFile->url(),
             $cacheFolder->url()
@@ -246,17 +245,17 @@ class SourceCacheTest extends TestCase
      * extracts the first line and returns true if
      * the first line is a string containing the text
      * 'forever'.
-     * 
+     *
      * @covers SourceCache::getInstanceExpTime()
      */
     public function testGetSourceCacheExpTimeForever()
     {
         $cacheFolder = vfsStream::setup();
-        $sourceFile  = vfsStream::newFile('file')
+        $sourceFile = vfsStream::newFile('file')
             ->at($cacheFolder);
-            
+
         $cachedFile = md5($sourceFile->url());
-                        
+
         vfsStream::newFile($cachedFile)
             ->at($cacheFolder)
             ->setContent(SourceCache::CACHE_FOREVER_SYMBOL.PHP_EOL.'some content');
@@ -271,7 +270,7 @@ class SourceCacheTest extends TestCase
      * extracts the first line and returns false if
      * something is wrong with the first line of
      * the cache file.
-     * 
+     *
      * @covers SourceCache::getInstanceExpTime()
      */
     public function testGetSourceCacheExpTimeInvalid()
@@ -280,9 +279,9 @@ class SourceCacheTest extends TestCase
 
         $sourceFile = vfsStream::newFile('file')
             ->at($cacheFolder);
-            
+
         $cachedFile = md5($sourceFile->url());
-                        
+
         vfsStream::newFile($cachedFile)
             ->at($cacheFolder);
 
@@ -305,7 +304,7 @@ class SourceCacheTest extends TestCase
         $expTime = time() - 1000;
 
         $cacheFolder = vfsStream::setup();
-        $sourceFile  = vfsStream::newFile('file')
+        $sourceFile = vfsStream::newFile('file')
             ->at($cacheFolder);
 
         $cachedName = md5($sourceFile->url());
@@ -334,7 +333,7 @@ class SourceCacheTest extends TestCase
         $expTime = time() + 1000;
 
         $cacheFolder = vfsStream::setup();
-        $sourceFile  = vfsStream::newFile('file')
+        $sourceFile = vfsStream::newFile('file')
             ->at($cacheFolder);
 
         $cachedName = md5($sourceFile->url());
@@ -363,7 +362,7 @@ class SourceCacheTest extends TestCase
         $expTime = time() - 1000;
 
         $cacheFolder = vfsStream::setup();
-        $sourceFile  = vfsStream::newFile('file')
+        $sourceFile = vfsStream::newFile('file')
             ->at($cacheFolder);
 
         $cachedName = md5($sourceFile->url());
@@ -394,7 +393,7 @@ class SourceCacheTest extends TestCase
         $expTime = time() + 1000;
 
         $cacheFolder = vfsStream::setup();
-        $sourceFile  = vfsStream::newFile('file')
+        $sourceFile = vfsStream::newFile('file')
             ->at($cacheFolder);
 
         $cachedName = md5($sourceFile->url());
@@ -424,7 +423,7 @@ class SourceCacheTest extends TestCase
         $sourceChangeTime = time() + 1000;
 
         $cacheFolder = vfsStream::setup();
-        $sourceFile  = vfsStream::newFile('file')
+        $sourceFile = vfsStream::newFile('file')
             ->at($cacheFolder)
             // Will tell to `SourceCache::hasChangesOnSource()`
             // that the source was changed.
@@ -456,7 +455,7 @@ class SourceCacheTest extends TestCase
         $expTime = time() - 1000;
 
         $cacheFolder = vfsStream::setup();
-        $sourceFile  = vfsStream::newFile('file')
+        $sourceFile = vfsStream::newFile('file')
             ->at($cacheFolder);
 
         $cachedName = md5($sourceFile->url());

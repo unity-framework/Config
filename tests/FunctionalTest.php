@@ -23,7 +23,7 @@ class FunctionalTest extends TestCase
     public function testWithSourceWithoutExtention()
     {
         $this->expectException(DriverNotFoundException::class);
-        
+
         $configManager = $this->getConfigManager();
         $sourceFile = $this->getSourceFile('db');
 
@@ -89,9 +89,8 @@ class FunctionalTest extends TestCase
         $configManager = $this->getConfigManager();
 
         $dir = [
-            'db.json' => '{ "is_working": true }',
-            'cache.json' =>
-                '{
+            'db.json'    => '{ "is_working": true }',
+            'cache.json' => '{
                     "can_cache": false,
                     "can_exp_time": 300
                 }',
@@ -102,7 +101,7 @@ class FunctionalTest extends TestCase
         $config = $configManager
             ->setSource($sourceFolder->url())
             ->build();
-            
+
         $this->assertCount(5, $config);
         $this->assertTrue($config['db']['is_working']);
         $this->assertFalse($config['cache']['can_cache']);
@@ -114,7 +113,7 @@ class FunctionalTest extends TestCase
         $configManager = $this->getConfigManager();
 
         $dir = [
-            'db.json' => '{ "is_working": true }',
+            'db.json'   => '{ "is_working": true }',
             'cache.ini' => 'can_exp_time=300',
         ];
 
@@ -123,7 +122,7 @@ class FunctionalTest extends TestCase
         $config = $configManager
             ->setSource($sourceFolder->url())
             ->build();
-            
+
         $this->assertCount(4, $config);
         $this->assertTrue($config['db']['is_working']);
         $this->assertEquals(300, $config['cache']['can_exp_time']);
@@ -134,7 +133,7 @@ class FunctionalTest extends TestCase
         $configManager = $this->getConfigManager();
 
         $dir = [
-            'db' => '',
+            'db'    => '',
             'cache' => '',
         ];
 
@@ -143,7 +142,7 @@ class FunctionalTest extends TestCase
         $config = $configManager
             ->setSource($sourceFolder->url())
             ->build();
-            
+
         $this->assertCount(0, $config);
     }
 
@@ -152,17 +151,17 @@ class FunctionalTest extends TestCase
         $configManager = $this->getConfigManager();
 
         $dir = [
-            'db' => '{ "is_working": true }',
+            'db'    => '{ "is_working": true }',
             'cache' => '{ "can_cache": true }',
         ];
-        
+
         $sourceFolder = $this->getSourceFolder($dir);
 
         $config = $configManager
             ->setSource($sourceFolder->url())
             ->setDriver('json')
             ->build();
-            
+
         $this->assertCount(4, $config);
         $this->assertTrue($config['db']['is_working']);
         $this->assertTrue($config['cache']['can_cache']);
@@ -171,7 +170,7 @@ class FunctionalTest extends TestCase
     public function testWithFolderContainingSomeUnreadableConfigFiles()
     {
         $configManager = $this->getConfigManager();
-        
+
         $sourceFolder = $this->getSourceFolder();
 
         vfsStream::newFile('db')
@@ -187,7 +186,7 @@ class FunctionalTest extends TestCase
             ->setSource($sourceFolder->url())
             ->setDriver('json')
             ->build();
-            
+
         $this->assertCount(2, $config);
         $this->assertArrayNotHasKey('cache', $config);
         $this->assertTrue($config['db']['is_working']);
@@ -199,19 +198,19 @@ class FunctionalTest extends TestCase
 
         $dir = [
             'configs' => ['db.json' => '{ "is_working": true }'],
-            'cache' => []
+            'cache'   => [],
         ];
-        
+
         $sourceFolder = $this->getSourceFolder($dir, 777);
 
-        $configsFolder = $sourceFolder->url() . DIRECTORY_SEPARATOR . 'configs';
-        $cacheFolder = $sourceFolder->url() . DIRECTORY_SEPARATOR . 'cache';
+        $configsFolder = $sourceFolder->url().DIRECTORY_SEPARATOR.'configs';
+        $cacheFolder = $sourceFolder->url().DIRECTORY_SEPARATOR.'cache';
 
         $config = $configManager
             ->setSource($configsFolder)
             ->setupCache($cacheFolder)
             ->build();
-            
+
         $this->assertCount(2, $config);
         $this->assertTrue($config['db']['is_working']);
     }

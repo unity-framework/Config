@@ -2,8 +2,8 @@
 
 use e200\MakeAccessible\Make;
 use org\bovigo\vfs\vfsStream;
-use Unity\Component\Config\Exceptions\UnsupportedExtensionException;
 use Unity\Component\Config\Exceptions\DriverNotFoundException;
+use Unity\Component\Config\Exceptions\UnsupportedExtensionException;
 use Unity\Component\Config\Sources\SourceFilesMatcher;
 use Unity\Contracts\Config\Factories\IDriverFactory;
 use Unity\Contracts\Config\Factories\ISourceFactory;

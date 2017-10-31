@@ -1,8 +1,8 @@
 <?php
 
-use Unity\Component\Config\Drivers\JsonDriver;
-use PHPUnit\Framework\TestCase;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\TestCase;
+use Unity\Component\Config\Drivers\JsonDriver;
 
 class JsonDriverTest extends TestCase
 {
@@ -10,7 +10,7 @@ class JsonDriverTest extends TestCase
     {
         $extensions = $this->getInstance()->extensions();
 
-        $this->count(1, $extensions);        
+        $this->count(1, $extensions);
         $this->assertTrue(in_array('json', $extensions));
     }
 

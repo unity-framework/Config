@@ -6,10 +6,11 @@ use Unity\Contracts\Config\Sources\ISourceCache;
 
 /**
  * Class SourceCache.
- * 
+ *
  * Cache manager for a source.
- * 
+ *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ *
  * @link   https://github.com/e200/
  */
 class SourceCache implements ISourceCache
@@ -85,14 +86,14 @@ class SourceCache implements ISourceCache
 
     /**
      * Checks if the cached data is hit.
-     * 
+     *
      * The cached data is hit if:
-     * 
+     *
      * - The cached data is present.
-     * 
+     *
      * - The cached data does'nt rish
      *   the expiration time.
-     * 
+     *
      * - The source was not modified
      *   since the last cache.
      *
@@ -111,14 +112,14 @@ class SourceCache implements ISourceCache
 
     /**
      * Checks if the cached data is miss.
-     * 
+     *
      * The cached data is miss if:
-     * 
+     *
      * - The cached data isn't present.
-     * 
+     *
      * - The cached data rished
      *   the expiration time.
-     * 
+     *
      * - The source was modified
      *   since the last cache.
      *
@@ -194,7 +195,7 @@ class SourceCache implements ISourceCache
         if (is_null($cacheExpTime)) {
             $expTime = self::CACHE_FOREVER_SYMBOL;
         } else {
-            $expTime = $this->convertoToTimestamp($this->cacheExpTime);            
+            $expTime = $this->convertoToTimestamp($this->cacheExpTime);
         }
 
         return $expTime.PHP_EOL.$data;
@@ -211,7 +212,7 @@ class SourceCache implements ISourceCache
 
         if (is_numeric($expTime)) {
             return (int) $expTime;
-        } elseif($expTime == self::CACHE_FOREVER_SYMBOL) {
+        } elseif ($expTime == self::CACHE_FOREVER_SYMBOL) {
             return true;
         }
 

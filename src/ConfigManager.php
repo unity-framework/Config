@@ -35,13 +35,13 @@ class ConfigManager implements IConfigManager
     protected $cacheExpTime;
 
     /** @var bool */
-    protected $readOnlyMode = true;
+    protected $allowModifications = false;
 
     /** @var IContainer */
     protected $container;
 
     /**
-     * Sets the configuration source.
+     * Sets the config source.
      *
      * @param string $source
      *
@@ -55,9 +55,9 @@ class ConfigManager implements IConfigManager
     }
 
     /**
-     * Sets the extension for configuration(s) files.
+     * Sets the extension for config(s) files.
      *
-     * Useful if your configuration
+     * Useful if your config
      * file has'nt an extension, also
      * helps the auto driver detection
      * being fast.
@@ -68,22 +68,22 @@ class ConfigManager implements IConfigManager
      */
     public function setExt($ext)
     {
-        $this->ext = $ext;
+        $this->ext = str_replace('.', '', $ext);
 
         return $this;
     }
 
     /**
-     * Sets the Driver to be used when
-     * trying retrieve configurations data.
+     * Sets the driver to be used when
+     * trying retrieve configs data.
      *
-     * @param string $driver
+     * @param string $alias
      *
      * @return static
      */
-    public function setDriver($driver)
+    public function setDriver($alias)
     {
-        $this->driver = $driver;
+        $this->driver = $alias;
 
         return $this;
     }
@@ -102,18 +102,16 @@ class ConfigManager implements IConfigManager
         return $this;
     }
 
-
     /**
-     * Enable or disable configurations
-     * read only mode.
+     * Enables or disables configs modifications.
      *
-     * @param bool $enabled
+     * @param bool $enable
      *
      * @return static
      */
-    public function readOnlyMode($enabled)
+    public function allowModifications($enable)
     {
-        $this->readOnlyMode = $enabled;
+        $this->allowModifications = $enable;
 
         return $this;
     }
@@ -139,16 +137,15 @@ class ConfigManager implements IConfigManager
     }
 
     /**
-     * Sets the cache path.
-     *
-     * It's also actives the caching.
+     * Setups the cache.
      *
      * @param string $cachePath
      * @param string $cacheExpTime
+     * @param bool   $allowModifications
      *
      * @return static
      */
-    public function setupCache($cachePath, $cacheExpTime)
+    public function setupCache($cachePath, $cacheExpTime = null)
     {
         $this->cachePath = $cachePath;
         $this->cacheExpTime = $cacheExpTime;
@@ -169,7 +166,7 @@ class ConfigManager implements IConfigManager
     /**
      * Setups the container.
      */
-    protected function setUpContainer()
+    protected function setupContainer()
     {
         if (!$this->hasContainer()) {
             $container = (new ContainerManager())->build();
@@ -218,14 +215,15 @@ class ConfigManager implements IConfigManager
     public function build()
     {
         if (!$this->hasSource()) {
-            throw new InvalidSourceException('Invalid source provided.');
+            throw new InvalidSourceException('No source or invalid source provided.');
         }
 
-        $source       = $this->source;
-        $driver       = $this->driver;
-        $ext          = $this->ext;
-        $cachePath    = $this->cachePath;
-        $cacheExpTime = $this->cacheExpTime;
+        $source             = $this->source;
+        $driver             = $this->driver;
+        $ext                = $this->ext;
+        $cachePath          = $this->cachePath;
+        $cacheExpTime       = $this->cacheExpTime;
+        $allowModifications = $this->allowModifications;
 
         $this->setUpContainer();
 
@@ -248,6 +246,6 @@ class ConfigManager implements IConfigManager
             $data = $loader->load($source, $driver, $ext);
         }
 
-        return $this->container->make('config', [$data]);
+        return $this->container->make('config', [$data, $allowModifications]);
     }
 }

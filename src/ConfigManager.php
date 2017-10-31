@@ -219,11 +219,11 @@ class ConfigManager implements IConfigManager
             throw new InvalidSourceException('No source or invalid source provided.');
         }
 
-        $source             = $this->source;
-        $driver             = $this->driver;
-        $ext                = $this->ext;
-        $cachePath          = $this->cachePath;
-        $cacheExpTime       = $this->cacheExpTime;
+        $source = $this->source;
+        $driver = $this->driver;
+        $ext = $this->ext;
+        $cachePath = $this->cachePath;
+        $cacheExpTime = $this->cacheExpTime;
         $allowModifications = $this->allowModifications;
 
         $this->setUpContainer();

@@ -2,14 +2,14 @@
 
 namespace Unity\Component\Config\Factories;
 
-use Unity\Support\FileInfo;
-use Unity\Contracts\Config\Drivers\IDriver;
 use Unity\Component\Config\Drivers\IniDriver;
+use Unity\Component\Config\Drivers\JsonDriver;
 use Unity\Component\Config\Drivers\PhpDriver;
 use Unity\Component\Config\Drivers\XmlDriver;
-use Unity\Component\Config\Drivers\JsonDriver;
 use Unity\Component\Config\Drivers\YamlDriver;
+use Unity\Contracts\Config\Drivers\IDriver;
 use Unity\Contracts\Config\Factories\IDriverFactory;
+use Unity\Support\FileInfo;
 
 /**
  * Class DriverFactory.

@@ -1,10 +1,13 @@
 <?php
 
 use e200\MakeAccessible\Make;
-use Unity\Component\Config\Exceptions\InvalidSourceException;
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\ConfigManager;
+use Unity\Component\Config\Exceptions\InvalidSourceException;
+use Unity\Contracts\Config\IConfig;
+use Unity\Contracts\Config\ILoader;
 use Unity\Contracts\Config\Sources\ISourceCache;
+use Unity\Contracts\Container\IContainer;
 
 class ConfigManagerTest extends TestCase
 {
@@ -80,13 +83,12 @@ class ConfigManagerTest extends TestCase
 
         $instance = $accessibleInstance->getInstance();
 
-
         $instance->allowModifications(false);
         $this->assertFalse($accessibleInstance->allowModifications);
 
-        $instance->allowModifications(true);        
+        $instance->allowModifications(true);
         $this->assertTrue($accessibleInstance->allowModifications);
-        
+
         $this->assertInstanceOf(ConfigManager::class, $instance);
     }
 
@@ -154,13 +156,8 @@ class ConfigManagerTest extends TestCase
         $accessibleInstance->cachePath = null;
         $this->assertFalse($instance->isCacheEnabled());
     }
-<<<<<<< HEAD
     
     public function testSetupContainer()
-=======
-
-    public function testSetUpContainer()
->>>>>>> d2d6db5792293b0d75fb4abeb563a3274e084217
     {
         $accessibleInstance = $this->getAccessibleInstance();
 

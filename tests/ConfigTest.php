@@ -103,15 +103,15 @@ class ConfigTest extends TestCase
             'database' => [
                 'user' => [
                     'name' => true,
-                    'psw' => false
-                ]
-            ]
+                    'psw'  => false,
+                ],
+            ],
         ];
 
         $accessibleInstance = $this->getAccessibleInstance($data);
 
         $accessibleInstance->innerUnset(['database', 'user', 'psw']);
-        $this->assertArrayNotHasKey('psw', $accessibleInstance->data['database']['user']);    
+        $this->assertArrayNotHasKey('psw', $accessibleInstance->data['database']['user']);
     }
 
     public function testCount()
@@ -173,7 +173,7 @@ class ConfigTest extends TestCase
     public function testRuntimeModificationExceptionOnSet()
     {
         $this->expectException(RuntimeModificationException::class);
-        
+
         $instance = $this->getInstance([], false);
 
         $instance->set('', null);
@@ -185,7 +185,7 @@ class ConfigTest extends TestCase
     public function testRuntimeModificationExceptionOnSetByDefault()
     {
         $this->expectException(RuntimeModificationException::class);
-        
+
         $instance = $this->getInstance([]);
 
         $instance->set('', null);
@@ -219,7 +219,7 @@ class ConfigTest extends TestCase
 
     public function testOffsetSet()
     {
-        $accessibleInstance = $this->getAccessibleInstance([], true);        
+        $accessibleInstance = $this->getAccessibleInstance([], true);
         $instance = $accessibleInstance->getInstance();
 
         $instance['is_working'] = true;
@@ -335,7 +335,7 @@ class ConfigTest extends TestCase
             ],
         ];
 
-        $accessibleInstance = $this->getAccessibleInstance($data, true);        
+        $accessibleInstance = $this->getAccessibleInstance($data, true);
         $instance = $accessibleInstance->getInstance();
 
         unset($instance['database']['can_cache']);
@@ -362,7 +362,7 @@ class ConfigTest extends TestCase
 
         $this->assertEquals($expected, $instance->getAll());
     }
-    
+
     public function getInstance($data = [], $allowModifications = false)
     {
         return new Config($data, $allowModifications);

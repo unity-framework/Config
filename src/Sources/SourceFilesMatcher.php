@@ -2,8 +2,8 @@
 
 namespace Unity\Component\Config\Sources;
 
-use Unity\Component\Config\Exceptions\UnsupportedExtensionException;
 use Unity\Component\Config\Exceptions\DriverNotFoundException;
+use Unity\Component\Config\Exceptions\UnsupportedExtensionException;
 use Unity\Contracts\Config\Drivers\IDriver;
 use Unity\Contracts\Config\Factories\IDriverFactory;
 use Unity\Contracts\Config\Factories\ISourceFactory;
@@ -49,7 +49,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
     public function match($folder, $driver, $extension)
     {
         $driver = $this->tryResolveDriver($driver, $extension);
-        
+
         $filterPattern = $this->getFilterPattern($extension);
 
         $files = $this->filterFiles($folder, $filterPattern);
@@ -60,7 +60,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
     /**
      * Tries resolve the driver using `$driver` and `$extension` arguments .
      *
-     * @param string $driver A driver alias
+     * @param string $driver    A driver alias
      * @param string $extension Source files extension
      *
      * @throws UnsupportedExtensionException
@@ -79,7 +79,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
             if ($driver === false) {
                 throw new DriverNotFoundException("Cannot find driver \"{$driver}\".");
             }
-        } elseif(!is_null($extension)) {
+        } elseif (!is_null($extension)) {
             $driver = $this->driverFactory->makeFromExt($extension);
 
             /*
@@ -94,7 +94,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
 
         return $driver;
     }
-    
+
     /**
      * Generates the filter pattern that will be used
      * to filter files in the folder based on their
@@ -109,7 +109,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
         if (is_null($extension)) {
             return '*';
         } else {
-            return '*.' . $extension;
+            return '*.'.$extension;
         }
     }
 
@@ -143,7 +143,7 @@ class SourceFilesMatcher implements ISourceFilesMatcher
                 }
             }
         }
-        
+
         return $found;
     }
 

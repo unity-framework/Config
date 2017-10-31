@@ -22,9 +22,9 @@ class ConfigTest extends TestCase
             'database' => [
                 'user' => [
                     'name' => true,
-                    'psw' => false
-                ]
-            ]
+                    'psw'  => false,
+                ],
+            ],
         ];
 
         $instance = $this->getAccessibleInstance($expected);
@@ -48,9 +48,9 @@ class ConfigTest extends TestCase
             'database' => [
                 'user' => [
                     'name' => true,
-                    'psw' => false
-                ]
-            ]
+                    'psw'  => false,
+                ],
+            ],
         ];
 
         $instance = $this->getAccessibleInstance($data);
@@ -69,18 +69,17 @@ class ConfigTest extends TestCase
             'database' => [
                 'user' => [
                     'name' => true,
-                    'psw' => false
-                ]
-            ]
+                    'psw'  => false,
+                ],
+            ],
         ];
 
         $instance = $this->getAccessibleInstance($data);
 
-
         $this->assertArrayHasKey('user', $instance->innerGet(['database']));
         $this->assertArrayHasKey('name', $instance->innerGet(['database', 'user']));
         $this->assertArrayHasKey('psw', $instance->innerGet(['database', 'user']));
-        
+
         $this->assertTrue($instance->innerGet(['database', 'user', 'name']));
         $this->assertFalse($instance->innerGet(['database', 'user', 'psw']));
     }
@@ -91,9 +90,9 @@ class ConfigTest extends TestCase
             'database' => [
                 'user' => [
                     'name' => true,
-                    'psw' => false
-                ]
-            ]
+                    'psw'  => false,
+                ],
+            ],
         ];
 
         $instance = $this->getAccessibleInstance($data);
@@ -114,9 +113,9 @@ class ConfigTest extends TestCase
             'database' => [
                 'user' => [
                     'name' => true,
-                    'psw' => false
-                ]
-            ]
+                    'psw'  => false,
+                ],
+            ],
         ];
 
         $instance = $this->getInstance($expected);
@@ -140,7 +139,7 @@ class ConfigTest extends TestCase
 
     /**
      * Testing if Replaces.
-     * 
+     *
      * @covers Config::set()
      */
     public function testIfSetReplaces()
@@ -154,7 +153,7 @@ class ConfigTest extends TestCase
         $this->assertTrue($accessibleInstance->data['can_cache']);
 
         $instance->set('database.user.exists', true);
-        
+
         $this->assertArrayHasKey('database', $accessibleInstance->data);
         $this->assertArrayHasKey('user', $accessibleInstance->data['database']);
         $this->assertArrayHasKey('exists', $accessibleInstance->data['database']['user']);
@@ -167,7 +166,7 @@ class ConfigTest extends TestCase
     public function testConfigRuntimeExceptionOnSet()
     {
         $this->expectException(ConfigRuntimeException::class);
-        
+
         $instance = $this->getInstance([], true);
 
         $instance->set('', null);
@@ -179,7 +178,7 @@ class ConfigTest extends TestCase
     public function testConfigRuntimeExceptionOnSetByDefault()
     {
         $this->expectException(ConfigRuntimeException::class);
-        
+
         $instance = $this->getInstance([]);
 
         $instance->set('', null);
@@ -189,8 +188,8 @@ class ConfigTest extends TestCase
     {
         $instance = $this->getInstance([
             'config' => [
-                    'is_working' => true
-                ]
+                    'is_working' => true,
+                ],
             ]);
 
         $this->assertTrue($instance->get('config.is_working'));
@@ -200,8 +199,8 @@ class ConfigTest extends TestCase
     {
         $instance = $this->getInstance([
             'config' => [
-                    'is_working' => null
-                ]
+                    'is_working' => null,
+                ],
             ]);
 
         $this->assertTrue($instance->has('config.is_working'));
@@ -213,7 +212,7 @@ class ConfigTest extends TestCase
 
     public function testOffsetSet()
     {
-        $accessibleInstance = $this->getAccessibleInstance([], false);        
+        $accessibleInstance = $this->getAccessibleInstance([], false);
         $instance = $accessibleInstance->getInstance();
 
         $instance['is_working'] = true;
@@ -222,7 +221,7 @@ class ConfigTest extends TestCase
 
     /**
      * Testing if replaces.
-     * 
+     *
      * @covers Config::offsetSet()
      */
     public function testOffsetSetReplace()
@@ -238,8 +237,8 @@ class ConfigTest extends TestCase
     {
         $data = [
             'database' => [
-                'can_cache' => true
-            ]
+                'can_cache' => true,
+            ],
         ];
 
         $instance = $this->getInstance($data);
@@ -252,15 +251,15 @@ class ConfigTest extends TestCase
      * the configuration by reference and if we can
      * modify it when `Config::isOnReadOnlyMode()`
      * is disabled.
-     * 
+     *
      * @covers Config::offsetGet()
      */
     public function testSetUsingOffsetGetReturnedReference()
     {
         $data = [
             'database' => [
-                'can_cache' => false
-            ]
+                'can_cache' => false,
+            ],
         ];
 
         $accessibleInstance = $this->getAccessibleInstance($data, false);
@@ -273,7 +272,6 @@ class ConfigTest extends TestCase
             $instance['database']['can_cache']
         );
         $this->assertTrue($instance['database']['can_cache']);
-        
     }
 
     /**
@@ -281,15 +279,15 @@ class ConfigTest extends TestCase
      * the configuration by reference and if we can't
      * modify it when `Config::isOnReadOnlyMode()`
      * is enabled.
-     * 
+     *
      * @covers Config::offsetGet()
      */
     public function testSetUsingOffsetGetNotReturnedReference()
     {
         $data = [
             'database' => [
-                'can_cache' => false
-            ]
+                'can_cache' => false,
+            ],
         ];
 
         $instance = $this->getInstance($data, true);
@@ -297,15 +295,14 @@ class ConfigTest extends TestCase
         $instance['database']['can_cache'] = true;
 
         $this->assertFalse($instance['database']['can_cache']);
-        
     }
-    
+
     public function testOffsetExists()
     {
         $data = [
             'database' => [
-                'can_cache' => null
-            ]
+                'can_cache' => null,
+            ],
         ];
 
         $instance = $this->getInstance($data);
@@ -315,7 +312,7 @@ class ConfigTest extends TestCase
 
         $this->assertTrue(isset($instance['database']));
 
-        /**
+        /*
          * TODO: Fix this shit: $this->assertTrue(array_key_exists('database', $instance));
          */
 
@@ -327,13 +324,13 @@ class ConfigTest extends TestCase
     {
         $data = [
             'database' => [
-                'can_cache' => null
-            ]
+                'can_cache' => null,
+            ],
         ];
 
-        $accessibleInstance = $this->getAccessibleInstance($data, false);        
+        $accessibleInstance = $this->getAccessibleInstance($data, false);
         $instance = $accessibleInstance->getInstance();
-        
+
         unset($instance['database']['can_cache']);
         $this->assertArrayNotHasKey('can_cache', $accessibleInstance->data['database']);
 
@@ -346,7 +343,7 @@ class ConfigTest extends TestCase
         $this->expectException(ConfigRuntimeException::class);
 
         $instance = $this->getInstance();
-        
+
         unset($instance['database']);
     }
 
@@ -358,7 +355,7 @@ class ConfigTest extends TestCase
 
         $this->assertEquals($expected, $instance->getAll());
     }
-    
+
     public function getInstance($data = [], $readOnly = true)
     {
         return new Config($data, $readOnly);

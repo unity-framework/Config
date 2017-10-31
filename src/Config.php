@@ -2,10 +2,10 @@
 
 namespace Unity\Component\Config;
 
-use Countable;
 use ArrayAccess;
-use Unity\Contracts\Config\IConfig;
+use Countable;
 use Unity\Component\Config\Exceptions\ConfigRuntimeException;
+use Unity\Contracts\Config\IConfig;
 
 /**
  * Class Config.
@@ -13,6 +13,7 @@ use Unity\Component\Config\Exceptions\ConfigRuntimeException;
  * Configurations manager.
  *
  * @author Eleandro Duzentos <eleandro@inbox.ru>
+ *
  * @link   https://github.com/e200/
  */
 class Config implements IConfig, ArrayAccess, Countable
@@ -24,8 +25,8 @@ class Config implements IConfig, ArrayAccess, Countable
     protected $readOnlyMode;
 
     /**
-     * @param array $data Contains configurations data.
-     * @param bool $readOnlyMode Enable or disable read only mode.
+     * @param array $data         Contains configurations data.
+     * @param bool  $readOnlyMode Enable or disable read only mode.
      */
     public function __construct(array $data, $readOnlyMode = true)
     {
@@ -37,23 +38,23 @@ class Config implements IConfig, ArrayAccess, Countable
      * Sets a configuration value at runtime.
      *
      * @param string $config dot notation string that references the
-     *                configuration to be replaced.
-     * @param mixed $value The new value.
-     *
-     * @return static
+     *                       configuration to be replaced.
+     * @param mixed  $value  The new value.
      *
      * @throws ConfigRuntimeException
+     *
+     * @return static
      */
     public function set($config, $value)
     {
         if ($this->isOnReadOnlyMode()) {
-            throw new ConfigRuntimeException('Cannot modify configurations in read only mode.');            
+            throw new ConfigRuntimeException('Cannot modify configurations in read only mode.');
         }
 
         $keys = $this->denote($config);
 
         $this->innerSet($keys, $value);
-        
+
         return $this;
     }
 
@@ -61,7 +62,7 @@ class Config implements IConfig, ArrayAccess, Countable
      * Gets a configuration value.
      *
      * @param string $config A dot notation string that references the
-     *                configuration to be getted.
+     *                       configuration to be getted.
      *
      * @return mixed
      */
@@ -76,7 +77,7 @@ class Config implements IConfig, ArrayAccess, Countable
      * Checks ifs a configuration exists.
      *
      * @param string $config A dot notation string that references the
-     *                configuration to be checked.
+     *                       configuration to be checked.
      *
      * @return bool
      */
@@ -86,7 +87,7 @@ class Config implements IConfig, ArrayAccess, Countable
 
         return $this->innerHas($keys);
     }
-    
+
     /**
      * Counts the number of configurations.
      *
@@ -111,14 +112,14 @@ class Config implements IConfig, ArrayAccess, Countable
      * Sets a configuration using the `$offset`.
      *
      * @param mixed $offset Configuration offset.
-     * @param mixed $value The new value.
-     * 
+     * @param mixed $value  The new value.
+     *
      * @throws ConfigRuntimeException
      */
     public function offsetSet($offset, $value)
     {
         if ($this->isOnReadOnlyMode()) {
-            throw new ConfigRuntimeException('Cannot modify configurations in read only mode.');            
+            throw new ConfigRuntimeException('Cannot modify configurations in read only mode.');
         }
 
         $this->data[$offset] = $value;
@@ -138,13 +139,13 @@ class Config implements IConfig, ArrayAccess, Countable
          * by reference, that can let
          * anyone modify configurations
          * data.
-         * 
+         *
          * But if read only mode is enabled,
          * we can't let anyone modify configurations
          * so, to prevent this, we'll return
          * a copy of `$this->data` and if someone
          * modify that returned copy, these changes
-         * will not be reflected to `$this->data`. 
+         * will not be reflected to `$this->data`.
          */
         if ($this->isOnReadOnlyMode()) {
             $copy = $this->data[$offset];
@@ -171,18 +172,18 @@ class Config implements IConfig, ArrayAccess, Countable
      * Unsets a configuration using the `$offset`.
      *
      * @param mixed $offset Configuration offset.
-     * 
+     *
      * @throws ConfigRuntimeException
      */
     public function offsetUnset($offset)
     {
         if ($this->isOnReadOnlyMode()) {
-            throw new ConfigRuntimeException('Cannot modify configurations in read only mode.');            
+            throw new ConfigRuntimeException('Cannot modify configurations in read only mode.');
         }
 
-        unset($this->data[$offset]);        
+        unset($this->data[$offset]);
     }
-    
+
     /**
      * Denotes a string using dot (.) as separator.
      *
@@ -197,9 +198,9 @@ class Config implements IConfig, ArrayAccess, Countable
 
     /**
      * Checks if configurations read only mode is enabled.
-     * 
+     *
      * This prevents modifications on configurations at runtime.
-     * 
+     *
      * @return bool
      */
     protected function isOnReadOnlyMode()
@@ -211,7 +212,7 @@ class Config implements IConfig, ArrayAccess, Countable
      * Recursively counts the number of configurations.
      *
      * @param array $data
-     * 
+     *
      * @return int
      */
     protected function recCount(array $data)
@@ -232,7 +233,7 @@ class Config implements IConfig, ArrayAccess, Countable
     /**
      * Sets the configuration value.
      *
-     * @param array $keys Keys to match
+     * @param array $keys  Keys to match
      * @param mixed $value The top most array
      *
      * @return mixed
@@ -260,7 +261,7 @@ class Config implements IConfig, ArrayAccess, Countable
             } else {
                 $matchedData = &$matchedData[$key];
             }
-            
+
             if (($index + 1) == $count) {
                 $matchedData = $value;
             }

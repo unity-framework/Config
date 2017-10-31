@@ -1,8 +1,8 @@
 <?php
 
-use Unity\Component\Config\Drivers\YamlDriver;
-use PHPUnit\Framework\TestCase;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\TestCase;
+use Unity\Component\Config\Drivers\YamlDriver;
 
 class YamlDriverTest extends TestCase
 {

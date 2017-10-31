@@ -2,20 +2,22 @@
 
 namespace Unity\Component\Config;
 
+use Unity\Contracts\Container\IContainer;
 use Unity\Component\Config\Drivers\IniDriver;
-use Unity\Component\Config\Drivers\JsonDriver;
 use Unity\Component\Config\Drivers\PhpDriver;
+use Unity\Component\Config\Drivers\XmlDriver;
+use Unity\Component\Config\Sources\SourceFile;
+use Unity\Component\Config\Drivers\JsonDriver;
 use Unity\Component\Config\Drivers\YamlDriver;
+use Unity\Contracts\Container\IServiceProvider;
+use Unity\Component\Config\Sources\SourceFolder;
 use Unity\Component\Config\Factories\DriverFactory;
 use Unity\Component\Config\Factories\SourceFactory;
-use Unity\Component\Config\Sources\SourceFile;
-use Unity\Component\Config\Sources\SourceFilesMatcher;
-use Unity\Component\Config\Sources\SourceFolder;
 use Unity\Contracts\Config\Factories\IDriverFactory;
 use Unity\Contracts\Config\Factories\ISourceFactory;
+use Unity\Component\Config\Sources\SourceCache;
+use Unity\Component\Config\Sources\SourceFilesMatcher;
 use Unity\Contracts\Config\Sources\ISourceFilesMatcher;
-use Unity\Contracts\Container\IContainer;
-use Unity\Contracts\Container\IServiceProvider;
 
 /**
  * Class ConfigServiceProvider.
@@ -59,9 +61,12 @@ class ConfigServiceProvider implements IServiceProvider
                 return $container->get('sourceFilesMatcher');
             });
 
+        $container->set('sourceCache', SourceCache::class);
+
         $container->set('php', PhpDriver::class);
         $container->set('ini', IniDriver::class);
         $container->set('json', JsonDriver::class);
         $container->set('yml', YamlDriver::class);
+        $container->set('xml', XmlDriver::class);
     }
 }

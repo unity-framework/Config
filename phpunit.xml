@@ -24,6 +24,8 @@
             <file>./tests/ConfigManagerTest.php</file>
 
             <directory>./tests/Drivers</directory>
+
+            <file>./tests/FunctionalTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

@@ -3,17 +3,17 @@
 use e200\MakeAccessible\Make;
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Config;
-use Unity\Component\Config\Exceptions\ConfigRuntimeException;
+use Unity\Component\Config\Exceptions\RuntimeModificationException;
 
 class ConfigTest extends TestCase
 {
-    public function testIsOnReadOnlyMode()
+    public function testAllowModifications()
     {
         $instance = $this->getAccessibleInstance([]);
-        $this->assertTrue($instance->readOnlyMode);
+        $this->assertFalse($instance->allowModifications);
 
-        $instance = $this->getAccessibleInstance([], false);
-        $this->assertFalse($instance->readOnlyMode);
+        $instance = $this->getAccessibleInstance([], true);
+        $this->assertTrue($instance->allowModifications);
     }
 
     public function testRecCount()
@@ -30,16 +30,6 @@ class ConfigTest extends TestCase
         $instance = $this->getAccessibleInstance($expected);
 
         $this->assertEquals(4, $instance->recCount($expected));
-    }
-
-    public function testDenote()
-    {
-        $instance = $this->getAccessibleInstance();
-
-        $this->assertEquals(['configs'], $instance->denote('configs'));
-        $this->assertEquals(['configs', 'database'], $instance->denote('configs.database'));
-        $this->assertEquals(['configs', 'database', 'user'], $instance->denote('configs.database.user'));
-        $this->assertEquals(['configs', 'database', 'user', 'name'], $instance->denote('configs.database.user.name'));
     }
 
     public function testInnerSet()
@@ -108,6 +98,26 @@ class ConfigTest extends TestCase
         $this->assertFalse($instance->innerHas(['database', 'user', 'db']));
     }
 
+    /**
+     * TODO: Fix unset
+     */
+    public function testInnerUnset()
+    {
+        $data = [
+            'database' => [
+                'user' => [
+                    'name' => true,
+                    'psw' => false
+                ]
+            ]
+        ];
+
+        $accessibleInstance = $this->getAccessibleInstance($data);
+
+        $accessibleInstance->innerUnset(['database', 'user', 'psw']);
+        $this->assertArrayNotHasKey('psw', $accessibleInstance->data['database']['user']);    
+    }
+
     public function testCount()
     {
         $expected = [
@@ -129,7 +139,7 @@ class ConfigTest extends TestCase
      */
     public function testSet()
     {
-        $accessibleInstance = $this->getAccessibleInstance([], false);
+        $accessibleInstance = $this->getAccessibleInstance([], true);
         $instance = $accessibleInstance->getInstance();
 
         $instance->set('can_cache', true);
@@ -145,7 +155,7 @@ class ConfigTest extends TestCase
      */
     public function testIfSetReplaces()
     {
-        $accessibleInstance = $this->getAccessibleInstance(['can_cache' => false], false);
+        $accessibleInstance = $this->getAccessibleInstance(['can_cache' => false], true);
         $instance = $accessibleInstance->getInstance();
 
         $instance->set('can_cache', true);
@@ -164,11 +174,11 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::set()
      */
-    public function testConfigRuntimeExceptionOnSet()
+    public function testRuntimeModificationExceptionOnSet()
     {
-        $this->expectException(ConfigRuntimeException::class);
+        $this->expectException(RuntimeModificationException::class);
         
-        $instance = $this->getInstance([], true);
+        $instance = $this->getInstance([], false);
 
         $instance->set('', null);
     }
@@ -176,9 +186,9 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::set()
      */
-    public function testConfigRuntimeExceptionOnSetByDefault()
+    public function testRuntimeModificationExceptionOnSetByDefault()
     {
-        $this->expectException(ConfigRuntimeException::class);
+        $this->expectException(RuntimeModificationException::class);
         
         $instance = $this->getInstance([]);
 
@@ -213,7 +223,7 @@ class ConfigTest extends TestCase
 
     public function testOffsetSet()
     {
-        $accessibleInstance = $this->getAccessibleInstance([], false);        
+        $accessibleInstance = $this->getAccessibleInstance([], true);        
         $instance = $accessibleInstance->getInstance();
 
         $instance['is_working'] = true;
@@ -227,7 +237,7 @@ class ConfigTest extends TestCase
      */
     public function testOffsetSetReplace()
     {
-        $accessibleInstance = $this->getAccessibleInstance(['is_working' => false], false);
+        $accessibleInstance = $this->getAccessibleInstance(['is_working' => false], true);
         $instance = $accessibleInstance->getInstance();
 
         $instance['is_working'] = true;
@@ -263,7 +273,7 @@ class ConfigTest extends TestCase
             ]
         ];
 
-        $accessibleInstance = $this->getAccessibleInstance($data, false);
+        $accessibleInstance = $this->getAccessibleInstance($data, true);
         $instance = $accessibleInstance->getInstance();
 
         $instance['database']['can_cache'] = true;
@@ -292,7 +302,7 @@ class ConfigTest extends TestCase
             ]
         ];
 
-        $instance = $this->getInstance($data, true);
+        $instance = $this->getInstance($data, false);
 
         $instance['database']['can_cache'] = true;
 
@@ -331,7 +341,7 @@ class ConfigTest extends TestCase
             ]
         ];
 
-        $accessibleInstance = $this->getAccessibleInstance($data, false);        
+        $accessibleInstance = $this->getAccessibleInstance($data, true);        
         $instance = $accessibleInstance->getInstance();
         
         unset($instance['database']['can_cache']);
@@ -341,9 +351,9 @@ class ConfigTest extends TestCase
         $this->assertArrayNotHasKey('can_cache', $instance);
     }
 
-    public function testConfigRuntimeExceptionOnOffsetUnset()
+    public function testRuntimeModificationExceptionOnOffsetUnset()
     {
-        $this->expectException(ConfigRuntimeException::class);
+        $this->expectException(RuntimeModificationException::class);
 
         $instance = $this->getInstance();
         
@@ -359,13 +369,13 @@ class ConfigTest extends TestCase
         $this->assertEquals($expected, $instance->getAll());
     }
     
-    public function getInstance($data = [], $readOnly = true)
+    public function getInstance($data = [], $allowModifications = false)
     {
-        return new Config($data, $readOnly);
+        return new Config($data, $allowModifications);
     }
 
-    public function getAccessibleInstance($data = [], $readOnly = true)
+    public function getAccessibleInstance($data = [], $allowModifications = false)
     {
-        return Make::accessible($this->getInstance($data, $readOnly));
+        return Make::accessible($this->getInstance($data, $allowModifications));
     }
 }

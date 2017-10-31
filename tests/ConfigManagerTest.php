@@ -1,13 +1,13 @@
 <?php
 
 use e200\MakeAccessible\Make;
+use Unity\Component\Config\Exceptions\InvalidSourceException;
 use PHPUnit\Framework\TestCase;
 use Unity\Contracts\Config\ILoader;
 use Unity\Contracts\Config\IConfig;
 use Unity\Contracts\Container\IContainer;
 use Unity\Component\Config\ConfigManager;
 use Unity\Contracts\Config\Sources\ISourceCache;
-use Unity\Component\Config\Exceptions\InvalidSourceException;
 
 class ConfigManagerTest extends TestCase
 {
@@ -37,6 +37,20 @@ class ConfigManagerTest extends TestCase
         $this->assertInstanceOf(ConfigManager::class, $instance);
     }
 
+    public function testSetExtWithDot()
+    {
+        $accessibleInstance = $this->getAccessibleInstance();
+
+        $extWithDot = '.json';
+        $expectedExt = 'json';
+
+        $instance = $accessibleInstance->getInstance()
+            ->setExt($extWithDot);
+
+        $this->assertEquals($expectedExt, $accessibleInstance->ext);
+        $this->assertInstanceOf(ConfigManager::class, $instance);
+    }
+
     public function testSetDriver()
     {
         $accessibleInstance = $this->getAccessibleInstance();
@@ -60,6 +74,22 @@ class ConfigManagerTest extends TestCase
             ->setContainer($containerMock);
 
         $this->assertEquals($containerMock, $accessibleInstance->container);
+        $this->assertInstanceOf(ConfigManager::class, $instance);
+    }
+
+    public function testAllowModifications()
+    {
+        $accessibleInstance = $this->getAccessibleInstance();
+
+        $instance = $accessibleInstance->getInstance();
+
+
+        $instance->allowModifications(false);
+        $this->assertFalse($accessibleInstance->allowModifications);
+
+        $instance->allowModifications(true);        
+        $this->assertTrue($accessibleInstance->allowModifications);
+        
         $this->assertInstanceOf(ConfigManager::class, $instance);
     }
 
@@ -93,16 +123,24 @@ class ConfigManagerTest extends TestCase
         $this->assertFalse($instance->hasContainer());
     }
 
-    public function testSetCachePath()
+    public function testSetupCache()
     {
         $accessibleInstance = $this->getAccessibleInstance();
 
         $expectedCachePath = 'someCachePath';
+        $expectedCacheExpTime = 'someCacheExpTime';
+        $expectedallowModifications = false;
 
         $instance = $accessibleInstance->getInstance()
-            ->setCachePath($expectedCachePath);
+            ->setupCache(
+                $expectedCachePath,
+                $expectedCacheExpTime,
+                $expectedallowModifications
+            );
 
         $this->assertEquals($expectedCachePath, $accessibleInstance->cachePath);
+        $this->assertEquals($expectedCacheExpTime, $accessibleInstance->cacheExpTime);
+        $this->assertEquals($expectedallowModifications, $accessibleInstance->allowModifications);
         $this->assertInstanceOf(ConfigManager::class, $instance);
     }
 
@@ -120,7 +158,7 @@ class ConfigManagerTest extends TestCase
         $this->assertFalse($instance->isCacheEnabled());
     }
     
-    public function testSetUpContainer()
+    public function testSetupContainer()
     {
         $accessibleInstance = $this->getAccessibleInstance();
 
@@ -136,7 +174,7 @@ class ConfigManagerTest extends TestCase
      * 
      * @covers ContainerManager::setupContainer()
      */
-    public function testSetUpContainerWithContainerAlreadyProvided()
+    public function testSetupContainerWithContainerAlreadyProvided()
     {
         $accessibleInstance = $this->getAccessibleInstance();
 

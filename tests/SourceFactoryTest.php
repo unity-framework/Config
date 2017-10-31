@@ -95,6 +95,33 @@ class SourceFactoryTest extends TestCase
         $sourceFactory = $this->getSourceFactory($driverFactoryMock, $containerMock, $fileInfoMock);
 
         $source = $sourceFactory->makeFromFile('folder/configs.yml');
+    }
+
+    public function testMakeFromFileWithProvidedDriver()
+    {
+        $driverFactoryMock = $this->createMock(IDriverFactory::class);
+
+        $driverFactoryMock
+            ->expects($this->never())
+            ->method('makeFromFile');
+
+        $fileInfoMock = $this->createMock(FileInfo::class);
+
+        $fileInfoMock
+            ->expects($this->once())
+            ->method('name')
+            ->willReturn(null);
+
+        $containerMock = $this->createMock(IContainer::class);
+
+        $containerMock
+            ->expects($this->once())
+            ->method('make')
+            ->willReturn(true);
+
+        $sourceFactory = $this->getSourceFactory($driverFactoryMock, $containerMock, $fileInfoMock);
+
+        $source = $sourceFactory->makeFromFile('folder/configs.yml', new stdClass());
 
         $this->assertTrue($source);
     }

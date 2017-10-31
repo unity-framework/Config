@@ -1,13 +1,14 @@
 <?php
 
+use Unity\Support\FileInfo;
 use e200\MakeAccessible\Make;
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Drivers\IniDriver;
-use Unity\Component\Config\Drivers\JsonDriver;
 use Unity\Component\Config\Drivers\PhpDriver;
+use Unity\Component\Config\Drivers\XmlDriver;
+use Unity\Component\Config\Drivers\JsonDriver;
 use Unity\Component\Config\Drivers\YamlDriver;
 use Unity\Component\Config\Factories\DriverFactory;
-use Unity\Support\FileInfo;
 
 class DriverFactoryTest extends TestCase
 {
@@ -29,7 +30,8 @@ class DriverFactoryTest extends TestCase
         $this->assertTrue($df->has('ini'));
         $this->assertTrue($df->has('json'));
         $this->assertTrue($df->has('yml'));
-        $this->assertFalse($df->has('xml'));
+        $this->assertTrue($df->has('xml'));
+        $this->assertFalse($df->has('html'));
     }
 
     public function testGetAll()
@@ -51,13 +53,14 @@ class DriverFactoryTest extends TestCase
         $this->assertInstanceOf(JsonDriver::class, $df->makeFromExt('json'));
         $this->assertInstanceOf(YamlDriver::class, $df->makeFromExt('yml'));
         $this->assertInstanceOf(YamlDriver::class, $df->makeFromExt('yaml'));
+        $this->assertInstanceOf(XmlDriver::class, $df->makeFromExt('xml'));
     }
 
     public function testMakeFromUnsupportedExt()
     {
         $df = $this->getDriverFactory();
 
-        $this->assertFalse($df->makeFromExt('xml'));
+        $this->assertFalse($df->makeFromExt('html'));
     }
 
     public function testMakeFromFile()
@@ -65,9 +68,9 @@ class DriverFactoryTest extends TestCase
         $fileInfoMock = $this->createMock(FileInfo::class);
 
         $fileInfoMock
-            ->expects($this->exactly(4))
+            ->expects($this->exactly(5))
             ->method('ext')
-            ->will($this->onConsecutiveCalls('php', 'ini', 'json', 'yml'));
+            ->will($this->onConsecutiveCalls('php', 'ini', 'json', 'yml', 'xml'));
 
         $df = $this->getDriverFactory($fileInfoMock);
 
@@ -75,13 +78,14 @@ class DriverFactoryTest extends TestCase
         $this->assertInstanceOf(IniDriver::class, $df->makeFromFile('folder/config.ini'));
         $this->assertInstanceOf(JsonDriver::class, $df->makeFromFile('folder/config.json'));
         $this->assertInstanceOf(YamlDriver::class, $df->makeFromFile('folder/config.yml'));
+        $this->assertInstanceOf(XmlDriver::class, $df->makeFromFile('folder/config.xml'));
     }
 
     public function testMakeFromUnsupportedFile()
     {
         $df = $this->getDriverFactory();
 
-        $this->assertFalse($df->makeFromFile('folder/config.xml'));
+        $this->assertFalse($df->makeFromFile('folder/config.html'));
     }
 
     public function testMakeFromAlias()
@@ -92,13 +96,14 @@ class DriverFactoryTest extends TestCase
         $this->assertInstanceOf(IniDriver::class, $df->makeFromAlias('ini'));
         $this->assertInstanceOf(JsonDriver::class, $df->makeFromAlias('json'));
         $this->assertInstanceOf(YamlDriver::class, $df->makeFromAlias('yml'));
+        $this->assertInstanceOf(XmlDriver::class, $df->makeFromAlias('xml'));
     }
 
     public function testMakeFromUnknowDriverAlias()
     {
         $df = $this->getDriverFactory();
 
-        $this->assertFalse($df->makeFromAlias('xml'));
+        $this->assertFalse($df->makeFromAlias('html'));
     }
 
     public function getDriverFactory(FileInfo $fileInfo = null)

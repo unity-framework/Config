@@ -168,7 +168,7 @@ class SourceCacheTest extends TestCase
 
         $expected = SourceCache::CACHE_FOREVER_SYMBOL . PHP_EOL . $serializedData;
 
-        $instance = $this->getAccessibleInstance(null, null, 'forever');
+        $instance = $this->getAccessibleInstance(null, null, null);
 
         $this->assertEquals($expected, $instance->prependExpTime($serializedData));
     }

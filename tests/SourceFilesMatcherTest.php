@@ -2,8 +2,8 @@
 
 use e200\MakeAccessible\Make;
 use org\bovigo\vfs\vfsStream;
-use Unity\Component\Config\Exceptions\UnreadableFolderException;
 use Unity\Component\Config\Exceptions\UnsupportedExtensionException;
+use Unity\Component\Config\Exceptions\DriverNotFoundException;
 use Unity\Component\Config\Sources\SourceFilesMatcher;
 use Unity\Contracts\Config\Factories\IDriverFactory;
 use Unity\Contracts\Config\Factories\ISourceFactory;
@@ -11,7 +11,7 @@ use Unity\Tests\Config\TestBase;
 
 class SourceFilesMatcherTest extends TestBase
 {
-    public function testTryGetDriverUsingExt()
+    public function testTryResolveDriverUsingExt()
     {
         $driverMock = $this->mockDriverFactory();
 
@@ -21,27 +21,42 @@ class SourceFilesMatcherTest extends TestBase
 
         $sfm = $this->getAccessibleSourceFilesMatcher($driverMock);
 
-        $value = $sfm->tryGetDriverUsingExt('ext');
+        $value = $sfm->tryResolveDriver(null, 'ext');
+
+        $this->assertTrue($value);
+    }
+
+    public function testTryResolveDriverUsingDriver()
+    {
+        $driverMock = $this->mockDriverFactory();
+
+        $driverMock
+            ->method('makeFromAlias')
+            ->willReturn(true);
+
+        $sfm = $this->getAccessibleSourceFilesMatcher($driverMock);
+
+        $value = $sfm->tryResolveDriver('driver_alias', null);
 
         $this->assertTrue($value);
     }
 
     /**
-     * Test if `SourceFilesMatcher::tryGetDriverUsingExt()`
-     * returns null on with null extensions.
+     * Tests if `SourceFilesMatcher::tryResolveDriver()`
+     * returns null with null driver and extensions.
      *
-     * @covers SourceFilesMatcher::tryGetDriverUsingExt()
+     * @covers SourceFilesMatcher::tryResolveDriver()
      */
-    public function testTryGetDriverUsingExtWithNullExtension()
+    public function testTryResolveDriverUsingExtWithNullValueAndExtension()
     {
         $sfm = $this->getAccessibleSourceFilesMatcher();
 
-        $value = $sfm->tryGetDriverUsingExt(null);
+        $value = $sfm->tryResolveDriver(null, null);
 
         $this->assertNull($value);
     }
 
-    public function testUnsupportedExtensionExceptionTryGetDriverUsingExt()
+    public function testUnsupportedExtensionExceptionTryResolveDriverUsingExt()
     {
         $this->expectException(UnsupportedExtensionException::class);
 
@@ -53,14 +68,29 @@ class SourceFilesMatcherTest extends TestBase
 
         $sfm = $this->getAccessibleSourceFilesMatcher($driverMock);
 
-        $value = $sfm->tryGetDriverUsingExt('ext');
+        $sfm->tryResolveDriver(null, 'ext');
+    }
+
+    public function testDriverNotFoundExceptionTryResolveDriverUsingExt()
+    {
+        $this->expectException(DriverNotFoundException::class);
+
+        $driverMock = $this->mockDriverFactory();
+
+        $driverMock
+            ->method('makeFromAlias')
+            ->willReturn(false);
+
+        $sfm = $this->getAccessibleSourceFilesMatcher($driverMock);
+
+        $sfm->tryResolveDriver('some_alias', null);
     }
 
     public function testGetFilterPattern()
     {
         $sfm = $this->getAccessibleSourceFilesMatcher();
 
-        $this->assertEquals('*.*', $sfm->getFilterPattern(null));
+        $this->assertEquals('*', $sfm->getFilterPattern(null));
 
         $ext = 'yml';
         $this->assertEquals('*.'.$ext, $sfm->getFilterPattern($ext));
@@ -79,17 +109,33 @@ class SourceFilesMatcherTest extends TestBase
          */
         $dir = array_merge($jsonFiles, ['cache.php' => '']);
 
-        $virtualFolder = vfsStream::setup('root', null, $dir);
+        $folder = vfsStream::setup('root', null, $dir);
 
         $sfm = $this->getAccessibleSourceFilesMatcher();
 
         foreach ($jsonFiles as $key => $jsonFile) {
-            $expectedFiles[] = $virtualFolder->url().DIRECTORY_SEPARATOR.$key;
+            $expectedFiles[] = $folder->url().DIRECTORY_SEPARATOR.$key;
         }
 
         $filterPattern = '*.json';
-        $files = $sfm->filterFiles($virtualFolder->url(), $filterPattern);
+        $files = $sfm->filterFiles($folder->url(), $filterPattern);
         $this->assertEquals($expectedFiles, $files);
+    }
+
+    public function testFilterFilesWithUnreadableFile()
+    {
+        $folder = vfsStream::setup();
+
+        vfsStream::newFile('db.json')
+            ->at($folder);
+
+        vfsStream::newFile('cache.json', 000)
+            ->at($folder);
+
+        $sfm = $this->getAccessibleSourceFilesMatcher();
+
+        $files = $sfm->filterFiles($folder->url(), '*');
+        $this->assertCount(1, $files);
     }
 
     public function testGetSourceFiles()
@@ -145,7 +191,7 @@ class SourceFilesMatcherTest extends TestBase
 
         $supportedSourceFiles = $sfm->getSourceFiles([null, null], null);
 
-        $this->assertFalse($supportedSourceFiles);
+        $this->assertEmpty($supportedSourceFiles);
     }
 
     public function testMatch()
@@ -161,7 +207,7 @@ class SourceFilesMatcherTest extends TestBase
             'enviromnent.json'   => '',
         ];
 
-        $virtualFolder = vfsStream::setup('root', null, $dir);
+        $folder = vfsStream::setup('root', null, $dir);
 
         $sourceFactoryMock = $this->mockSourceFactory();
 
@@ -171,7 +217,7 @@ class SourceFilesMatcherTest extends TestBase
 
         $sfm = $this->getSourceFilesMatcher($driverFactoryMock, $sourceFactoryMock);
 
-        $supportedSourceFiles = $sfm->match($virtualFolder->url(), null, null);
+        $supportedSourceFiles = $sfm->match($folder->url(), null, null);
 
         $this->assertEquals([true, true], $supportedSourceFiles);
     }
@@ -189,7 +235,7 @@ class SourceFilesMatcherTest extends TestBase
             'enviromnent.json'   => '',
         ];
 
-        $virtualFolder = vfsStream::setup('root', null, $dir);
+        $folder = vfsStream::setup('root', null, $dir);
 
         $sourceFactoryMock = $this->mockSourceFactory();
 
@@ -199,22 +245,9 @@ class SourceFilesMatcherTest extends TestBase
 
         $sfm = $this->getSourceFilesMatcher($driverFactoryMock, $sourceFactoryMock);
 
-        $supportedSourceFiles = $sfm->match($virtualFolder->url(), null, 'json');
+        $supportedSourceFiles = $sfm->match($folder->url(), null, 'json');
 
         $this->assertEquals([true, true], $supportedSourceFiles);
-    }
-
-    public function testUnreadableFolderExceptionOnMatchUnreadableFolder()
-    {
-        $this->expectException(UnreadableFolderException::class);
-
-        $virtualFolder = vfsStream::setup('root', 000);
-
-        $configsPath = $virtualFolder->url().DIRECTORY_SEPARATOR.'configs';
-
-        $sfm = $this->getSourceFilesMatcher();
-
-        $supportedSourceFiles = $sfm->match($configsPath, null, null);
     }
 
     public function getSourceFilesMatcher(IDriverFactory $driverFactory = null, ISourceFactory $sourceFactory = null)

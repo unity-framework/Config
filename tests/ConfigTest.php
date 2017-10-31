@@ -96,7 +96,7 @@ class ConfigTest extends TestCase
         $this->assertFalse($instance->innerHas(['database', 'db']));
         $this->assertFalse($instance->innerHas(['database', 'user', 'db']));
     }
-    
+
     public function testInnerUnset()
     {
         $data = [

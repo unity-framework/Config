@@ -13,7 +13,7 @@ use Unity\Contracts\Config\Drivers\IDriver;
 class PhpDriver implements IDriver
 {
     /**
-     * Loads and returns the configurations array.
+     * Loads and returns the configs array.
      *
      * @param $phpfile
      *

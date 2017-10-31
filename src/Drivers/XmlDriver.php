@@ -14,7 +14,7 @@ use Unity\Contracts\Config\Drivers\IDriver;
 class XmlDriver implements IDriver
 {
     /**
-     * Loads and returns the configurations array.
+     * Loads and returns the configs array.
      *
      * @param $xmlfile
      *

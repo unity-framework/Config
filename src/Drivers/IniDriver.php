@@ -13,7 +13,7 @@ use Unity\Contracts\Config\Drivers\IDriver;
 class IniDriver implements IDriver
 {
     /**
-     * Loads and returns the configurations array.
+     * Loads and returns the configs array.
      *
      * @param $inifile
      *

@@ -29,7 +29,7 @@
     },
     {
       "type": "vcs",
-      "url": "../Reflector"
+      "url": "../reflector"
     },
     {
       "type": "vcs",
@@ -45,7 +45,7 @@
     },
     {
       "type": "vcs",
-      "url": "../MakeAccessible"
+      "url": "../make_accessible"
     }
   ],
   "autoload": {

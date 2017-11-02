@@ -1,11 +1,12 @@
 <?php
 
 use e200\MakeAccessible\Make;
-use PHPUnit\Framework\TestCase;
+use Unity\Tests\Config\TestBase;
 use Unity\Component\Config\Config;
 use Unity\Component\Config\Exceptions\RuntimeModificationException;
+use Unity\Contracts\Notator\INotator;
 
-class ConfigTest extends TestCase
+class ConfigTest extends TestBase
 {
     public function testAllowModifications()
     {
@@ -135,7 +136,14 @@ class ConfigTest extends TestCase
      */
     public function testSet()
     {
-        $accessibleInstance = $this->getAccessibleInstance([], true);
+        $notatorMock = $this->mockNotator();
+
+        $notatorMock
+            ->expects($this->once())
+            ->method('denote')
+            ->willReturn(['can_cache']);
+
+        $accessibleInstance = $this->getAccessibleInstance([], true, $notatorMock);
         $instance = $accessibleInstance->getInstance();
 
         $instance->set('can_cache', true);
@@ -151,7 +159,14 @@ class ConfigTest extends TestCase
      */
     public function testIfSetReplaces()
     {
-        $accessibleInstance = $this->getAccessibleInstance(['can_cache' => false], true);
+        $notatorMock = $this->mockNotator();
+        
+        $notatorMock
+            ->expects($this->exactly(2))
+            ->method('denote')
+            ->will($this->onConsecutiveCalls(['can_cache'], ['database', 'user', 'exists']));
+
+        $accessibleInstance = $this->getAccessibleInstance(['can_cache' => false], true, $notatorMock);
         $instance = $accessibleInstance->getInstance();
 
         $instance->set('can_cache', true);
@@ -193,22 +208,47 @@ class ConfigTest extends TestCase
 
     public function testGet()
     {
+        $notatorMock = $this->mockNotator();
+        
+        $notatorMock
+            ->expects($this->once())
+            ->method('denote')
+            ->willReturn(['config', 'is_working']);
+        
         $instance = $this->getInstance([
             'config' => [
                     'is_working' => true,
                 ],
-            ]);
+            ],
+            false,
+            $notatorMock
+        );
 
         $this->assertTrue($instance->get('config.is_working'));
     }
 
     public function testHas()
     {
+        $notatorMock = $this->mockNotator();
+        
+        $notatorMock
+            ->expects($this->exactly(4))
+            ->method('denote')
+            ->will($this->onConsecutiveCalls(
+                ['config', 'is_working'],
+                ['config', 'not_working'],
+                ['config'],
+                ['configurations']
+            ));
+
         $instance = $this->getInstance([
             'config' => [
                     'is_working' => null,
                 ],
-            ]);
+            ],
+            false,
+            $notatorMock
+        );
 
         $this->assertTrue($instance->has('config.is_working'));
         $this->assertFalse($instance->has('config.not_working'));
@@ -363,13 +403,17 @@ class ConfigTest extends TestCase
         $this->assertEquals($expected, $instance->getAll());
     }
 
-    public function getInstance($data = [], $allowModifications = false)
+    public function getInstance($data = [], $allowModifications = false, $notatorMock = null)
     {
-        return new Config($data, $allowModifications);
+        if (is_null($notatorMock)) {
+            $notatorMock = $this->createMock(INotator::class);            
+        }
+
+        return new Config($data, $allowModifications, $notatorMock);
     }
 
-    public function getAccessibleInstance($data = [], $allowModifications = false)
+    public function getAccessibleInstance($data = [], $allowModifications = false, $notatorMock = null)
     {
-        return Make::accessible($this->getInstance($data, $allowModifications));
+        return Make::accessible($this->getInstance($data, $allowModifications, $notatorMock));
     }
 }

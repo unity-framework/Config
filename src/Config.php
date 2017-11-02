@@ -6,7 +6,7 @@ use ArrayAccess;
 use Countable;
 use Unity\Component\Config\Exceptions\RuntimeModificationException;
 use Unity\Contracts\Config\IConfig;
-use Unity\Notator\DotNotator;
+use Unity\Contracts\Notator\INotator;
 
 /**
  * Class Config.
@@ -17,7 +17,7 @@ use Unity\Notator\DotNotator;
  *
  * @link   https://github.com/e200/
  */
-class Config extends DotNotator implements IConfig, ArrayAccess, Countable
+class Config implements IConfig, ArrayAccess, Countable
 {
     /** @var array */
     protected $data;
@@ -25,14 +25,18 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
     /** @var bool */
     protected $allowModifications;
 
+    /** @var INotator */
+    protected $notator;
+
     /**
      * @param array $data               Contains configs data.
      * @param bool  $allowModifications Enable or disable read only mode.
      */
-    public function __construct(array $data, $allowModifications = false)
+    public function __construct(array $data, $allowModifications = false, INotator $notator)
     {
         $this->data = $data;
         $this->allowModifications = $allowModifications;
+        $this->notator = $notator;
     }
 
     /**
@@ -52,7 +56,7 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
             throw new RuntimeModificationException('Cannot modify configs in read only mode.');
         }
 
-        $keys = $this->denote($config);
+        $keys = $this->notator->denote($config);
 
         $this->innerSet($keys, $value);
 
@@ -69,7 +73,7 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
      */
     public function get($config)
     {
-        $keys = $this->denote($config);
+        $keys = $this->notator->denote($config);
 
         return $this->innerGet($keys);
     }
@@ -84,7 +88,7 @@ class Config extends DotNotator implements IConfig, ArrayAccess, Countable
      */
     public function has($config)
     {
-        $keys = $this->denote($config);
+        $keys = $this->notator->denote($config);
 
         return $this->innerHas($keys);
     }

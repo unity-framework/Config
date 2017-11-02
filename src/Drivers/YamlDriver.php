@@ -22,7 +22,7 @@ class YamlDriver implements IDriver
      */
     public function load($ymlfile) : array
     {
-        return yaml_parse_file($ymlfile);
+        return spyc_load_file($ymlfile);
     }
 
     /**

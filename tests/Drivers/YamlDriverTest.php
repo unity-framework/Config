@@ -17,11 +17,7 @@ class YamlDriverTest extends TestCase
 
     public function testLoad()
     {
-        /*
-        $content = '
-            exists
-                true
-        ';
+        $content = 'exists: true';
 
         $folder = vfsStream::setup();
         $dbFile = vfsStream::newFile('db')
@@ -31,9 +27,6 @@ class YamlDriverTest extends TestCase
         $loadedArray = $this->getInstance()->load($dbFile->url());
 
         $this->assertEquals(['exists' => true], $loadedArray);
-        */
-
-        $this->assertTrue(true);
     }
 
     public function getInstance()

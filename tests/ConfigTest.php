@@ -1,10 +1,10 @@
 <?php
 
 use e200\MakeAccessible\Make;
-use Unity\Tests\Config\TestBase;
 use Unity\Component\Config\Config;
 use Unity\Component\Config\Exceptions\RuntimeModificationException;
 use Unity\Contracts\Notator\INotator;
+use Unity\Tests\Config\TestBase;
 
 class ConfigTest extends TestBase
 {
@@ -160,7 +160,7 @@ class ConfigTest extends TestBase
     public function testIfSetReplaces()
     {
         $notatorMock = $this->mockNotator();
-        
+
         $notatorMock
             ->expects($this->exactly(2))
             ->method('denote')
@@ -209,12 +209,12 @@ class ConfigTest extends TestBase
     public function testGet()
     {
         $notatorMock = $this->mockNotator();
-        
+
         $notatorMock
             ->expects($this->once())
             ->method('denote')
             ->willReturn(['config', 'is_working']);
-        
+
         $instance = $this->getInstance([
             'config' => [
                     'is_working' => true,
@@ -230,7 +230,7 @@ class ConfigTest extends TestBase
     public function testHas()
     {
         $notatorMock = $this->mockNotator();
-        
+
         $notatorMock
             ->expects($this->exactly(4))
             ->method('denote')
@@ -406,7 +406,7 @@ class ConfigTest extends TestBase
     public function getInstance($data = [], $allowModifications = false, $notatorMock = null)
     {
         if (is_null($notatorMock)) {
-            $notatorMock = $this->createMock(INotator::class);            
+            $notatorMock = $this->createMock(INotator::class);
         }
 
         return new Config($data, $allowModifications, $notatorMock);

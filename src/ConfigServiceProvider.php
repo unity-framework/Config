@@ -2,7 +2,6 @@
 
 namespace Unity\Component\Config;
 
-use Unity\Notator\DotNotator;
 use Unity\Component\Config\Drivers\IniDriver;
 use Unity\Component\Config\Drivers\JsonDriver;
 use Unity\Component\Config\Drivers\PhpDriver;
@@ -20,6 +19,7 @@ use Unity\Contracts\Config\Sources\ISourceFilesMatcher;
 use Unity\Contracts\Container\IContainer;
 use Unity\Contracts\Container\IServiceProvider;
 use Unity\Contracts\Notator\INotator;
+use Unity\Notator\DotNotator;
 
 /**
  * Class ConfigServiceProvider.
@@ -36,7 +36,7 @@ class ConfigServiceProvider implements IServiceProvider
 
         $container->set('sourceFile', SourceFile::class);
         $container->set('sourceCache', SourceCache::class);
-        
+
         $container->set('php', PhpDriver::class);
         $container->set('ini', IniDriver::class);
         $container->set('json', JsonDriver::class);
@@ -60,7 +60,7 @@ class ConfigServiceProvider implements IServiceProvider
         $container->set('config', Config::class)
             ->bind(INotator::class, function (IContainer $container) {
                 return $container->get('notator');
-            });;
+            });
 
         $container->set('sourceFilesMatcher', SourceFilesMatcher::class)
             ->bind(IDriverFactory::class, function (IContainer $container) {

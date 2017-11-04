@@ -32,7 +32,7 @@ class Config implements IConfig, ArrayAccess, Countable
      * @param array $data               Contains configs data.
      * @param bool  $allowModifications Enable or disable read only mode.
      */
-    public function __construct(array $data, $allowModifications = false, INotator $notator)
+    public function __construct(array $data, $allowModifications, INotator $notator)
     {
         $this->data = $data;
         $this->allowModifications = $allowModifications;

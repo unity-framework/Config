@@ -5,9 +5,9 @@ use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\ConfigManager;
 use Unity\Component\Config\Contracts\IConfig;
 use Unity\Component\Config\Contracts\ILoader;
-use Unity\Component\Container\Contracts\IContainer;
 use Unity\Component\Config\Contracts\Sources\ISourceCache;
 use Unity\Component\Config\Exceptions\InvalidSourceException;
+use Unity\Component\Container\Contracts\IContainer;
 
 class ConfigManagerTest extends TestCase
 {

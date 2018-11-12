@@ -2,11 +2,11 @@
 
 use e200\MakeAccessible\Make;
 use org\bovigo\vfs\vfsStream;
+use Unity\Component\Config\Contracts\Factories\IDriverFactory;
+use Unity\Component\Config\Contracts\Factories\ISourceFactory;
 use Unity\Component\Config\Exceptions\DriverNotFoundException;
 use Unity\Component\Config\Exceptions\UnsupportedExtensionException;
 use Unity\Component\Config\Sources\SourceFilesMatcher;
-use Unity\Component\Config\Contracts\Factories\IDriverFactory;
-use Unity\Component\Config\Contracts\Factories\ISourceFactory;
 use Unity\Tests\Config\TestBase;
 
 class SourceFilesMatcherTest extends TestBase

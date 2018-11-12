@@ -1,11 +1,11 @@
 <?php
 
-use Unity\Support\FileInfo;
 use e200\MakeAccessible\Make;
 use PHPUnit\Framework\TestCase;
+use Unity\Component\Config\Contracts\Factories\IDriverFactory;
 use Unity\Component\Config\Factories\SourceFactory;
 use Unity\Component\Container\Contracts\IContainer;
-use Unity\Component\Config\Contracts\Factories\IDriverFactory;
+use Unity\Support\FileInfo;
 
 class SourceFactoryTest extends TestCase
 {

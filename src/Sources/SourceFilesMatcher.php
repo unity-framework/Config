@@ -2,13 +2,13 @@
 
 namespace Unity\Component\Config\Sources;
 
-use Unity\Component\Config\Exceptions\DriverNotFoundException;
-use Unity\Component\Config\Exceptions\UnsupportedExtensionException;
 use Unity\Component\Config\Contracts\Drivers\IDriver;
 use Unity\Component\Config\Contracts\Factories\IDriverFactory;
 use Unity\Component\Config\Contracts\Factories\ISourceFactory;
 use Unity\Component\Config\Contracts\Sources\ISourceFile;
 use Unity\Component\Config\Contracts\Sources\ISourceFilesMatcher;
+use Unity\Component\Config\Exceptions\DriverNotFoundException;
+use Unity\Component\Config\Exceptions\UnsupportedExtensionException;
 
 /**
  * Class FileSourcesRepository.

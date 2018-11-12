@@ -1,8 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Unity\Component\Config\Sources\SourceFile;
 use Unity\Component\Config\Contracts\Drivers\IDriver;
+use Unity\Component\Config\Sources\SourceFile;
 
 class SourceFileTest extends TestCase
 {

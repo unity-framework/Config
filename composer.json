@@ -16,38 +16,11 @@
   "minimum-stability": "dev",
   "prefer-stable" : true,
   "require": {
-    "unity/container": "dev-master",
-    "unity/support": "dev-master",
-    "unity/notator": "dev-master",
-    "unity/contracts": "dev-master",
-    "make/accessible": "dev-master"
+    "unity/notator": "^0.1.0",
+    "make/accessible": "^0.1.0",
+    "unity/support": "^0.1.0",
+    "unity/container": "^0.1.0"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "../container"
-    },
-    {
-      "type": "vcs",
-      "url": "../reflector"
-    },
-    {
-      "type": "vcs",
-      "url": "../contracts"
-    },
-    {
-      "type": "vcs",
-      "url": "../support"
-    },
-    {
-      "type": "vcs",
-      "url": "../notator"
-    },
-    {
-      "type": "vcs",
-      "url": "../make_accessible"
-    }
-  ],
   "autoload": {
     "psr-4": {
       "Unity\\Component\\Config\\": "src/"

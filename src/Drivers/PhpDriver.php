@@ -2,7 +2,7 @@
 
 namespace Unity\Component\Config\Drivers;
 
-use Unity\Contracts\Config\Drivers\IDriver;
+use Unity\Component\Config\Contracts\Drivers\IDriver;
 
 /**
  * Class PhpDriver.

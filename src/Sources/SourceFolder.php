@@ -2,9 +2,9 @@
 
 namespace Unity\Component\Config\Sources;
 
-use Unity\Contracts\Config\Sources\ISource;
-use Unity\Contracts\Config\Sources\ISourceFile;
-use Unity\Contracts\Config\Sources\ISourceFilesMatcher;
+use Unity\Component\Config\Contracts\Sources\ISource;
+use Unity\Component\Config\Contracts\Sources\ISourceFile;
+use Unity\Component\Config\Contracts\Sources\ISourceFilesMatcher;
 
 /**
  * Class SourceFolder.

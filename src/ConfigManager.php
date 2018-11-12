@@ -4,10 +4,10 @@ namespace Unity\Component\Config;
 
 use Unity\Component\Config\Exceptions\InvalidSourceException;
 use Unity\Component\Container\ContainerManager;
-use Unity\Contracts\Config\IConfigManager;
-use Unity\Contracts\Config\ILoader;
-use Unity\Contracts\Config\Sources\ISourceCache;
-use Unity\Contracts\Container\IContainer;
+use Unity\Component\Config\Contracts\IConfigManager;
+use Unity\Component\Config\Contracts\ILoader;
+use Unity\Component\Config\Contracts\Sources\ISourceCache;
+use Unity\Component\Config\Contracts\IContainer;
 
 /**
  * Class ConfigManager.

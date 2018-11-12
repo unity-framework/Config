@@ -3,8 +3,8 @@
 use e200\MakeAccessible\Make;
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Sources\SourceFolder;
-use Unity\Contracts\Config\Sources\ISourceFile;
-use Unity\Contracts\Config\Sources\ISourceFilesMatcher;
+use Unity\Component\Config\Contracts\Sources\ISourceFile;
+use Unity\Component\Config\Contracts\Sources\ISourceFilesMatcher;
 
 class SourceFolderTest extends TestCase
 {

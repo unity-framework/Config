@@ -3,8 +3,8 @@
 use e200\MakeAccessible\Make;
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Factories\SourceFactory;
-use Unity\Contracts\Config\Factories\IDriverFactory;
-use Unity\Contracts\Container\IContainer;
+use Unity\Component\Config\Contracts\Factories\IDriverFactory;
+use Unity\Component\Config\Contracts\IContainer;
 use Unity\Support\FileInfo;
 
 class SourceFactoryTest extends TestCase

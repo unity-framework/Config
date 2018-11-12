@@ -7,8 +7,8 @@ use Unity\Component\Config\Drivers\JsonDriver;
 use Unity\Component\Config\Drivers\PhpDriver;
 use Unity\Component\Config\Drivers\XmlDriver;
 use Unity\Component\Config\Drivers\YamlDriver;
-use Unity\Contracts\Config\Drivers\IDriver;
-use Unity\Contracts\Config\Factories\IDriverFactory;
+use Unity\Component\Config\Contracts\Drivers\IDriver;
+use Unity\Component\Config\Contracts\Factories\IDriverFactory;
 use Unity\Support\FileInfo;
 
 /**

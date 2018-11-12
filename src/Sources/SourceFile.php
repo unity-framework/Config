@@ -2,8 +2,8 @@
 
 namespace Unity\Component\Config\Sources;
 
-use Unity\Contracts\Config\Drivers\IDriver;
-use Unity\Contracts\Config\Sources\ISourceFile;
+use Unity\Component\Config\Contracts\Drivers\IDriver;
+use Unity\Component\Config\Contracts\Sources\ISourceFile;
 
 /**
  * Class SourceFile.

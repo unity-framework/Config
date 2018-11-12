@@ -2,12 +2,12 @@
 
 namespace Unity\Component\Config\Factories;
 
-use Unity\Contracts\Config\Drivers\IDriver;
-use Unity\Contracts\Config\Factories\IDriverFactory;
-use Unity\Contracts\Config\Factories\ISourceFactory;
-use Unity\Contracts\Config\Sources\ISource;
-use Unity\Contracts\Config\Sources\ISourceFile;
-use Unity\Contracts\Container\IContainer;
+use Unity\Component\Config\Contracts\Drivers\IDriver;
+use Unity\Component\Config\Contracts\Factories\IDriverFactory;
+use Unity\Component\Config\Contracts\Factories\ISourceFactory;
+use Unity\Component\Config\Contracts\Sources\ISource;
+use Unity\Component\Config\Contracts\Sources\ISourceFile;
+use Unity\Component\Config\Contracts\IContainer;
 use Unity\Support\FileInfo;
 
 /**

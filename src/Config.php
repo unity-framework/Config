@@ -5,7 +5,7 @@ namespace Unity\Component\Config;
 use ArrayAccess;
 use Countable;
 use Unity\Component\Config\Exceptions\RuntimeModificationException;
-use Unity\Contracts\Config\IConfig;
+use Unity\Component\Config\Contracts\IConfig;
 use Unity\Contracts\Notator\INotator;
 
 /**

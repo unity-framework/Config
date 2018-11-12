@@ -2,7 +2,7 @@
 
 namespace Unity\Component\Config\Sources;
 
-use Unity\Contracts\Config\Sources\ISourceCache;
+use Unity\Component\Config\Contracts\Sources\ISourceCache;
 
 /**
  * Class SourceCache.

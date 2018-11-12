@@ -5,8 +5,8 @@ use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\Exceptions\DriverNotFoundException;
 use Unity\Component\Config\Exceptions\UnreadableSourceException;
 use Unity\Component\Config\Loader;
-use Unity\Contracts\Config\Factories\ISourceFactory;
-use Unity\Contracts\Config\Sources\ISource;
+use Unity\Component\Config\Contracts\Factories\ISourceFactory;
+use Unity\Component\Config\Contracts\Sources\ISource;
 
 class LoaderTest extends TestCase
 {

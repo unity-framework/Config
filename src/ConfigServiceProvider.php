@@ -13,11 +13,11 @@ use Unity\Component\Config\Sources\SourceCache;
 use Unity\Component\Config\Sources\SourceFile;
 use Unity\Component\Config\Sources\SourceFilesMatcher;
 use Unity\Component\Config\Sources\SourceFolder;
-use Unity\Contracts\Config\Factories\IDriverFactory;
-use Unity\Contracts\Config\Factories\ISourceFactory;
-use Unity\Contracts\Config\Sources\ISourceFilesMatcher;
-use Unity\Contracts\Container\IContainer;
-use Unity\Contracts\Container\IServiceProvider;
+use Unity\Component\Config\Contracts\Factories\IDriverFactory;
+use Unity\Component\Config\Contracts\Factories\ISourceFactory;
+use Unity\Component\Config\Contracts\Sources\ISourceFilesMatcher;
+use Unity\Component\Config\Contracts\IContainer;
+use Unity\Component\Config\Contracts\IServiceProvider;
 use Unity\Contracts\Notator\INotator;
 use Unity\Notator\DotNotator;
 

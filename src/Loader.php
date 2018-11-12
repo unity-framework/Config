@@ -4,8 +4,8 @@ namespace Unity\Component\Config;
 
 use Unity\Component\Config\Exceptions\DriverNotFoundException;
 use Unity\Component\Config\Exceptions\UnreadableSourceException;
-use Unity\Contracts\Config\Factories\ISourceFactory;
-use Unity\Contracts\Config\ILoader;
+use Unity\Component\Config\Contracts\Factories\ISourceFactory;
+use Unity\Component\Config\Contracts\ILoader;
 
 /**
  * Class Loader.

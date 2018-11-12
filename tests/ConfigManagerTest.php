@@ -4,10 +4,10 @@ use e200\MakeAccessible\Make;
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\ConfigManager;
 use Unity\Component\Config\Exceptions\InvalidSourceException;
-use Unity\Contracts\Config\IConfig;
-use Unity\Contracts\Config\ILoader;
-use Unity\Contracts\Config\Sources\ISourceCache;
-use Unity\Contracts\Container\IContainer;
+use Unity\Component\Config\Contracts\IConfig;
+use Unity\Component\Config\Contracts\ILoader;
+use Unity\Component\Config\Contracts\Sources\ISourceCache;
+use Unity\Component\Config\Contracts\IContainer;
 
 class ConfigManagerTest extends TestCase
 {

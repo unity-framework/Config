@@ -2,11 +2,11 @@
 
 namespace Unity\Component\Config;
 
-use Countable;
 use ArrayAccess;
-use Unity\Notator\Contracts\INotator;
+use Countable;
 use Unity\Component\Config\Contracts\IConfig;
 use Unity\Component\Config\Exceptions\RuntimeModificationException;
+use Unity\Notator\Contracts\INotator;
 
 /**
  * Class Config.

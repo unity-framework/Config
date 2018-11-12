@@ -1,10 +1,10 @@
 <?php
 
 use e200\MakeAccessible\Make;
-use Unity\Tests\Config\TestBase;
 use Unity\Component\Config\Config;
-use Unity\Notator\Contracts\INotator;
 use Unity\Component\Config\Exceptions\RuntimeModificationException;
+use Unity\Notator\Contracts\INotator;
+use Unity\Tests\Config\TestBase;
 
 class ConfigTest extends TestBase
 {

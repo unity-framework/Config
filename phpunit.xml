@@ -10,7 +10,7 @@
         <testsuite name="Test Suite">
             <file>./tests/DriverFactoryTest.php</file>
             <file>./tests/SourceFactoryTest.php</file>
-            
+
             <file>./tests/SourceFilesMatcherTest.php</file>
 
             <file>./tests/SourceFileTest.php</file>

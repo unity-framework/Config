@@ -1,10 +1,10 @@
 <?php
 
 use e200\MakeAccessible\Make;
-use Unity\Component\Config\Config;
-use Unity\Component\Config\Exceptions\RuntimeModificationException;
-use Unity\Contracts\Notator\INotator;
 use Unity\Tests\Config\TestBase;
+use Unity\Component\Config\Config;
+use Unity\Notator\Contracts\INotator;
+use Unity\Component\Config\Exceptions\RuntimeModificationException;
 
 class ConfigTest extends TestBase
 {
@@ -144,7 +144,7 @@ class ConfigTest extends TestBase
             ->willReturn(['can_cache']);
 
         $accessibleInstance = $this->getAccessibleInstance([], true, $notatorMock);
-        $instance = $accessibleInstance->getInstance();
+        $instance = $accessibleInstance->getClassNameOrInstance();
 
         $instance->set('can_cache', true);
 
@@ -167,7 +167,7 @@ class ConfigTest extends TestBase
             ->will($this->onConsecutiveCalls(['can_cache'], ['database', 'user', 'exists']));
 
         $accessibleInstance = $this->getAccessibleInstance(['can_cache' => false], true, $notatorMock);
-        $instance = $accessibleInstance->getInstance();
+        $instance = $accessibleInstance->getClassNameOrInstance();
 
         $instance->set('can_cache', true);
 
@@ -260,7 +260,7 @@ class ConfigTest extends TestBase
     public function testOffsetSet()
     {
         $accessibleInstance = $this->getAccessibleInstance([], true);
-        $instance = $accessibleInstance->getInstance();
+        $instance = $accessibleInstance->getClassNameOrInstance();
 
         $instance['is_working'] = true;
         $this->assertTrue($accessibleInstance->data['is_working']);
@@ -274,7 +274,7 @@ class ConfigTest extends TestBase
     public function testOffsetSetReplace()
     {
         $accessibleInstance = $this->getAccessibleInstance(['is_working' => false], true);
-        $instance = $accessibleInstance->getInstance();
+        $instance = $accessibleInstance->getClassNameOrInstance();
 
         $instance['is_working'] = true;
         $this->assertTrue($accessibleInstance->data['is_working']);
@@ -310,7 +310,7 @@ class ConfigTest extends TestBase
         ];
 
         $accessibleInstance = $this->getAccessibleInstance($data, true);
-        $instance = $accessibleInstance->getInstance();
+        $instance = $accessibleInstance->getClassNameOrInstance();
 
         $instance['database']['can_cache'] = true;
 
@@ -376,7 +376,7 @@ class ConfigTest extends TestBase
         ];
 
         $accessibleInstance = $this->getAccessibleInstance($data, true);
-        $instance = $accessibleInstance->getInstance();
+        $instance = $accessibleInstance->getClassNameOrInstance();
 
         unset($instance['database']['can_cache']);
         $this->assertArrayNotHasKey('can_cache', $accessibleInstance->data['database']);

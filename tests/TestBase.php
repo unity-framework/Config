@@ -8,7 +8,7 @@ use Unity\Component\Config\Contracts\Factories\IDriverFactory;
 use Unity\Component\Config\Contracts\Factories\ISourceFactory;
 use Unity\Component\Config\Contracts\Sources\ISourceFilesMatcher;
 use Unity\Component\Config\Contracts\IContainer;
-use Unity\Contracts\Notator\INotator;
+use Unity\Notator\Contracts\INotator;
 use Unity\Support\FileInfo;
 
 class TestBase extends TestCase

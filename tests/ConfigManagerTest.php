@@ -3,11 +3,11 @@
 use e200\MakeAccessible\Make;
 use PHPUnit\Framework\TestCase;
 use Unity\Component\Config\ConfigManager;
-use Unity\Component\Config\Exceptions\InvalidSourceException;
 use Unity\Component\Config\Contracts\IConfig;
 use Unity\Component\Config\Contracts\ILoader;
+use Unity\Component\Container\Contracts\IContainer;
 use Unity\Component\Config\Contracts\Sources\ISourceCache;
-use Unity\Component\Config\Contracts\IContainer;
+use Unity\Component\Config\Exceptions\InvalidSourceException;
 
 class ConfigManagerTest extends TestCase
 {
@@ -17,7 +17,7 @@ class ConfigManagerTest extends TestCase
 
         $expectedSource = 'someSource';
 
-        $instance = $accessibleInstance->getInstance()
+        $instance = $accessibleInstance->getClassNameOrInstance()
             ->setSource($expectedSource);
 
         $this->assertEquals($expectedSource, $accessibleInstance->source);
@@ -30,7 +30,7 @@ class ConfigManagerTest extends TestCase
 
         $expectedExt = 'someExt';
 
-        $instance = $accessibleInstance->getInstance()
+        $instance = $accessibleInstance->getClassNameOrInstance()
             ->setExt($expectedExt);
 
         $this->assertEquals($expectedExt, $accessibleInstance->ext);
@@ -44,7 +44,7 @@ class ConfigManagerTest extends TestCase
         $extWithDot = '.json';
         $expectedExt = 'json';
 
-        $instance = $accessibleInstance->getInstance()
+        $instance = $accessibleInstance->getClassNameOrInstance()
             ->setExt($extWithDot);
 
         $this->assertEquals($expectedExt, $accessibleInstance->ext);
@@ -57,7 +57,7 @@ class ConfigManagerTest extends TestCase
 
         $expectedDriver = 'someDriver';
 
-        $instance = $accessibleInstance->getInstance()
+        $instance = $accessibleInstance->getClassNameOrInstance()
             ->setDriver($expectedDriver);
 
         $this->assertEquals($expectedDriver, $accessibleInstance->driver);
@@ -70,7 +70,7 @@ class ConfigManagerTest extends TestCase
 
         $containerMock = $this->createMock(IContainer::class);
 
-        $instance = $accessibleInstance->getInstance()
+        $instance = $accessibleInstance->getClassNameOrInstance()
             ->setContainer($containerMock);
 
         $this->assertEquals($containerMock, $accessibleInstance->container);
@@ -81,7 +81,7 @@ class ConfigManagerTest extends TestCase
     {
         $accessibleInstance = $this->getAccessibleInstance();
 
-        $instance = $accessibleInstance->getInstance();
+        $instance = $accessibleInstance->getClassNameOrInstance();
 
         $instance->allowModifications(false);
         $this->assertFalse($accessibleInstance->allowModifications);
@@ -95,7 +95,7 @@ class ConfigManagerTest extends TestCase
     public function testHasSource()
     {
         $accessibleInstance = $this->getAccessibleInstance();
-        $instance = $accessibleInstance->getInstance();
+        $instance = $accessibleInstance->getClassNameOrInstance();
 
         $this->assertFalse($instance->hasSource());
 
@@ -130,7 +130,7 @@ class ConfigManagerTest extends TestCase
         $expectedCacheExpTime = 'someCacheExpTime';
         $expectedallowModifications = false;
 
-        $instance = $accessibleInstance->getInstance()
+        $instance = $accessibleInstance->getClassNameOrInstance()
             ->setupCache(
                 $expectedCachePath,
                 $expectedCacheExpTime,
@@ -146,7 +146,7 @@ class ConfigManagerTest extends TestCase
     public function testIsCacheEnable()
     {
         $accessibleInstance = $this->getAccessibleInstance();
-        $instance = $accessibleInstance->getInstance();
+        $instance = $accessibleInstance->getClassNameOrInstance();
 
         $this->assertFalse($instance->isCacheEnabled());
 
@@ -230,7 +230,7 @@ class ConfigManagerTest extends TestCase
     public function testBuildWithoutCacheEnabled()
     {
         $accessibleInstance = $this->getAccessibleInstance();
-        $instance = $accessibleInstance->getInstance();
+        $instance = $accessibleInstance->getClassNameOrInstance();
 
         $accessibleInstance->source = 'some_source';
 
@@ -264,7 +264,7 @@ class ConfigManagerTest extends TestCase
     public function testBuildWithCacheEnabledAndHit()
     {
         $accessibleInstance = $this->getAccessibleInstance();
-        $instance = $accessibleInstance->getInstance();
+        $instance = $accessibleInstance->getClassNameOrInstance();
 
         // This prevent the ivalid source exception.
         $accessibleInstance->source = 'some_source';
@@ -307,7 +307,7 @@ class ConfigManagerTest extends TestCase
     public function testBuildWithCacheEnabledButMissed()
     {
         $accessibleInstance = $this->getAccessibleInstance();
-        $instance = $accessibleInstance->getInstance();
+        $instance = $accessibleInstance->getClassNameOrInstance();
 
         // This prevent the ivalid source exception.
         $accessibleInstance->source = 'some_source';

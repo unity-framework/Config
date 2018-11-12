@@ -2,24 +2,24 @@
 
 namespace Unity\Component\Config;
 
+use Unity\Notator\DotNotator;
+use Unity\Notator\Contracts\INotator;
 use Unity\Component\Config\Drivers\IniDriver;
-use Unity\Component\Config\Drivers\JsonDriver;
 use Unity\Component\Config\Drivers\PhpDriver;
 use Unity\Component\Config\Drivers\XmlDriver;
+use Unity\Component\Config\Drivers\JsonDriver;
 use Unity\Component\Config\Drivers\YamlDriver;
+use Unity\Component\Config\Sources\SourceFile;
+use Unity\Component\Config\Sources\SourceCache;
+use Unity\Component\Config\Sources\SourceFolder;
 use Unity\Component\Config\Factories\DriverFactory;
 use Unity\Component\Config\Factories\SourceFactory;
-use Unity\Component\Config\Sources\SourceCache;
-use Unity\Component\Config\Sources\SourceFile;
+use Unity\Component\Container\Contracts\IContainer;
 use Unity\Component\Config\Sources\SourceFilesMatcher;
-use Unity\Component\Config\Sources\SourceFolder;
+use Unity\Component\Container\Contracts\IServiceProvider;
 use Unity\Component\Config\Contracts\Factories\IDriverFactory;
 use Unity\Component\Config\Contracts\Factories\ISourceFactory;
 use Unity\Component\Config\Contracts\Sources\ISourceFilesMatcher;
-use Unity\Component\Config\Contracts\IContainer;
-use Unity\Component\Config\Contracts\IServiceProvider;
-use Unity\Contracts\Notator\INotator;
-use Unity\Notator\DotNotator;
 
 /**
  * Class ConfigServiceProvider.

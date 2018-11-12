@@ -2,11 +2,11 @@
 
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
+use Unity\Component\Config\Contracts\Factories\ISourceFactory;
+use Unity\Component\Config\Contracts\Sources\ISource;
 use Unity\Component\Config\Exceptions\DriverNotFoundException;
 use Unity\Component\Config\Exceptions\UnreadableSourceException;
 use Unity\Component\Config\Loader;
-use Unity\Component\Config\Contracts\Factories\ISourceFactory;
-use Unity\Component\Config\Contracts\Sources\ISource;
 
 class LoaderTest extends TestCase
 {

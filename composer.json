@@ -1,5 +1,6 @@
 {
   "name": "unity/config",
+  "version": "0.1",
   "description": "Extensible configuration manager for PHP projects that uses dot notation and supports json, ini, array based and many more common formats",
   "type": "library",
   "keywords": [ "unity-framework", "unity", "php", "config", "configuration", "extensible"],
